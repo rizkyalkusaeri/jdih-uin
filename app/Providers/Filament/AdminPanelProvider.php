@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->brandName('CMS JDIH UIN')
             ->login()
             ->colors([
                 'primary' => Color::Blue,
