@@ -1,40 +1,43 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\LegalFields;
 
-use App\Filament\Resources\CategoryResource\Pages;
-use App\Models\Category;
+use App\Filament\Resources\LegalFields\Pages\ManageLegalFields;
+use App\Models\LegalField;
+use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Utilities\Set;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
-class CategoryResource extends Resource
+class LegalFieldResource extends Resource
 {
-    protected static ?string $model = Category::class;
-    protected static ?string $modelLabel = 'Kategori';
-    protected static ?string $pluralModelLabel = 'Kategori';
-    protected static ?string $navigationLabel = 'Kategori';
+    protected static ?string $model = LegalField::class;
+
+    protected static ?string $modelLabel = 'Bidang Hukum';
+    protected static ?string $pluralModelLabel = 'Bidang Hukum';
+    protected static ?string $navigationLabel = 'Bidang Hukum';
 
     public static function getNavigationIcon(): ?string
     {
-        return 'heroicon-o-tag';
+        return 'heroicon-o-scale';
     }
 
     public static function getNavigationGroup(): ?string
     {
         return 'Data Master';
     }
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
     {
@@ -45,40 +48,55 @@ class CategoryResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                    ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', Str::slug($state))),
                 TextInput::make('slug')
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
-                Select::make('type')
-                    ->label('Jenis')
+                Select::make('status')
                     ->options([
-                        'legal' => 'Produk Hukum',
-                        'post' => 'Artikel/Berita',
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
                     ])
                     ->required()
-                    ->default('legal'),
+                    ->default('active'),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nama')
                     ->searchable(),
-                TextColumn::make('slug'),
-                TextColumn::make('type')
-                    ->badge(),
+                TextColumn::make('slug')
+                    ->searchable(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'active' => 'success',
+                        'inactive' => 'gray',
+                    }),
                 TextColumn::make('created_at')
-                    ->dateTime(),
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('type')
+                SelectFilter::make('status')
                     ->options([
-                        'legal' => 'Produk Hukum',
-                        'post' => 'Artikel/Berita',
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
                     ]),
+            ])
+            ->filters([
+                //
             ])
             ->recordActions([
                 EditAction::make(),
@@ -94,7 +112,7 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageCategories::route('/'),
+            'index' => ManageLegalFields::route('/'),
         ];
     }
 }
