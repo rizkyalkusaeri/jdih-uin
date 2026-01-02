@@ -8,15 +8,25 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class LegalProductResource extends Resource
 {
     protected static ?string $model = LegalProduct::class;
+
+    protected static ?string $modelLabel = 'Produk Hukum';
+    protected static ?string $pluralModelLabel = 'Produk Hukum';
+    protected static ?string $navigationLabel = 'Produk Hukum';
 
     public static function getNavigationIcon(): ?string
     {
@@ -32,70 +42,162 @@ class LegalProductResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->required()
-                    ->maxLength(255)
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('number')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('year')
-                    ->numeric()
-                    ->required(),
-                Forms\Components\Select::make('category_id')
-                    ->relationship('category', 'name')
-                    ->required(),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                        'draft' => 'Draft',
-                    ])
-                    ->required()
-                    ->default('active'),
-                Forms\Components\DateTimePicker::make('published_at'),
-                Forms\Components\FileUpload::make('file_path')
-                    ->directory('legal-products')
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->preserveFilenames()
-                    ->columnSpanFull(),
-            ]);
+                Group::make()
+                    ->schema([
+                        Section::make('Informasi Utama')
+                            ->schema([
+                                TextInput::make('title')
+                                    ->label('Judul')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->columnSpanFull(),
+                                TextInput::make('number')
+                                    ->label('Nomor')
+                                    ->maxLength(255),
+                                TextInput::make('year')
+                                    ->label('Tahun')
+                                    ->numeric()
+                                    ->required(),
+                                Select::make('type_id')
+                                    ->label('Jenis')
+                                    ->relationship('type', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->createOptionForm([
+                                        TextInput::make('name')
+                                            ->label('Nama Jenis')
+                                            ->required()
+                                            ->maxLength(255),
+                                    ])
+                                    ->required(),
+                                Select::make('category_id')
+                                    ->label('Kategori')
+                                    ->relationship('category', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+                            ])->columns(2),
+
+                        Section::make('Detail')
+                            ->schema([
+                                Select::make('status')
+                                    ->options([
+                                        'active' => 'Active',
+                                        'inactive' => 'Inactive',
+                                        'draft' => 'Draft',
+                                    ])
+                                    ->required()
+                                    ->default('active'),
+                                DatePicker::make('determination_date')
+                                    ->label('Tanggal Penetapan'),
+                                DatePicker::make('published_date')
+                                    ->label('Tanggal Terbit'),
+                                TextInput::make('language')
+                                    ->label('Bahasa')
+                                    ->default('Bahasa Indonesia'),
+                                TextInput::make('source')
+                                    ->label('Sumber'),
+                                Select::make('location_id')
+                                    ->label('Lokasi')
+                                    ->relationship('location', 'name')
+                                    ->searchable()
+                                    ->preload(),
+                                Select::make('legal_field_id')
+                                    ->label('Bidang Hukum')
+                                    ->relationship('legalField', 'name')
+                                    ->searchable()
+                                    ->preload(),
+                            ])->columns(2),
+                    ])->columnSpan(['lg' => 2]),
+
+                Group::make()
+                    ->schema([
+                        Section::make('Subjek')
+                            ->schema([
+                                Select::make('subjects')
+                                    ->label('Subjek')
+                                    ->relationship('subjects', 'name')
+                                    ->multiple()
+                                    ->searchable()
+                                    ->preload()
+                                    ->createOptionForm([
+                                        TextInput::make('name')
+                                            ->label('Nama Subjek')
+                                            ->required()
+                                            ->maxLength(255),
+                                    ]),
+                            ]),
+                        Section::make('Dokumen')
+                            ->schema([
+                                FileUpload::make('file_path')
+                                    ->label('File Produk Hukum')
+                                    ->directory('legal-products')
+                                    ->acceptedFileTypes(['application/pdf'])
+                                    ->preserveFilenames()
+                                    ->required(),
+                                TextInput::make('related_document')
+                                    ->label('Dokumen Terkait'),
+                                TextInput::make('rule_document')
+                                    ->label('Dokumen Peraturan'),
+                            ]),
+                    ])->columnSpan(['lg' => 1]),
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
+                    ->label('Judul')
                     ->searchable()
                     ->limit(50),
-                Tables\Columns\TextColumn::make('number')
+                TextColumn::make('number')
+                    ->label('Nomor')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('year')
+                TextColumn::make('type.name')
+                    ->label('Jenis')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('category.name')
+                TextColumn::make('category.name')
+                    ->label('Kategori')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('year')
+                    ->label('Tahun')
+                    ->sortable(),
+                TextColumn::make('status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'active' => 'success',
                         'inactive' => 'gray',
                         'draft' => 'warning',
                     }),
-                Tables\Columns\TextColumn::make('published_at')
-                    ->dateTime()
+                TextColumn::make('published_date')
+                    ->label('Tanggal Terbit')
+                    ->date('d M Y')
                     ->sortable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('category')
+                SelectFilter::make('category')
+                    ->label('Kategori')
                     ->relationship('category', 'name'),
-                Tables\Filters\SelectFilter::make('year')
+                SelectFilter::make('type')
+                    ->label('Jenis')
+                    ->relationship('type', 'name'),
+                SelectFilter::make('status')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                        'draft' => 'Draft',
+                    ]),
+                SelectFilter::make('year')
+                    ->label('Tahun')
                     ->options(fn() => LegalProduct::query()->distinct()->pluck('year', 'year')->toArray()),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
