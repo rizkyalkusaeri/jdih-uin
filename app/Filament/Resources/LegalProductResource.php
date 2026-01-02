@@ -16,6 +16,7 @@ use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -35,7 +36,7 @@ class LegalProductResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Data Master';
+        return 'Manajemen Konten';
     }
 
     public static function form(Schema $schema): Schema
@@ -67,7 +68,13 @@ class LegalProductResource extends Resource
                                         TextInput::make('name')
                                             ->label('Nama Jenis')
                                             ->required()
-                                            ->maxLength(255),
+                                            ->maxLength(255)
+                                            ->live(onBlur: true)
+                                            ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                                        TextInput::make('slug')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->unique(ignoreRecord: true),
                                     ])
                                     ->required(),
                                 Select::make('category_id')
@@ -124,7 +131,13 @@ class LegalProductResource extends Resource
                                         TextInput::make('name')
                                             ->label('Nama Subjek')
                                             ->required()
-                                            ->maxLength(255),
+                                            ->maxLength(255)
+                                            ->live(onBlur: true)
+                                            ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                                        TextInput::make('slug')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->unique(ignoreRecord: true),
                                     ]),
                             ]),
                         Section::make('Dokumen')
