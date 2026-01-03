@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('number')->unique();
             $table->string('title');
             $table->string('slug')->unique();
+            $table->text('abstract');
             $table->string('year');
             $table->date('determination_date');
             $table->date('published_date');

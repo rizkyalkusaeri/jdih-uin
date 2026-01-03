@@ -10,6 +10,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentView;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -17,6 +18,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -26,10 +28,30 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->path('sys-admin-panel')
             ->brandName('CMS JDIH UIN')
             ->brandLogo(asset('images/jdih.png'))
+            ->spa()
             ->login()
+            ->bootUsing(function () {
+                FilamentView::registerRenderHook(
+                    'panels::styles.after',
+                    fn(): string => Blade::render('
+                    <style>
+                        /* Memberikan shadow pada sidebar */
+                        .fi-sidebar {
+                            box-shadow: 4px 0 15px -3px rgba(0, 0, 0, 0.07), 2px 0 6px -2px rgba(0, 0, 0, 0.05);
+                            border-right: none !important; /* Menghapus garis border bawaan agar shadow lebih clean */
+                        }
+
+                        /* Opsional: Memberikan shadow halus pada topbar agar senada */
+                        .fi-topbar {
+                            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+                        }
+                    </style>
+                '),
+                );
+            })
             ->colors([
                 'primary' => Color::Blue,
             ])

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\LegalFields;
+namespace App\Filament\Resources\Initiators;
 
-use App\Filament\Resources\LegalFields\Pages\ManageLegalFields;
-use App\Models\LegalField;
+use App\Filament\Resources\Initiators\Pages\ManageInitiators;
+use App\Models\Initiator;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -16,45 +16,40 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 
-class LegalFieldResource extends Resource
+class InitiatorResource extends Resource
 {
-    protected static ?string $model = LegalField::class;
+    protected static ?string $model = Initiator::class;
 
-    protected static ?string $modelLabel = 'Bidang Hukum';
-    protected static ?string $pluralModelLabel = 'Bidang Hukum';
-    protected static ?string $navigationLabel = 'Bidang Hukum';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    public static function getNavigationIcon(): ?string
-    {
-        return 'heroicon-o-scale';
-    }
+    protected static ?string $recordTitleAttribute = 'name';
+
+
+    protected static ?string $modelLabel = 'Pemrakarsa';
+    protected static ?string $pluralModelLabel = 'Pemrakarsa';
+    protected static ?string $navigationLabel = 'Pemrakarsa';
 
     public static function getNavigationGroup(): ?string
     {
         return 'Data Master';
     }
 
-    protected static ?string $recordTitleAttribute = 'name';
-
     public static function form(Schema $schema): Schema
     {
         return $schema
-            ->schema([
+            ->components([
                 TextInput::make('name')
-                    ->label('Nama')
                     ->required()
-                    ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', Str::slug($state))),
+                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
                 TextInput::make('slug')
                     ->required()
-                    ->maxLength(255)
                     ->unique(ignoreRecord: true),
                 Select::make('status')
                     ->options([
@@ -72,7 +67,6 @@ class LegalFieldResource extends Resource
             ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('name')
-                    ->label('Nama')
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
@@ -92,24 +86,17 @@ class LegalFieldResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('status')
-                    ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                    ]),
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
                 RestoreAction::make(),
-
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     RestoreBulkAction::make(),
-
                 ]),
             ]);
     }
@@ -125,7 +112,7 @@ class LegalFieldResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ManageLegalFields::route('/'),
+            'index' => ManageInitiators::route('/'),
         ];
     }
 }

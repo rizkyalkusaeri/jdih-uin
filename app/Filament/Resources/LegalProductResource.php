@@ -8,18 +8,24 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
+use Illuminate\Database\Eloquent\Builder;
 
 class LegalProductResource extends Resource
 {
@@ -51,6 +57,13 @@ class LegalProductResource extends Resource
                                     ->label('Judul')
                                     ->required()
                                     ->maxLength(255)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', \Illuminate\Support\Str::slug($state)))
+                                    ->columnSpanFull(),
+                                TextInput::make('slug')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->unique(ignoreRecord: true)
                                     ->columnSpanFull(),
                                 TextInput::make('number')
                                     ->label('Nomor')
@@ -83,27 +96,44 @@ class LegalProductResource extends Resource
                                     ->searchable()
                                     ->preload()
                                     ->required(),
+                                RichEditor::make('abstract')
+                                    ->label('Abstrak')
+                                    ->columnSpanFull(),
                             ])->columns(2),
 
                         Section::make('Detail')
                             ->schema([
                                 Select::make('status')
                                     ->options([
-                                        'active' => 'Active',
-                                        'inactive' => 'Inactive',
-                                        'draft' => 'Draft',
+                                        'active' => 'Berlaku',
+                                        'inactive' => 'Tidak Berlaku',
                                     ])
                                     ->required()
                                     ->default('active'),
+                                Select::make('replacedDocuments')
+                                    ->label('Mencabut')
+                                    ->relationship('replacedDocuments', 'title', modifyQueryUsing: fn(Builder $query) => $query->where('status', 'active'))
+                                    ->multiple()
+                                    ->searchable()
+                                    ->preload()
+                                    ->getOptionLabelFromRecordUsing(fn(LegalProduct $record) => "{$record->number} - {$record->title}")
+                                    ->helperText('jika satu dokumen hukum hadir untuk mengganti sepenuhnya dokumen lama sehingga dokumen lama tidak berlaku lagi'),
                                 DatePicker::make('determination_date')
                                     ->label('Tanggal Penetapan'),
                                 DatePicker::make('published_date')
                                     ->label('Tanggal Terbit'),
-                                TextInput::make('language')
+                                Select::make('language')
                                     ->label('Bahasa')
+                                    ->options([
+                                        'Bahasa Indonesia' => 'Bahasa Indonesia',
+                                        'English' => 'English',
+                                        'Arabic' => 'Arabic',
+                                        'Mandarin' => 'Mandarin',
+                                    ])
                                     ->default('Bahasa Indonesia'),
                                 TextInput::make('source')
-                                    ->label('Sumber'),
+                                    ->label('Sumber')
+                                    ->placeholder('BHK 2025 : 4 hlm; jdih.uinsgd.ac.id'),
                                 Select::make('location_id')
                                     ->label('Lokasi')
                                     ->relationship('location', 'name')
@@ -114,6 +144,18 @@ class LegalProductResource extends Resource
                                     ->relationship('legalField', 'name')
                                     ->searchable()
                                     ->preload(),
+                                Select::make('signer_id')
+                                    ->label('Penandatangan')
+                                    ->relationship('signer', 'name')
+                                    ->searchable()
+                                    ->preload(),
+                                Select::make('initiator_id')
+                                    ->label('Pemrakarsa')
+                                    ->relationship('initiator', 'name')
+                                    ->searchable()
+                                    ->preload(),
+                                TextInput::make('government_affair')
+                                    ->label('Urusan Pemerintahan'),
                             ])->columns(2),
                     ])->columnSpan(['lg' => 2]),
 
@@ -151,7 +193,7 @@ class LegalProductResource extends Resource
                                 TextInput::make('related_document')
                                     ->label('Dokumen Terkait'),
                                 TextInput::make('rule_document')
-                                    ->label('Dokumen Peraturan'),
+                                    ->label('Peraturan Terkait'),
                             ]),
                     ])->columnSpan(['lg' => 1]),
             ])->columns(3);
@@ -179,6 +221,12 @@ class LegalProductResource extends Resource
                     ->sortable(),
                 TextColumn::make('status')
                     ->badge()
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
+                        'active' => 'Berlaku',
+                        'inactive' => 'Tidak Berlaku',
+                        'draft' => 'Draft',
+                        default => $state,
+                    })
                     ->color(fn(string $state): string => match ($state) {
                         'active' => 'success',
                         'inactive' => 'gray',
@@ -198,22 +246,40 @@ class LegalProductResource extends Resource
                     ->relationship('type', 'name'),
                 SelectFilter::make('status')
                     ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
+                        'active' => 'Berlaku',
+                        'inactive' => 'Tidak Berlaku',
                         'draft' => 'Draft',
                     ]),
                 SelectFilter::make('year')
                     ->label('Tahun')
                     ->options(fn() => LegalProduct::query()->distinct()->pluck('year', 'year')->toArray()),
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->recordActions([
+                Action::make('riwayat')
+                    ->label('Riwayat')
+                    ->icon('heroicon-m-clock')
+                    ->modalHeading('Riwayat Dokumen')
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(fn($action) => $action->label('Tutup'))
+                    ->modalContent(fn(LegalProduct $record) => view('filament.resources.legal-product-resource.pages.history-modal', ['record' => $record])),
                 EditAction::make(),
                 DeleteAction::make(),
+                RestoreAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                \Illuminate\Database\Eloquent\SoftDeletingScope::class,
             ]);
     }
 
