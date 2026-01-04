@@ -27,11 +27,13 @@ class LegalProduct extends Model
         'status',
         'language',
         'source',
-        'file_path',
-        'category_id',
         'user_id',
         'type_id',
         'location_id',
+        'legal_field_id',
+        'publisher_id',
+        'place_id',
+        'metadata',
         'legal_field_id',
         'signer_id',
         'initiator_id',
@@ -42,6 +44,7 @@ class LegalProduct extends Model
         'determination_date' => 'date',
         'published_date' => 'date',
         'year' => 'integer',
+        'metadata' => 'array',
     ];
 
     public function category(): BelongsTo
@@ -77,6 +80,16 @@ class LegalProduct extends Model
     public function initiator(): BelongsTo
     {
         return $this->belongsTo(Initiator::class);
+    }
+
+    public function publisher(): BelongsTo
+    {
+        return $this->belongsTo(Publisher::class);
+    }
+
+    public function place(): BelongsTo
+    {
+        return $this->belongsTo(Place::class);
     }
 
     public function legalField(): BelongsTo

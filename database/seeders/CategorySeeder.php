@@ -10,9 +10,9 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Peraturan', 'slug' => 'peraturan', 'type' => 'legal'],
-            ['name' => 'Artikel Hukum', 'slug' => 'artikel-hukum', 'type' => 'legal'],
-            ['name' => 'Putusan', 'slug' => 'putusan', 'type' => 'legal'],
+            ['name' => 'Peraturan Perundang-Undangan', 'slug' => 'peraturan-perundang-undangan', 'type' => 'legal'],
+            ['name' => 'Monografi Hukum', 'slug' => 'monografi-hukum', 'type' => 'legal'],
+            ['name' => 'Dokumen Hukum Khusus', 'slug' => 'dokumen-hukum-khusus', 'type' => 'legal'],
             ['name' => 'Pengumuman', 'slug' => 'pengumuman', 'type' => 'post'],
             ['name' => 'Berita', 'slug' => 'berita', 'type' => 'post'],
             ['name' => 'Laporan', 'slug' => 'laporan', 'type' => 'post'],

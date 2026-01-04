@@ -23,6 +23,8 @@ use Filament\Tables\Table;
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
+
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $modelLabel = 'Kategori';
     protected static ?string $pluralModelLabel = 'Kategori';
     protected static ?string $navigationLabel = 'Kategori';

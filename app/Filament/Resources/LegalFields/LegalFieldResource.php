@@ -26,6 +26,8 @@ class LegalFieldResource extends Resource
 {
     protected static ?string $model = LegalField::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $modelLabel = 'Bidang Hukum';
     protected static ?string $pluralModelLabel = 'Bidang Hukum';
     protected static ?string $navigationLabel = 'Bidang Hukum';

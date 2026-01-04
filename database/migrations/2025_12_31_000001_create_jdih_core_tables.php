@@ -18,19 +18,17 @@ return new class extends Migration
 
         Schema::create('legal_products', function (Blueprint $table) {
             $table->id();
-            $table->string('number')->unique();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->text('abstract');
-            $table->string('year');
-            $table->date('determination_date');
-            $table->date('published_date');
-            $table->string('related_document')->nullable();
-            $table->string('rule_document')->nullable();
+            $table->string('number')->unique()->nullable();
+            $table->text('abstract')->nullable();
+            $table->string('year')->nullable();
+            $table->date('determination_date')->nullable();
+            $table->date('published_date')->nullable();
             $table->enum('status', ['active', 'inactive', 'draft'])->default('active');
             $table->string('language')->default('Bahasa Indonesia')->nullable();
             $table->string('source')->nullable();
-            $table->string('file_path'); // For PDF
+            $table->string('file_path')->nullable(); // For PDF
             $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('type_id')->nullable()->constrained()->nullOnDelete();
