@@ -35,7 +35,7 @@ class LinkResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Data Master';
+        return 'Manajemen Konten';
     }
 
     protected static ?string $recordTitleAttribute = 'title';

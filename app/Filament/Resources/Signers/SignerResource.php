@@ -28,13 +28,16 @@ class SignerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static bool $shouldRegisterNavigation = false;
-
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $modelLabel = 'Penandatangan';
     protected static ?string $pluralModelLabel = 'Penandatangan';
     protected static ?string $navigationLabel = 'Penandatangan';
+
+    public static function getNavigationIcon(): ?string
+    {
+        return 'heroicon-o-user';
+    }
 
 
     public static function getNavigationGroup(): ?string

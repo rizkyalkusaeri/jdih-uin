@@ -29,22 +29,30 @@ class LegalProduct extends Model
         'source',
         'user_id',
         'type_id',
+        'category_id',
         'location_id',
         'legal_field_id',
         'publisher_id',
         'place_id',
-        'metadata',
         'legal_field_id',
         'signer_id',
         'initiator_id',
         'government_affair',
+        'author',
+        'edition',
+        'page_description',
+        'validity_start',
+        'validity_end',
+        'doc_nature',
+        'file_path',
     ];
 
     protected $casts = [
         'determination_date' => 'date',
         'published_date' => 'date',
+        'validity_start' => 'date',
+        'validity_end' => 'date',
         'year' => 'integer',
-        'metadata' => 'array',
     ];
 
     public function category(): BelongsTo

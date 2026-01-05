@@ -25,6 +25,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
@@ -53,6 +54,14 @@ class LegalProductResource extends Resource
     {
         return $schema
             ->schema([
+                TextInput::make('field_config')
+                    ->hidden()
+                    ->dehydrated(false)
+                    ->afterStateHydrated(function (?LegalProduct $record, Set $set) {
+                        if ($record && $record->category) {
+                            $set('field_config', $record->category->field_config);
+                        }
+                    }),
                 Group::make()
                     ->schema([
                         Section::make('Informasi Utama')
@@ -67,124 +76,118 @@ class LegalProductResource extends Resource
                                         $type = Type::find($state);
                                         if ($type) {
                                             $set('category_id', $type->category_id);
+                                            // Load field config
+                                            $set('field_config', $type->category->field_config);
+                                        } else {
+                                            $set('field_config', []);
                                         }
                                     })
-                                    ->required()
-                                    ->createOptionForm([
-                                        TextInput::make('name')
-                                            ->label('Nama')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', Str::slug($state))),
-                                        TextInput::make('slug')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->unique(ignoreRecord: true),
-                                        Select::make('category_id')
-                                            ->label('Kategori')
-                                            ->relationship('category', 'name')
-                                            ->searchable()
-                                            ->preload()
-                                            ->required(),
-                                    ]),
+                                    ->required(),
                                 Select::make('category_id')
                                     ->label('Kategori')
                                     ->relationship('category', 'name')
                                     ->searchable()
                                     ->preload()
                                     ->required()
-                                    ->disabled(), // Auto-filled by Type
+                                    ->disabled()
+                                    ->dehydrated(), // Ensure value is saved even if disabled
                                 TextInput::make('title')
                                     ->label('Judul')
-                                    ->required()
+                                    ->required(fn(Get $get) => $get('field_config.title.required') ?? true)
+                                    ->visible(fn(Get $get) => $get('field_config.title.visible') ?? true)
                                     ->maxLength(255)
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state)))
                                     ->columnSpanFull(),
                                 TextInput::make('slug')
-                                    ->required()
+                                    ->required() // Always required if visible
                                     ->maxLength(255)
                                     ->unique(ignoreRecord: true)
                                     ->columnSpanFull(),
                                 TextInput::make('number')
                                     ->label('Nomor')
+                                    ->required(fn(Get $get) => $get('field_config.number.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.number.visible') ?? true)
                                     ->maxLength(255),
-                                DatePicker::make('determination_date')
-                                    ->label('Tanggal Penetapan'),
-                                DatePicker::make('published_date')
-                                    ->label('Tanggal Terbit'),
-                                TextInput::make('year')
-                                    ->label('Tahun')
-                                    ->numeric(),
-                                RichEditor::make('abstract')
-                                    ->label('Abstrak')
-                                    ->columnSpanFull()
-                                    ->visible(function (Get $get) {
-                                        // Show abstract generally, but maybe validate strictly for some
-                                        // User asked to hide it for some? "abstract - (dash)" for Keputusan Rektor
-                                        // Let's keep it visible for flexibility unless strictly asked to hide.
-                                        // User note: "abstract only for Type Peraturan Rektor, Surat Edaran, SOP"
-                                        // So we HIDE it for others?
-                                        $typeId = $get('type_id');
-                                        if (! $typeId) return false;
-                                        $type = Type::find($typeId);
-                                        return in_array($type?->name, ['Peraturan Rektor', 'Surat Edaran', 'SOP']);
-                                    })
-                                    ->required(function (Get $get) {
-                                        $typeId = $get('type_id');
-                                        if (! $typeId) return false;
-                                        $type = Type::find($typeId);
-                                        return in_array($type?->name, ['Peraturan Rektor', 'Surat Edaran', 'SOP']);
-                                    }),
                             ])->columns(2),
-
-                        // METADATA SECTION (Dynamic)
-                        Section::make('Metadata Khusus')
-                            ->schema([
-                                // Monografi Fields
-                                TextInput::make('metadata.author')
-                                    ->label('Penulis')
-                                    ->visible(fn(Get $get) => Type::find($get('type_id'))?->category?->name === 'Monografi Hukum'),
-                                TextInput::make('metadata.edition')
-                                    ->label('Edisi')
-                                    ->visible(fn(Get $get) => Type::find($get('type_id'))?->category?->name === 'Monografi Hukum'),
-                                TextInput::make('metadata.description')
-                                    ->label('Deskripsi Fisik')
-                                    ->visible(fn(Get $get) => Type::find($get('type_id'))?->category?->name === 'Monografi Hukum'),
-
-                                // Dokumen Hukum Khusus Fields
-                                Group::make()
-                                    ->schema([
-                                        DatePicker::make('metadata.validity_start')->label('Mulai Berlaku'),
-                                        DatePicker::make('metadata.validity_end')->label('Berakhir Berlaku'),
-                                    ])
-                                    ->columns(2)
-                                    ->visible(fn(Get $get) => Type::find($get('type_id'))?->category?->name === 'Dokumen Hukum Khusus'),
-                                Select::make('metadata.doc_nature')
-                                    ->label('Sifat Dokumen')
-                                    ->options(['Terbuka' => 'Terbuka', 'Terbatas' => 'Terbatas', 'Rahasia' => 'Rahasia'])
-                                    ->visible(fn(Get $get) => Type::find($get('type_id'))?->category?->name === 'Dokumen Hukum Khusus'),
-                            ])
-                            ->visible(fn(Get $get) => $get('type_id') !== null),
 
                         Section::make('Detail')
                             ->schema([
+                                // Standard Fields
+                                TextInput::make('author')
+                                    ->label('Penulis')
+                                    ->required(fn(Get $get) => $get('field_config.author.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.author.visible') ?? false),
+                                TextInput::make('edition')
+                                    ->label('Edisi')
+                                    ->required(fn(Get $get) => $get('field_config.edition.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.edition.visible') ?? false),
+                                TextInput::make('page_description')
+                                    ->label('Deskripsi Fisik')
+                                    ->required(fn(Get $get) => $get('field_config.page_description.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.page_description.visible') ?? false),
+
+                                Select::make('publisher_id')
+                                    ->label('Penerbit')
+                                    ->relationship('publisher', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->createOptionForm([
+                                        TextInput::make('name')->required()->maxLength(255)->live(onBlur: true)->afterStateUpdated(fn($state, $set) => $set('slug', Str::slug($state))),
+                                        TextInput::make('slug')->required()->unique(ignoreRecord: true),
+                                    ])
+                                    ->required(fn(Get $get) => $get('field_config.publisher_id.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.publisher_id.visible') ?? false),
+
+                                Select::make('place_id')
+                                    ->label('Tempat/Kota')
+                                    ->relationship('place', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->createOptionForm([
+                                        TextInput::make('name')->required()->maxLength(255)->live(onBlur: true)->afterStateUpdated(fn($state, $set) => $set('slug', Str::slug($state))),
+                                        TextInput::make('slug')->required()->unique(ignoreRecord: true),
+                                    ])
+                                    ->required(fn(Get $get) => $get('field_config.place_id.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.place_id.visible') ?? false),
+
+                                DatePicker::make('determination_date')
+                                    ->label('Tanggal Penetapan')
+                                    ->required(fn(Get $get) => $get('field_config.determination_date.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.determination_date.visible') ?? false),
+                                DatePicker::make('published_date')
+                                    ->label('Tanggal Terbit')
+                                    ->required(fn(Get $get) => $get('field_config.published_date.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.published_date.visible') ?? false),
+                                TextInput::make('year')
+                                    ->label('Tahun')
+                                    ->numeric()
+                                    ->required(fn(Get $get) => $get('field_config.year.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.year.visible') ?? false),
+
                                 Select::make('status')
                                     ->options([
                                         'active' => 'Berlaku',
                                         'inactive' => 'Tidak Berlaku',
                                     ])
-                                    ->required()
-                                    ->default('active'),
-                                Select::make('replacedDocuments')
-                                    ->label('Mencabut')
-                                    ->relationship('replacedDocuments', 'title', modifyQueryUsing: fn(Builder $query) => $query->where('status', 'active'))
-                                    ->multiple()
-                                    ->searchable()
-                                    ->preload()
-                                    ->getOptionLabelFromRecordUsing(fn(LegalProduct $record) => "{$record->number} - {$record->title}")
-                                    ->helperText('jika satu dokumen hukum hadir untuk mengganti sepenuhnya dokumen lama sehingga dokumen lama tidak berlaku lagi'),
+                                    ->default('active')
+                                    ->required(fn(Get $get) => $get('field_config.status.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.status.visible') ?? false)
+                                    ->live(),
+
+                                DatePicker::make('validity_start')
+                                    ->label('Mulai Berlaku')
+                                    ->required(fn(Get $get) => $get('field_config.validity_start.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.validity_start.visible') ?? false),
+                                DatePicker::make('validity_end')
+                                    ->label('Berakhir Berlaku')
+                                    ->required(fn(Get $get) => $get('field_config.validity_end.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.validity_end.visible') ?? false),
+                                Select::make('doc_nature')
+                                    ->label('Sifat Dokumen')
+                                    ->options(['Terbuka' => 'Terbuka', 'Terbatas' => 'Terbatas', 'Rahasia' => 'Rahasia'])
+                                    ->required(fn(Get $get) => $get('field_config.doc_nature.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.doc_nature.visible') ?? false),
 
                                 Select::make('language')
                                     ->label('Bahasa')
@@ -194,126 +197,95 @@ class LegalProductResource extends Resource
                                         'Arabic' => 'Arabic',
                                         'Mandarin' => 'Mandarin',
                                     ])
-                                    ->default('Bahasa Indonesia'),
+                                    ->default('Bahasa Indonesia')
+                                    ->required(fn(Get $get) => $get('field_config.language.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.language.visible') ?? false),
                                 TextInput::make('source')
                                     ->label('Sumber')
-                                    ->placeholder('BHK 2025 : 4 hlm; jdih.uinsgd.ac.id'),
-
-                                // Dynamic Label for Publisher
-                                Select::make('publisher_id')
-                                    ->label(fn(Get $get) => match (Type::find($get('type_id'))?->category?->name) {
-                                        'Monografi Hukum' => 'Penerbit',
-                                        'Dokumen Hukum Khusus' => 'Lembaga Penerbit',
-                                        default => 'T.E.U Badan'
-                                    })
-                                    ->relationship('publisher', 'name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->createOptionForm([
-                                        TextInput::make('name')
-                                            ->label('Nama')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', Str::slug($state))),
-                                        TextInput::make('slug')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->unique(ignoreRecord: true),
-                                    ]),
-
-                                // Dynamic Label for Place
-                                Select::make('place_id')
-                                    ->label(fn(Get $get) => match (Type::find($get('type_id'))?->category?->name) {
-                                        'Monografi Hukum' => 'Kota Terbit',
-                                        default => 'Tempat Penetapan'
-                                    })
-                                    ->relationship('place', 'name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->createOptionForm([
-                                        TextInput::make('name')
-                                            ->label('Nama')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', Str::slug($state))),
-                                        TextInput::make('slug')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->unique(ignoreRecord: true),
-                                    ]),
+                                    ->placeholder('BHK 2025 : 4 hlm; jdih.uinsgd.ac.id')
+                                    ->required(fn(Get $get) => $get('field_config.source.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.source.visible') ?? false),
 
                                 Select::make('location_id')
-                                    ->label('Lokasi Penyimpanan') // Renamed to distinguish
+                                    ->label('Lokasi Penyimpanan')
                                     ->relationship('location', 'name')
                                     ->searchable()
                                     ->preload()
                                     ->createOptionForm([
-                                        TextInput::make('name')
-                                            ->label('Nama')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', Str::slug($state))),
-                                        TextInput::make('slug')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->unique(ignoreRecord: true),
-                                    ]),
+                                        TextInput::make('name')->required()->maxLength(255)->live(onBlur: true)->afterStateUpdated(fn($state, $set) => $set('slug', Str::slug($state))),
+                                        TextInput::make('slug')->required()->unique(ignoreRecord: true),
+                                    ])
+                                    ->required(fn(Get $get) => $get('field_config.location_id.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.location_id.visible') ?? false),
                                 Select::make('legal_field_id')
                                     ->label('Bidang Hukum')
                                     ->relationship('legalField', 'name')
                                     ->searchable()
                                     ->preload()
                                     ->createOptionForm([
-                                        TextInput::make('name')
-                                            ->label('Nama')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', Str::slug($state))),
-                                        TextInput::make('slug')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->unique(ignoreRecord: true),
-                                    ]),
+                                        TextInput::make('name')->required()->maxLength(255)->live(onBlur: true)->afterStateUpdated(fn($state, $set) => $set('slug', Str::slug($state))),
+                                        TextInput::make('slug')->required()->unique(ignoreRecord: true),
+                                    ])
+                                    ->required(fn(Get $get) => $get('field_config.legal_field_id.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.legal_field_id.visible') ?? false),
                                 Select::make('signer_id')
                                     ->label('Penandatangan')
                                     ->relationship('signer', 'name')
                                     ->searchable()
                                     ->preload()
                                     ->createOptionForm([
-                                        TextInput::make('name')
-                                            ->label('Nama')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', Str::slug($state))),
-                                        TextInput::make('slug')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->unique(ignoreRecord: true),
-                                    ]),
+                                        TextInput::make('name')->required()->maxLength(255)->live(onBlur: true)->afterStateUpdated(fn($state, $set) => $set('slug', Str::slug($state))),
+                                        TextInput::make('slug')->required()->unique(ignoreRecord: true),
+                                    ])
+                                    ->required(fn(Get $get) => $get('field_config.signer_id.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.signer_id.visible') ?? false),
                                 Select::make('initiator_id')
                                     ->label('Pemrakarsa')
                                     ->relationship('initiator', 'name')
                                     ->searchable()
                                     ->preload()
                                     ->createOptionForm([
-                                        TextInput::make('name')
-                                            ->label('Nama')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', Str::slug($state))),
-                                        TextInput::make('slug')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->unique(ignoreRecord: true),
-                                    ]),
+                                        TextInput::make('name')->required()->maxLength(255)->live(onBlur: true)->afterStateUpdated(fn($state, $set) => $set('slug', Str::slug($state))),
+                                        TextInput::make('slug')->required()->unique(ignoreRecord: true),
+                                    ])
+                                    ->required(fn(Get $get) => $get('field_config.initiator_id.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.initiator_id.visible') ?? false),
                                 TextInput::make('government_affair')
-                                    ->label('Urusan Pemerintahan'),
+                                    ->label('Urusan Pemerintahan')
+                                    ->required(fn(Get $get) => $get('field_config.government_affair.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.government_affair.visible') ?? false),
+
+                                RichEditor::make('abstract')
+                                    ->label('Abstrak')
+                                    ->columnSpanFull()
+                                    ->required(fn(Get $get) => $get('field_config.abstract.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.abstract.visible') ?? false),
+
+                                Select::make('replacedDocuments')
+                                    ->label('Mencabut')
+                                    ->visible(function (Get $get) {
+                                        $isVisibleInConfig = $get('field_config.replacedDocuments.visible') ?? false;
+                                        $isActive = $get('status') === 'active';
+                                        return $isVisibleInConfig && $isActive;
+                                    })
+                                    ->relationship('replacedDocuments', 'title', modifyQueryUsing: function (Builder $query, Get $get, ?LegalProduct $record) {
+                                        $query->where('legal_products.status', 'active');
+
+                                        // "Type yang sama" constraint
+                                        $typeId = $get('type_id');
+                                        if ($typeId) {
+                                            $query->where('legal_products.type_id', $typeId);
+                                        }
+
+                                        if ($record) {
+                                            $query->where('legal_products.id', '!=', $record->id);
+                                        }
+                                        return $query;
+                                    })
+                                    ->multiple()
+                                    ->searchable()
+                                    ->preload()
+                                    ->helperText('Dokumen yang dicabut akan otomatis menjadi tidak berlaku. Hanya muncul jika status Berlaku.'),
                             ])->columns(2),
                     ])->columnSpan(['lg' => 2]),
 
@@ -328,25 +300,19 @@ class LegalProductResource extends Resource
                                     ->searchable()
                                     ->preload()
                                     ->createOptionForm([
-                                        TextInput::make('name')
-                                            ->label('Nama Subjek')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', Str::slug($state))),
-                                        TextInput::make('slug')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->unique(ignoreRecord: true),
+                                        TextInput::make('name')->required()->maxLength(255)->live(onBlur: true)->afterStateUpdated(fn($state, $set) => $set('slug', Str::slug($state))),
+                                        TextInput::make('slug')->required()->unique(ignoreRecord: true),
                                     ]),
                             ]),
-                        Section::make('Dokumen')
+                        Section::make('Lampiran')
                             ->schema([
                                 FileUpload::make('file_path')
-                                    ->label('File Produk Hukum')
+                                    ->label('File Lampiran')
                                     ->directory('legal-products')
                                     ->acceptedFileTypes(['application/pdf'])
                                     ->preserveFilenames()
+                                    ->openable()
+                                    ->helperText('File lampiran harus berformat PDF')
                                     ->required(),
                             ]),
                     ])->columnSpan(['lg' => 1]),
@@ -370,26 +336,17 @@ class LegalProductResource extends Resource
                 TextColumn::make('category.name')
                     ->label('Kategori')
                     ->sortable(),
-                TextColumn::make('year')
-                    ->label('Tahun')
-                    ->sortable(),
                 TextColumn::make('status')
                     ->badge()
                     ->formatStateUsing(fn(string $state): string => match ($state) {
                         'active' => 'Berlaku',
                         'inactive' => 'Tidak Berlaku',
-                        'draft' => 'Draft',
                         default => $state,
                     })
                     ->color(fn(string $state): string => match ($state) {
                         'active' => 'success',
-                        'inactive' => 'gray',
-                        'draft' => 'warning',
+                        'inactive' => 'danger',
                     }),
-                TextColumn::make('published_date')
-                    ->label('Tanggal Terbit')
-                    ->date('d M Y')
-                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('category')
@@ -402,12 +359,8 @@ class LegalProductResource extends Resource
                     ->options([
                         'active' => 'Berlaku',
                         'inactive' => 'Tidak Berlaku',
-                        'draft' => 'Draft',
                     ]),
-                SelectFilter::make('year')
-                    ->label('Tahun')
-                    ->options(fn() => LegalProduct::query()->distinct()->pluck('year', 'year')->toArray()),
-                Tables\Filters\TrashedFilter::make(),
+                TrashedFilter::make(),
             ])
             ->recordActions([
                 Action::make('riwayat')
@@ -426,7 +379,7 @@ class LegalProductResource extends Resource
                     DeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])->defaultSort('created_at', 'desc');
     }
 
     public static function getEloquentQuery(): Builder

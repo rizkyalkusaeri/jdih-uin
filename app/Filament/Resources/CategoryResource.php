@@ -23,8 +23,8 @@ use Filament\Tables\Table;
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
-
     protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $modelLabel = 'Kategori';
     protected static ?string $pluralModelLabel = 'Kategori';
     protected static ?string $navigationLabel = 'Kategori';
@@ -69,6 +69,12 @@ class CategoryResource extends Resource
                     ])
                     ->required()
                     ->default('active'),
+                \Filament\Forms\Components\Textarea::make('field_config')
+                    ->label('Konfigurasi Field (JSON)')
+                    ->rows(10)
+                    ->columnSpanFull()
+                    ->helperText('Format JSON: {"field_name": {"visible": true, "required": false}}')
+                    ->visible(fn(\Filament\Schemas\Components\Utilities\Get $get) => $get('type') === 'legal'),
             ]);
     }
 

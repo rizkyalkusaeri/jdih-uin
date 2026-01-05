@@ -26,6 +26,11 @@ class Category extends Model
         'slug',
         'type',
         'status',
+        'field_config',
+    ];
+
+    protected $casts = [
+        'field_config' => 'array',
     ];
 
     public function legalProducts(): HasMany

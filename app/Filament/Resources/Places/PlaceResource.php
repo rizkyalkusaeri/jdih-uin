@@ -20,13 +20,16 @@ class PlaceResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static bool $shouldRegisterNavigation = false;
-
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $modelLabel = 'Tempat';
     protected static ?string $pluralModelLabel = 'Tempat';
     protected static ?string $navigationLabel = 'Tempat';
+
+    public static function getNavigationIcon(): ?string
+    {
+        return 'heroicon-o-map';
+    }
 
     public static function getNavigationGroup(): ?string
     {

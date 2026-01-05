@@ -85,11 +85,11 @@
                                         <div class="flex justify-between items-start">
                                             <h4
                                                 class="text-sm font-bold text-gray-900 dark:text-white group-hover:text-[#D97706] transition-colors">
-                                                {{ $doc->number }}
+                                                Nomor: {{ $doc->number }}
                                             </h4>
                                         </div>
                                         <p class="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-snug line-clamp-2">
-                                            {{ $doc->title }}
+                                            Judul: {{ $doc->title }}
                                         </p>
                                     </div>
                                 </div>
