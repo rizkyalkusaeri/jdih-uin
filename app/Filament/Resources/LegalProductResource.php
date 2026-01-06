@@ -16,20 +16,23 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Schemas\Components\Actions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class LegalProductResource extends Resource
@@ -54,6 +57,83 @@ class LegalProductResource extends Resource
     {
         return $schema
             ->schema([
+                Section::make('Status Pencabutan')
+                    ->icon('heroicon-o-exclamation-triangle')
+                    ->iconColor('warning')
+                    ->schema([
+                        TextEntry::make('revocation_info')
+                            ->label('Dokumen ini telah dicabut oleh:')
+                            ->html()
+                            ->state(fn(LegalProduct $record) => new HtmlString(
+                                $record->replacedBy->map(
+                                    fn($p) =>
+                                    "<a href='" . LegalProductResource::getUrl('edit', ['record' => $p]) . "' class='text-primary-600 hover:underline' target='_blank'>{$p->title} (No. {$p->number})</a>"
+                                )->join(', ')
+                            )),
+                        Actions::make([
+                            Action::make('restore_status')
+                                ->label('Batalkan Pencabutan (Kembalikan ke Status Berlaku)')
+                                ->color('warning')
+                                ->requiresConfirmation()
+                                ->modalHeading('Batalkan Pencabutan?')
+                                ->modalDescription('Tindakan ini akan memutus hubungan pencabutan dari dokumen yang mencabut dan mengembalikan status dokumen ini menjadi Berlaku.')
+                                ->action(function (LegalProduct $record) {
+                                    $record->replacedBy()->detach();
+                                    $record->update(['status' => 'active']);
+                                    \Filament\Notifications\Notification::make()
+                                        ->title('Pencabutan dibatalkan')
+                                        ->success()
+                                        ->send();
+                                    return redirect(request()->header('Referer'));
+                                }),
+                        ]),
+                    ])
+                    ->visible(fn(?LegalProduct $record) => $record && $record->replacedBy()->exists())
+                    ->columnSpanFull(),
+
+                Section::make('Daftar Dokumen yang Dicabut')
+                    ->description('Dokumen di bawah ini statusnya menjadi "Tidak Berlaku" karena dicabut oleh dokumen ini.')
+                    ->icon('heroicon-o-document-minus')
+                    ->schema([
+                        TextEntry::make('replaced_docs_list')
+                            ->label('Dokumen yang dicabut:')
+                            ->html()
+                            ->state(fn(LegalProduct $record) => new HtmlString(
+                                $record->replacedDocuments->isEmpty()
+                                    ? '-'
+                                    : '<ul class="list-disc pl-4 space-y-1">' .
+                                    $record->replacedDocuments->map(fn($p) => "<li><a href='" . LegalProductResource::getUrl('edit', ['record' => $p]) . "' class='text-primary-600 hover:underline' target='_blank'>{$p->title} (No. {$p->number})</a></li>")->join('') .
+                                    '</ul>'
+                            )),
+                        Actions::make([
+                            Action::make('cancel_revocation_batch')
+                                ->label('Batalkan Pencabutan...')
+                                ->color('warning')
+                                ->icon('heroicon-m-arrow-uturn-left')
+                                ->modalHeading('Pilih Dokumen untuk Dipulihkan')
+                                ->modalDescription('Dokumen yang dipilih akan dilepas dari pencabutan dan statusnya kembali menjadi "Berlaku".')
+                                ->schema(fn(LegalProduct $record) => [
+                                    CheckboxList::make('docs_to_restore')
+                                        ->label('Pilih Dokumen')
+                                        ->options($record->replacedDocuments->pluck('title', 'id'))
+                                        ->required(),
+                                ])
+                                ->action(function (array $data, LegalProduct $record) {
+                                    $ids = $data['docs_to_restore'];
+                                    $record->replacedDocuments()->detach($ids);
+                                    LegalProduct::whereIn('id', $ids)->update(['status' => 'active']);
+                                    \Filament\Notifications\Notification::make()
+                                        ->title('Pencabutan berhasil dibatalkan')
+                                        //->body('Status dokumen yang dipilih telah dikembalikan menjadi Berlaku.')
+                                        ->success()
+                                        ->send();
+                                    return redirect(request()->header('Referer'));
+                                })
+                        ])
+                    ])
+                    ->visible(fn(?LegalProduct $record) => $record && $record->replacedDocuments()->exists())
+                    ->columnSpanFull(),
+
                 TextInput::make('field_config')
                     ->hidden()
                     ->dehydrated(false)
@@ -68,7 +148,7 @@ class LegalProductResource extends Resource
                             ->schema([
                                 Select::make('type_id')
                                     ->label('Jenis')
-                                    ->relationship('type', 'name')
+                                    ->relationship('type', 'name', modifyQueryUsing: fn(Builder $query) => $query->where('status', 'active'))
                                     ->searchable()
                                     ->preload()
                                     ->live()
@@ -173,6 +253,7 @@ class LegalProductResource extends Resource
                                     ->default('active')
                                     ->required(fn(Get $get) => $get('field_config.status.required') ?? false)
                                     ->visible(fn(Get $get) => $get('field_config.status.visible') ?? false)
+                                    ->disabled(fn(?LegalProduct $record) => $record && $record->replacedBy()->exists())
                                     ->live(),
 
                                 DatePicker::make('validity_start')
@@ -263,10 +344,14 @@ class LegalProductResource extends Resource
 
                                 Select::make('replacedDocuments')
                                     ->label('Mencabut')
-                                    ->visible(function (Get $get) {
+                                    ->visible(function (Get $get, ?LegalProduct $record) {
                                         $isVisibleInConfig = $get('field_config.replacedDocuments.visible') ?? false;
                                         $isActive = $get('status') === 'active';
-                                        return $isVisibleInConfig && $isActive;
+
+                                        // Extra check: If I am revoked, I certainly cannot revoke others, avoiding ambiguity.
+                                        $isRevoked = $record && $record->replacedBy()->exists();
+
+                                        return $isVisibleInConfig && $isActive && !$isRevoked;
                                     })
                                     ->relationship('replacedDocuments', 'title', modifyQueryUsing: function (Builder $query, Get $get, ?LegalProduct $record) {
                                         $query->where('legal_products.status', 'active');
