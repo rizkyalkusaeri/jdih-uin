@@ -2,7 +2,7 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: [master] # Trigger hanya saat push ke branch master
+    branches: [master] # Pastikan branch di GitHub Anda bernama 'master', bukan 'main'
 
 jobs:
   deploy:
@@ -23,32 +23,36 @@ jobs:
             # Masuk ke folder project
             cd /var/www/html/jdih-uin
 
-            # Aktifkan Maintenance Mode (opsional, agar user tidak error saat proses)
-            php artisan down
+            # FIX 1: Gunakan SUDO karena folder storage mungkin milik www-data dari deploy sebelumnya
+            sudo php artisan down || true 
+            # (|| true artinya: jika gagal/sudah down, jangan stop script, lanjut saja)
 
-            # Tarik kode terbaru dari GitHub
+            # Tarik kode terbaru
             git pull origin master
 
-            # Install dependency PHP (sesuai file composer.lock)
-            # --no-dev: tidak install package testing/development
+            # Install dependency
             composer install --optimize-autoloader --no-dev
 
-            # Jalankan migrasi database
+            # Migrasi Database
             php artisan migrate --force
 
-            # Optimize Laravel & Filament
+            # Optimize
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
             php artisan filament:optimize
 
-            # Fix Permission (Kembalikan hak akses storage ke Nginx)
-            # Kita pakai sudo karena mengubah owner butuh akses root
+            # FIX 2: Permission Storage
+            # Pastikan www-data (Nginx) bisa tulis data session/cache/upload
             sudo chown -R www-data:www-data storage
             sudo chown -R www-data:www-data bootstrap/cache
             sudo chmod -R 775 storage
             sudo chmod -R 775 bootstrap/cache
 
-            # Matikan Maintenance Mode (Website live lagi)
-            php artisan up
+            # FIX 3: Git Safe Directory (Pencegahan error 'dubious ownership')
+            # Karena owner folder sering berubah, kita whitelist folder ini di git
+            git config --global --add safe.directory /var/www/html/jdih-uin
+
+            # Website Live Lagi
+            sudo php artisan up
