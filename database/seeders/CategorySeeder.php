@@ -67,7 +67,7 @@ class CategorySeeder extends Seeder
                     'replacedDocuments' => ['visible' => true, 'required' => false],
                 ]
             ],
-            ['name' => 'Pengumuman', 'slug' => 'pengumuman', 'type' => 'post'],
+            ['name' => 'Event', 'slug' => 'event', 'type' => 'post'],
             ['name' => 'Berita', 'slug' => 'berita', 'type' => 'post'],
             ['name' => 'Laporan', 'slug' => 'laporan', 'type' => 'post'],
         ];

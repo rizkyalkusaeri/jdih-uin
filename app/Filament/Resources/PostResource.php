@@ -21,9 +21,9 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static ?string $modelLabel = 'Berita';
-    protected static ?string $pluralModelLabel = 'Berita';
-    protected static ?string $navigationLabel = 'Berita';
+    protected static ?string $modelLabel = 'Berita & Event';
+    protected static ?string $pluralModelLabel = 'Berita & Event';
+    protected static ?string $navigationLabel = 'Berita & Event';
 
 
     public static function getNavigationIcon(): ?string
@@ -40,6 +40,26 @@ class PostResource extends Resource
     {
         return $schema
             ->schema([
+                Forms\Components\Select::make('category_id')
+                    ->label('Kategori')
+                    ->relationship('category', 'name', modifyQueryUsing: fn(\Illuminate\Database\Eloquent\Builder $query) => $query->where('type', 'post'))
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
+                        Forms\Components\TextInput::make('slug')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Hidden::make('type')
+                            ->default('post'),
+                        Forms\Components\TextInput::make('status')
+                            ->default('active')
+                            ->hidden(),
+                    ]),
                 Forms\Components\TextInput::make('title')
                     ->label('Judul')
                     ->required()
@@ -71,6 +91,7 @@ class PostResource extends Resource
                     ]),
                 Forms\Components\FileUpload::make('image_path')
                     ->label('Gambar Utama')
+                    ->openable()
                     ->image()
                     ->directory('posts'),
                 Forms\Components\RichEditor::make('content')

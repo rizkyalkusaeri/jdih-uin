@@ -1,0 +1,54 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [master] # Trigger hanya saat push ke branch master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # Masuk ke folder project
+            cd /var/www/html/jdih-uin
+
+            # Aktifkan Maintenance Mode (opsional, agar user tidak error saat proses)
+            php artisan down
+
+            # Tarik kode terbaru dari GitHub
+            git pull origin master
+
+            # Install dependency PHP (sesuai file composer.lock)
+            # --no-dev: tidak install package testing/development
+            composer install --optimize-autoloader --no-dev
+
+            # Jalankan migrasi database
+            php artisan migrate --force
+
+            # Optimize Laravel & Filament
+            php artisan optimize:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan filament:optimize
+
+            # Fix Permission (Kembalikan hak akses storage ke Nginx)
+            # Kita pakai sudo karena mengubah owner butuh akses root
+            sudo chown -R www-data:www-data storage
+            sudo chown -R www-data:www-data bootstrap/cache
+            sudo chmod -R 775 storage
+            sudo chmod -R 775 bootstrap/cache
+
+            # Matikan Maintenance Mode (Website live lagi)
+            php artisan up

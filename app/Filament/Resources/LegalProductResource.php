@@ -395,7 +395,6 @@ class LegalProductResource extends Resource
                                     ->label('File Lampiran')
                                     ->directory('legal-products')
                                     ->acceptedFileTypes(['application/pdf'])
-                                    ->preserveFilenames()
                                     ->openable()
                                     ->helperText('File lampiran harus berformat PDF')
                                     ->required(),
