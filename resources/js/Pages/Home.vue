@@ -85,42 +85,56 @@ const collections = [
 </script>
 
 <template>
+
     <Head title="Beranda" />
 
     <GuestLayout>
         <!-- Hero Section -->
         <div class="relative bg-[#0F213A] overflow-hidden">
             <!-- Background Decoration -->
-            <div class="absolute inset-0 opacity-20">
-                 <!-- Using a pattern or gradient for now -->
-                 <div class="absolute right-0 top-0 w-3/4 h-full bg-gradient-to-l from-white/10 to-transparent transform skew-x-12 translate-x-20"></div>
+            <!-- Background Image & Gradient -->
+            <div class="absolute inset-0">
+                <img src="/images/944597_720.jpg" alt="Background" class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-gradient-to-b from-[#0F213A]/90 via-[#0F213A]/80 to-[#0F213A]/60"></div>
             </div>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 flex flex-col items-center text-center">
+            <div
+                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 flex flex-col items-center text-center">
                 <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
                     Cari Produk Hukum UIN SGD
                 </h1>
                 <p class="text-gray-300 text-lg md:text-xl max-w-2xl mb-10">
-                    Pusat pencarian & informasi produk hukum resmi Universitas Islam Negeri Sunan Gunung Djati Bandung. Transparan, Akuntabel, dan Terpercaya.
+                    Pusat pencarian & informasi produk hukum resmi Universitas Islam Negeri Sunan Gunung Djati Bandung.
+                    Transparan, Akuntabel, dan Terpercaya.
                 </p>
 
                 <!-- Search Bar -->
                 <div class="w-full max-w-3xl bg-white rounded-lg p-2 flex gap-2 shadow-lg">
-                    <div class="hidden md:flex items-center pl-3 pr-2 border-r border-gray-200 min-w-[140px]">
-                        <select class="w-full bg-transparent border-none text-gray-700 focus:ring-0 text-sm font-medium">
+                    <div class="hidden md:flex items-center pl-3 pr-2 border-r border-gray-200 min-w-[160px] relative">
+                        <select
+                            class="w-full bg-transparent border-none focus:ring-0 focus:outline-0 text-gray-700 text-sm font-medium appearance-none cursor-pointer pr-8">
                             <option>Semua Jenis</option>
                             <option>SK Rektor</option>
                             <option>Surat Edaran</option>
                             <option>Peraturan</option>
                         </select>
+                        <div class="absolute right-2 pointer-events-none">
+                            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
                     </div>
                     <div class="flex-1 flex items-center">
                         <svg class="h-5 w-5 text-gray-400 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                        <input type="text" placeholder="Masukkan kata kunci atau nomor dokumen..." class="w-full border-none focus:ring-0 text-gray-600 placeholder-gray-400" />
+                        <input type="text" placeholder="Masukkan kata kunci atau nomor dokumen..."
+                            class="w-full border-none ml-2 focus:ring-0 focus:outline-0 text-gray-600 placeholder-gray-400" />
                     </div>
-                    <button class="bg-[#FFC700] hover:bg-yellow-400 text-[#0F213A] font-bold px-8 py-3 rounded-md transition shadow-sm">
+                    <button
+                        class="bg-[#FFC700] hover:bg-yellow-400 text-[#0F213A] font-bold px-8 py-3 rounded-md transition shadow-sm">
                         CARI
                     </button>
                 </div>
@@ -132,7 +146,9 @@ const collections = [
             <div class="bg-white rounded-xl shadow-lg grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100">
                 <div v-for="(stat, index) in stats" :key="index" class="p-6 flex flex-col items-center text-center">
                     <div class="text-[#0F213A] mb-3">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :d="stat.icon" /></svg>
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :d="stat.icon" />
+                        </svg>
                     </div>
                     <div class="text-3xl font-extrabold text-[#0F213A]">{{ stat.value }}</div>
                     <div class="text-gray-500 text-sm mt-1">{{ stat.label }}</div>
@@ -144,16 +160,12 @@ const collections = [
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div class="flex justify-between items-center mb-8">
                 <div class="flex space-x-6 border-b border-gray-200">
-                    <button
-                        @click="activeTab = 'terbaru'"
-                        :class="[ 'pb-4 font-bold text-lg border-b-2 transition', activeTab === 'terbaru' ? 'border-[#0F213A] text-[#0F213A]' : 'border-transparent text-gray-400 hover:text-gray-600' ]"
-                    >
+                    <button @click="activeTab = 'terbaru'"
+                        :class="['pb-4 font-bold text-lg border-b-2 transition', activeTab === 'terbaru' ? 'border-[#0F213A] text-[#0F213A]' : 'border-transparent text-gray-400 hover:text-gray-600']">
                         Terbaru
                     </button>
-                    <button
-                        @click="activeTab = 'terpopuler'"
-                        :class="[ 'pb-4 font-bold text-lg border-b-2 transition', activeTab === 'terpopuler' ? 'border-[#0F213A] text-[#0F213A]' : 'border-transparent text-gray-400 hover:text-gray-600' ]"
-                    >
+                    <button @click="activeTab = 'terpopuler'"
+                        :class="['pb-4 font-bold text-lg border-b-2 transition', activeTab === 'terpopuler' ? 'border-[#0F213A] text-[#0F213A]' : 'border-transparent text-gray-400 hover:text-gray-600']">
                         Terpopuler
                     </button>
                 </div>
@@ -163,25 +175,41 @@ const collections = [
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div v-for="doc in documents" :key="doc.id" class="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition group">
+                <div v-for="doc in documents" :key="doc.id"
+                    class="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition group">
                     <div class="flex items-start gap-4">
                         <div :class="[doc.color, 'p-3 rounded-lg shrink-0']">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="doc.icon" /></svg>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="doc.icon" />
+                            </svg>
                         </div>
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-2">
-                                <span :class="[doc.color.replace('text-', 'bg-').replace('bg-', 'bg-opacity-20 '), 'px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide']">{{ doc.type }}</span>
+                                <span
+                                    :class="[doc.color.replace('text-', 'bg-').replace('bg-', 'bg-opacity-20 '), 'px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide']">{{
+                                        doc.type }}</span>
                                 <span class="text-gray-400 text-xs">{{ doc.year }}</span>
                             </div>
-                            <h3 class="text-lg font-bold text-[#0F213A] group-hover:text-blue-700 transition leading-snug mb-2">
+                            <h3
+                                class="text-lg font-bold text-[#0F213A] group-hover:text-blue-700 transition leading-snug mb-2">
                                 <a href="#">{{ doc.title }}</a>
                             </h3>
                             <p class="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2">
                                 {{ doc.desc }}
                             </p>
                             <div class="flex items-center gap-4 text-xs font-medium text-gray-500">
-                                <span class="flex items-center gap-1 hover:text-blue-600 cursor-pointer"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> Lihat Detail</span>
-                                <span class="flex items-center gap-1 hover:text-blue-600 cursor-pointer"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg> Unduh ({{ doc.downloads }})</span>
+                                <span class="flex items-center gap-1 hover:text-blue-600 cursor-pointer"><svg
+                                        class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg> Lihat Detail</span>
+                                <span class="flex items-center gap-1 hover:text-blue-600 cursor-pointer"><svg
+                                        class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg> Unduh ({{ doc.downloads }})</span>
                             </div>
                         </div>
                     </div>
@@ -194,12 +222,16 @@ const collections = [
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="mb-5 flex justify-between items-end">
                     <div>
-                        <span class="text-yellow-500 font-bold tracking-wider text-xs uppercase mb-1 block">Transparansi Data</span>
+                        <span class="text-yellow-500 font-bold tracking-wider text-xs uppercase mb-1 block">Transparansi
+                            Data</span>
                         <h2 class="text-3xl font-extrabold text-[#0F213A]">Statistik & Matriks Data</h2>
                     </div>
                     <div class="text-gray-400 text-sm flex items-center gap-2">
-                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                         Update Terakhir: 19 Oktober 2023
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Update Terakhir: 19 Oktober 2023
                     </div>
                 </div>
 
@@ -208,17 +240,26 @@ const collections = [
                     <div class="lg:col-span-2">
                         <div class="bg-white rounded-xl shadow-sm p-6">
                             <h3 class="flex items-center gap-2 font-bold text-[#0F213A] mb-6">
-                                <svg class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                                <svg class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                </svg>
                                 Matriks Koleksi Dokumen
                             </h3>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div v-for="(col, idx) in collections" :key="idx" :class="[col.borderColor, 'bg-gray-50 p-6 rounded-lg flex items-center justify-between']">
+                                <div v-for="(col, idx) in collections" :key="idx"
+                                    :class="[col.borderColor, 'bg-gray-50 p-6 rounded-lg flex items-center justify-between']">
                                     <div>
-                                        <div class="text-[10px] uppercase font-bold text-gray-400 mb-1 tracking-wider">{{ col.label }}</div>
+                                        <div class="text-[10px] uppercase font-bold text-gray-400 mb-1 tracking-wider">
+                                            {{ col.label }}</div>
                                         <div class="text-4xl font-extrabold text-[#0F213A]">{{ col.count }}</div>
                                     </div>
                                     <div class="text-gray-300">
-                                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" :d="col.icon" /></svg>
+                                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                                :d="col.icon" />
+                                        </svg>
                                     </div>
                                 </div>
                             </div>
@@ -235,28 +276,32 @@ const collections = [
                     <!-- Chart Card -->
                     <div class="lg:col-span-1 space-y-6">
                         <div class="bg-[#0F213A] text-white rounded-xl shadow-lg p-6 relative overflow-hidden">
-                             <div class="relative z-10">
-                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Statistik Pengunjung</h4>
+                            <div class="relative z-10">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Statistik
+                                    Pengunjung</h4>
                                 <div class="flex items-end gap-2 mb-1">
                                     <span class="text-4xl font-bold">125.4k</span>
-                                    <span class="bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded">+12%</span>
+                                    <span
+                                        class="bg-green-500/20 text-green-400 text-xs font-bold px-2 py-1 rounded">+12%</span>
                                 </div>
                                 <p class="text-gray-400 text-xs">Total pengunjung jenis perfix tahun ini</p>
-                             </div>
-                             <!-- Fake Chart Bars -->
-                             <div class="flex items-end justify-between gap-1 mt-8 h-16 opacity-80">
-                                 <div class="w-1/6 bg-yellow-600/30 rounded-t h-[40%]"></div>
-                                 <div class="w-1/6 bg-yellow-600/30 rounded-t h-[60%]"></div>
-                                 <div class="w-1/6 bg-yellow-600/30 rounded-t h-[30%]"></div>
-                                 <div class="w-1/6 bg-yellow-500/50 rounded-t h-[50%]"></div>
-                                 <div class="w-1/6 bg-yellow-500/80 rounded-t h-[75%]"></div>
-                                 <div class="w-1/6 bg-[#FFC700] rounded-t h-[90%]"></div>
-                             </div>
+                            </div>
+                            <!-- Fake Chart Bars -->
+                            <div class="flex items-end justify-between gap-1 mt-8 h-16 opacity-80">
+                                <div class="w-1/6 bg-yellow-600/30 rounded-t h-[40%]"></div>
+                                <div class="w-1/6 bg-yellow-600/30 rounded-t h-[60%]"></div>
+                                <div class="w-1/6 bg-yellow-600/30 rounded-t h-[30%]"></div>
+                                <div class="w-1/6 bg-yellow-500/50 rounded-t h-[50%]"></div>
+                                <div class="w-1/6 bg-yellow-500/80 rounded-t h-[75%]"></div>
+                                <div class="w-1/6 bg-[#FFC700] rounded-t h-[90%]"></div>
+                            </div>
                         </div>
 
-                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+                        <div
+                            class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
                             <div>
-                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Indeks Kepuasan</h4>
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Indeks
+                                    Kepuasan</h4>
                                 <div class="flex items-baseline gap-2">
                                     <span class="text-4xl font-bold text-[#0F213A]">4.8</span>
                                     <span class="text-gray-400 text-sm">/ 5.0</span>
@@ -266,7 +311,10 @@ const collections = [
                                 </div>
                             </div>
                             <div class="text-yellow-500 bg-yellow-50 rounded-full p-3">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
                             </div>
                         </div>
                         <div class="bg-white p-4 rounded-lg border border-gray-100 text-[10px] text-gray-500 italic">
@@ -285,34 +333,34 @@ const collections = [
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 cursor-pointer">
-                <div v-for="(item, idx) in news" :key="idx" class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition group border border-gray-100 h-full flex flex-col">
+                <div v-for="(item, idx) in news" :key="idx"
+                    class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition group border border-gray-100 h-full flex flex-col">
                     <div class="h-48 overflow-hidden relative">
-                        <img :src="item.image" :alt="item.title" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                        <div class="absolute top-0 right-0 bg-yellow-400 text-[#0F213A] text-xs font-bold px-3 py-1 m-4 rounded">Berita</div>
+                        <img :src="item.image" :alt="item.title"
+                            class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                        <div
+                            class="absolute top-0 right-0 bg-yellow-400 text-[#0F213A] text-xs font-bold px-3 py-1 m-4 rounded">
+                            Berita</div>
                     </div>
                     <div class="p-6 flex-1 flex flex-col">
                         <div class="text-gray-400 text-xs mb-3 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
                             {{ item.date }}
                         </div>
-                        <h3 class="text-lg font-bold text-[#0F213A] mb-3 leading-snug group-hover:text-yellow-600 transition">{{ item.title }}</h3>
+                        <h3
+                            class="text-lg font-bold text-[#0F213A] mb-3 leading-snug group-hover:text-yellow-600 transition">
+                            {{ item.title }}</h3>
                         <p class="text-gray-500 text-sm line-clamp-3 mb-6">{{ item.desc }}</p>
                         <div class="mt-auto">
-                            <span class="text-[#0F213A] text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all">Baca Selengkapnya <span class="bg-gray-100 rounded-full p-1">&rarr;</span></span>
+                            <span
+                                class="text-[#0F213A] text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all">Baca
+                                Selengkapnya <span class="bg-gray-100 rounded-full p-1">&rarr;</span></span>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Integration Marquee (Simple Placeholder) -->
-        <div class="py-12 border-t border-gray-100 text-center">
-            <div class="text-xs font-bold text-gray-300 uppercase tracking-widest mb-6">Terintegrasi Dengan</div>
-            <div class="flex justify-center gap-8 md:gap-16 grayscale opacity-40">
-                <div class="h-8 w-24 bg-gray-200 rounded"></div>
-                <div class="h-8 w-24 bg-gray-200 rounded"></div>
-                <div class="h-8 w-24 bg-gray-200 rounded"></div>
-                <div class="h-8 w-24 bg-gray-200 rounded"></div>
             </div>
         </div>
     </GuestLayout>

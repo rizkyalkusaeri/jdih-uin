@@ -14,7 +14,10 @@ const showingNavigationDropdown = ref(false);
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center gap-3">
                         <Link href="/">
-                            <img src="{{ asset('images/jdih.png') }}" alt="JDIH UIN SGD" class="h-12 w-auto" />
+                            <img src="/images/logo-jdihn.png" alt="JDIH UIN SGD" class="h-12 w-auto" />
+                        </Link>
+                        <Link href="/">
+                            <img src="/images/jdih.png" alt="JDIH UIN SGD" class="h-12 w-auto" />
                         </Link>
                         <div class="hidden md:block">
                             <h1 class="text-xl font-bold text-[#0F213A] leading-tight">JDIH UIN SGD</h1>
@@ -30,14 +33,6 @@ const showingNavigationDropdown = ref(false);
                         <Link href="#" class="text-gray-600 hover:text-yellow-500 transition">Berita</Link>
                         <Link href="#" class="text-gray-600 hover:text-yellow-500 transition">Tentang</Link>
                         <Link href="#" class="text-gray-600 hover:text-yellow-500 transition">Kontak</Link>
-                    </div>
-
-                    <!-- Login Button -->
-                    <div class="hidden md:flex">
-                        <a href="/admin/login"
-                            class="bg-[#0F213A] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition shadow-md">
-                            Login Admin
-                        </a>
                     </div>
 
                     <!-- Mobile Menu Button -->
@@ -84,12 +79,6 @@ const showingNavigationDropdown = ref(false);
                         class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none transition duration-150 ease-in-out">
                         Kontak
                     </Link>
-                    <div class="px-4 py-3">
-                        <a href="/admin/login"
-                            class="block w-full text-center bg-[#0F213A] text-white px-6 py-2 rounded-lg font-medium hover:bg-opacity-90 transition">
-                            Login Admin
-                        </a>
-                    </div>
                 </div>
             </div>
         </header>
@@ -106,8 +95,7 @@ const showingNavigationDropdown = ref(false);
                     <!-- Brand -->
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
-                            <img src="https://jdih.uinsgd.ac.id/assets/img/logo-jdih.png" alt="Logo"
-                                class="h-10 w-auto bg-white rounded-full p-1" />
+                            <img src="/images/jdih.png" alt="Logo" class="h-10 w-auto bg-white rounded-full p-1" />
                             <div>
                                 <h3 class="text-lg font-bold">JDIH UIN SGD</h3>
                             </div>
