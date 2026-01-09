@@ -133,10 +133,10 @@ const collections = [
                         <input type="text" placeholder="Masukkan kata kunci atau nomor dokumen..."
                             class="w-full border-none ml-2 focus:ring-0 focus:outline-0 text-gray-600 placeholder-gray-400" />
                     </div>
-                    <button
-                        class="bg-[#FFC700] hover:bg-yellow-400 text-[#0F213A] font-bold px-8 py-3 rounded-md transition shadow-sm">
+                    <Link href="/produk-hukum"
+                        class="bg-[#FFC700] hover:bg-yellow-400 text-[#0F213A] font-bold px-8 py-3 rounded-md transition shadow-sm flex items-center justify-center">
                         CARI
-                    </button>
+                    </Link>
                 </div>
             </div>
         </div>

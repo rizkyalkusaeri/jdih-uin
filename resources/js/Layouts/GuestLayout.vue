@@ -29,7 +29,8 @@ const showingNavigationDropdown = ref(false);
                     <div class="hidden md:flex space-x-8 items-center">
                         <Link href="/" class="text-[#0F213A] font-semibold hover:text-yellow-500 transition">Beranda
                         </Link>
-                        <Link href="#" class="text-gray-600 hover:text-yellow-500 transition">Produk Hukum</Link>
+                        <Link href="/produk-hukum" class="text-gray-600 hover:text-yellow-500 transition">Produk Hukum
+                        </Link>
                         <Link href="#" class="text-gray-600 hover:text-yellow-500 transition">Berita</Link>
                         <Link href="#" class="text-gray-600 hover:text-yellow-500 transition">Tentang</Link>
                         <Link href="#" class="text-gray-600 hover:text-yellow-500 transition">Kontak</Link>
@@ -63,7 +64,7 @@ const showingNavigationDropdown = ref(false);
                         class="block w-full ps-3 pe-4 py-2 border-l-4 border-yellow-400 text-start text-base font-medium text-[#0F213A] bg-yellow-50 focus:outline-none transition duration-150 ease-in-out">
                         Beranda
                     </Link>
-                    <Link href="#"
+                    <Link href="/produk-hukum"
                         class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none transition duration-150 ease-in-out">
                         Produk Hukum
                     </Link>

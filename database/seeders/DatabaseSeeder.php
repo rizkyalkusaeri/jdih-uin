@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             TypeSeeder::class,
             PublisherSeeder::class,
             PlaceSeeder::class,
+            LegalProductSeeder::class,
         ]);
     }
 }
