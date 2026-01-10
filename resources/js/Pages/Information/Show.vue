@@ -98,7 +98,7 @@ defineProps({
             <!-- Related Posts -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
               <div class="flex items-center justify-between mb-6">
-                <h3 class="font-bold text-[#0F213A] text-lg">Berita Terkait</h3>
+                <h3 class="font-bold text-[#0F213A] text-lg">Informasi Terkait</h3>
               </div>
 
               <div v-if="relatedPosts.length > 0" class="space-y-6">
@@ -127,7 +127,7 @@ defineProps({
                 </Link>
               </div>
               <div v-else class="text-gray-500 text-sm text-center py-4">
-                Tidak ada berita terkait.
+                Tidak ada informasi hukum terkait.
               </div>
             </div>
 
