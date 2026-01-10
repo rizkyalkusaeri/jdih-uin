@@ -69,7 +69,7 @@ class CategorySeeder extends Seeder
             ],
             ['name' => 'Event', 'slug' => 'event', 'type' => 'post'],
             ['name' => 'Berita', 'slug' => 'berita', 'type' => 'post'],
-            ['name' => 'Laporan', 'slug' => 'laporan', 'type' => 'post'],
+            ['name' => 'Dokumentasi Kegiatan', 'slug' => 'dokumentasi-kegiatan', 'type' => 'post'],
         ];
 
         foreach ($categories as $category) {

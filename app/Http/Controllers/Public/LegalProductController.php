@@ -27,28 +27,40 @@ class LegalProductController extends Controller
         }
 
         if ($request->filled('year')) {
-            $years = $request->input('year');
-            // If it's an array (checkboxes)
-            if (is_array($years)) {
-                $query->whereIn('year', $years);
-            } else {
-                $query->where('year', $years);
-            }
+            $year = $request->input('year');
+            $query->where('year', $year);
         }
 
         if ($request->filled('type')) {
-            $types = $request->input('type'); // Passed as type names or IDs
-            if (is_array($types)) {
+            $types = $request->input('type');
+            if (is_array($types) && count($types) > 0) {
+                // Filter by Type Name
                 $query->whereHas('type', function ($q) use ($types) {
                     $q->whereIn('name', $types);
                 });
             }
         }
 
+        if ($request->filled('subject')) {
+            $subjects = $request->input('subject');
+            if (is_array($subjects) && count($subjects) > 0) {
+                $query->whereHas('subjects', function ($q) use ($subjects) {
+                    $q->whereIn('name', $subjects);
+                });
+            }
+        }
+
         if ($request->filled('status')) {
             $statuses = $request->input('status');
-            if (is_array($statuses)) {
-                $query->whereIn('status', $statuses);
+            if (is_array($statuses) && count($statuses) > 0) {
+                $query->where(function ($q) use ($statuses) {
+                    if (in_array('Berlaku', $statuses)) {
+                        $q->orWhereIn('status', ['active', 'Berlaku']);
+                    }
+                    if (in_array('Tidak Berlaku', $statuses)) {
+                        $q->orWhereIn('status', ['inactive', 'Tidak Berlaku', 'Dicabut']);
+                    }
+                });
             }
         }
 
@@ -71,23 +83,55 @@ class LegalProductController extends Controller
 
         $legalProducts = $query->paginate(10)->withQueryString();
 
-        // Filter Data for Sidebar
+        // Filter Data for Sidebar (Rich Data with Counts)
         $availableYears = LegalProduct::select('year')->distinct()->orderBy('year', 'desc')->pluck('year');
-        $availableTypes = Type::pluck('name'); // Or hardcode if preferred
-        $availableStatuses = ['Berlaku', 'Dicabut', 'Tidak Berlaku'];
+
+        $availableTypes = \App\Models\Type::withCount(['legalProducts' => function ($q) {
+            $q->where('status', '!=', 'Draft');
+        }])->orderBy('legal_products_count', 'desc')->get()->map(function ($type) {
+            return [
+                'id' => $type->id,
+                'name' => $type->name,
+                'count' => $type->legal_products_count
+            ];
+        });
+
+        $availableSubjects = \App\Models\Subject::withCount(['legalProducts' => function ($q) {
+            $q->where('status', '!=', 'Draft');
+        }])->orderBy('legal_products_count', 'desc')->get()->map(function ($subject) {
+            return [
+                'id' => $subject->id,
+                'name' => $subject->name,
+                'count' => $subject->legal_products_count
+            ];
+        });
+
+        // Status Counts (Only Active/Inactive)
+        $statusCounts = LegalProduct::select('status', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->whereIn('status', ['active', 'Berlaku', 'inactive', 'Tidak Berlaku', 'Dicabut']) // Include all relevant
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        // Map to standardized Status options
+        $availableStatuses = [
+            ['name' => 'Berlaku', 'value' => 'Berlaku', 'count' => ($statusCounts['active'] ?? 0) + ($statusCounts['Berlaku'] ?? 0)],
+            ['name' => 'Tidak Berlaku', 'value' => 'Tidak Berlaku', 'count' => ($statusCounts['inactive'] ?? 0) + ($statusCounts['Tidak Berlaku'] ?? 0) + ($statusCounts['Dicabut'] ?? 0)],
+        ];
 
         return Inertia::render('ProdukHukum/Index', [
             'legalProducts' => $legalProducts,
             'filters' => [
                 'search' => $request->input('search'),
-                'year' => $request->input('year', []),
+                'year' => $request->input('year'), // Single value now
                 'type' => $request->input('type', []),
+                'subject' => $request->input('subject', []), // Added subject
                 'status' => $request->input('status', []),
                 'sort' => $sort,
             ],
             'options' => [
                 'years' => $availableYears,
                 'types' => $availableTypes,
+                'subjects' => $availableSubjects,
                 'statuses' => $availableStatuses
             ]
         ]);

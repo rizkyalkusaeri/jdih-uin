@@ -2,7 +2,8 @@
 import { Head, Link, router } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { ref, watch } from 'vue';
-import { debounce } from 'lodash'; // Make sure lodash is available or write simple debounce
+import { computed } from 'vue';
+import { debounce } from 'lodash';
 
 const props = defineProps({
     legalProducts: Object,
@@ -12,26 +13,51 @@ const props = defineProps({
 
 const filtersState = ref({
     search: props.filters.search || '',
-    year: props.filters.year || [],
+    year: props.filters.year || '',
     type: props.filters.type || [],
+    subject: props.filters.subject || [],
     status: props.filters.status || [],
     sort: props.filters.sort || 'Terbaru'
+});
+
+const searchType = ref('');
+const showAllTypes = ref(false);
+
+const searchSubject = ref('');
+const showAllSubjects = ref(false);
+
+const filteredTypes = computed(() => {
+    let items = props.options.types;
+    if (searchType.value) {
+        return items.filter(t => t.name.toLowerCase().includes(searchType.value.toLowerCase()));
+    }
+    return showAllTypes.value ? items : items.slice(0, 5);
+});
+
+const filteredSubjects = computed(() => {
+    let items = props.options.subjects;
+    if (searchSubject.value) {
+        return items.filter(s => s.name.toLowerCase().includes(searchSubject.value.toLowerCase()));
+    }
+    return showAllSubjects.value ? items : items.slice(0, 5);
 });
 
 const resetFilters = () => {
     filtersState.value = {
         search: '',
-        year: [],
+        year: '',
         type: [],
+        subject: [],
         status: [],
         sort: 'Terbaru'
     };
+    searchType.value = '';
+    searchSubject.value = '';
 };
 
 // Format Date Helper
 const formatDate = (dateString) => {
     if (!dateString) return '-';
-    // Format: 20 Januari 2026
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('id-ID', options);
 };
@@ -66,7 +92,7 @@ watch(filtersState, debounce((value) => {
             <div class="flex flex-col lg:flex-row gap-10">
 
                 <!-- Sidebar Filter -->
-                <div class="w-full lg:w-1/4 shrink-0 space-y-8">
+                <div class="w-full lg:w-1/4 shrink-0 space-y-6">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                         <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <h3 class="font-bold text-[#0F213A] flex items-center gap-2">
@@ -77,35 +103,103 @@ watch(filtersState, debounce((value) => {
                                 </svg>
                                 Filter Pencarian
                             </h3>
-                            <button
-                                class="text-xs font-medium text-gray-400 hover:text-red-500 transition">Reset</button>
+                            <button @click="resetFilters"
+                                class="text-xs font-medium text-gray-400 hover:text-red-500 transition">Reset
+                                Filter</button>
                         </div>
 
                         <!-- Tahun -->
                         <div class="p-5 border-b border-gray-100">
                             <h4 class="font-bold text-sm text-[#0F213A] mb-3">Tahun</h4>
-                            <div class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                                <label v-for="year in options.years" :key="year"
-                                    class="flex items-center gap-3 cursor-pointer group">
-                                    <input type="checkbox" v-model="filtersState.year" :value="year"
-                                        class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
-                                    <span class="text-gray-600 text-sm group-hover:text-[#0F213A] transition">{{ year
-                                    }}</span>
-                                </label>
+                            <input type="number" v-model="filtersState.year" placeholder="Contoh: 2024"
+                                class="w-full text-sm border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 placeholder:text-gray-300 transition" />
+                        </div>
+
+                        <!-- Jenis Produk Hukum -->
+                        <div class="p-5 border-b border-gray-100">
+                            <h4 class="font-bold text-sm text-[#0F213A] mb-3">Jenis Produk Hukum</h4>
+
+                            <!-- Search Type -->
+                            <div class="mb-3 relative">
+                                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <input type="text" v-model="searchType" placeholder="Cari jenis..."
+                                    class="w-full pl-9 pr-3 py-2 text-xs border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50" />
+                            </div>
+
+                            <div class="space-y-2">
+                                <div v-for="type in filteredTypes" :key="type.id"
+                                    class="flex items-center justify-between group">
+                                    <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                        <input type="checkbox" v-model="filtersState.type" :value="type.name"
+                                            class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
+                                        <span
+                                            class="text-gray-600 text-sm group-hover:text-[#0F213A] transition truncate max-w-[150px]"
+                                            :title="type.name">{{ type.name }}</span>
+                                    </label>
+                                    <span
+                                        class="bg-gray-100 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-full group-hover:bg-yellow-100 group-hover:text-yellow-700 transition">
+                                        {{ type.count }}
+                                    </span>
+                                </div>
+
+                                <button v-if="!searchType && options.types.length > 5"
+                                    @click="showAllTypes = !showAllTypes"
+                                    class="text-xs font-bold text-blue-600 hover:text-blue-800 mt-2 flex items-center gap-1">
+                                    {{ showAllTypes ? 'Sembunyikan' : 'Lihat Selengkapnya' }}
+                                    <svg class="w-3 h-3" :class="{ 'rotate-180': showAllTypes }" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
 
-                        <!-- Jenis Produk -->
+                        <!-- Subjek (New) -->
                         <div class="p-5 border-b border-gray-100">
-                            <h4 class="font-bold text-sm text-[#0F213A] mb-3">Jenis Produk</h4>
+                            <h4 class="font-bold text-sm text-[#0F213A] mb-3">Subjek</h4>
+
+                            <!-- Search Subject -->
+                            <div class="mb-3 relative">
+                                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <input type="text" v-model="searchSubject" placeholder="Cari subjek..."
+                                    class="w-full pl-9 pr-3 py-2 text-xs border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50" />
+                            </div>
+
                             <div class="space-y-2">
-                                <label v-for="type in options.types" :key="type"
-                                    class="flex items-center gap-3 cursor-pointer group">
-                                    <input type="checkbox" v-model="filtersState.type" :value="type"
-                                        class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
-                                    <span class="text-gray-600 text-sm group-hover:text-[#0F213A] transition">{{ type
-                                    }}</span>
-                                </label>
+                                <div v-for="subject in filteredSubjects" :key="subject.id"
+                                    class="flex items-center justify-between group">
+                                    <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                        <input type="checkbox" v-model="filtersState.subject" :value="subject.name"
+                                            class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
+                                        <span
+                                            class="text-gray-600 text-sm group-hover:text-[#0F213A] transition truncate max-w-[150px]"
+                                            :title="subject.name">{{ subject.name }}</span>
+                                    </label>
+                                    <span
+                                        class="bg-gray-100 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-full group-hover:bg-yellow-100 group-hover:text-yellow-700 transition">
+                                        {{ subject.count }}
+                                    </span>
+                                </div>
+
+                                <button v-if="!searchSubject && options.subjects.length > 5"
+                                    @click="showAllSubjects = !showAllSubjects"
+                                    class="text-xs font-bold text-blue-600 hover:text-blue-800 mt-2 flex items-center gap-1">
+                                    {{ showAllSubjects ? 'Sembunyikan' : 'Lihat Selengkapnya' }}
+                                    <svg class="w-3 h-3" :class="{ 'rotate-180': showAllSubjects }" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
 
@@ -113,13 +207,19 @@ watch(filtersState, debounce((value) => {
                         <div class="p-5">
                             <h4 class="font-bold text-sm text-[#0F213A] mb-3">Status Produk</h4>
                             <div class="space-y-2">
-                                <label v-for="status in options.statuses" :key="status"
-                                    class="flex items-center gap-3 cursor-pointer group">
-                                    <input type="checkbox" v-model="filtersState.status" :value="status"
-                                        class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
-                                    <span class="text-gray-600 text-sm group-hover:text-[#0F213A] transition">{{ status
-                                    }}</span>
-                                </label>
+                                <div v-for="status in options.statuses" :key="status.value"
+                                    class="flex items-center justify-between group">
+                                    <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                        <input type="checkbox" v-model="filtersState.status" :value="status.value"
+                                            class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
+                                        <span class="text-gray-600 text-sm group-hover:text-[#0F213A] transition">{{
+                                            status.name }}</span>
+                                    </label>
+                                    <span
+                                        class="bg-gray-100 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-full group-hover:bg-yellow-100 group-hover:text-yellow-700 transition">
+                                        {{ status.count }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -140,7 +240,6 @@ watch(filtersState, debounce((value) => {
                                 class="border-gray-200 rounded-md text-sm text-[#0F213A] focus:border-yellow-500 focus:ring-yellow-500/50 cursor-pointer">
                                 <option>Terbaru</option>
                                 <option>Terpopuler</option>
-                                <option>Tahun Terlama</option>
                             </select>
                         </div>
                     </div>
@@ -253,15 +352,19 @@ watch(filtersState, debounce((value) => {
 
                     <!-- Pagination -->
                     <div class="mt-10 flex justify-center text-sm" v-if="props.legalProducts.links.length > 3">
-                        <div class="flex gap-2">
+                        <div
+                            class="flex flex-wrap justify-center gap-1.5 bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
                             <template v-for="(link, key) in props.legalProducts.links" :key="key">
                                 <Link v-if="link.url" :href="link.url"
-                                    class="w-8 h-8 flex items-center justify-center rounded transition" :class="[
-                                        link.active ? 'bg-yellow-400 text-[#0F213A] font-bold shadow-sm' : 'text-gray-600 font-medium hover:bg-gray-100',
+                                    class="h-9 min-w-[36px] px-2 flex items-center justify-center rounded-lg transition text-xs font-bold"
+                                    :class="[
+                                        link.active
+                                            ? 'bg-[#0F213A] text-white shadow-md transform scale-105'
+                                            : 'text-gray-500 hover:bg-gray-50 hover:text-[#0F213A]',
                                         !link.url && 'opacity-50 cursor-not-allowed'
                                     ]" v-html="link.label" />
                                 <span v-else v-html="link.label"
-                                    class="w-8 h-8 flex items-center justify-center text-gray-400"></span>
+                                    class="h-9 min-w-[36px] px-2 flex items-center justify-center text-gray-300"></span>
                             </template>
                         </div>
                     </div>

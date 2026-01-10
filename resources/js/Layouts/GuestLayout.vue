@@ -1,9 +1,10 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Toast from '@/Components/Toast.vue';
 
 const showingNavigationDropdown = ref(false);
+const page = usePage();
 </script>
 
 <template>
@@ -15,30 +16,41 @@ const showingNavigationDropdown = ref(false);
                 <div class="flex justify-between h-20 items-center">
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center gap-3">
-                        <Link href="/">
+                        <a href="https://jdihn.go.id/" target="_blank" rel="noopener noreferrer">
                             <img src="/images/logo-jdihn.png" alt="Jaringan Dokumentasi dan Informasi Hukum Nasional"
                                 class="h-12 w-auto" />
-                        </Link>
+                        </a>
                         <Link href="/">
                             <img src="/images/jdih.png"
                                 alt="Jaringan Dokumentasi dan Informasi Hukum UIN Sunan Gunung Djati"
                                 class="h-12 w-auto" />
                         </Link>
-                        <div class="hidden md:block">
-                            <h1 class="text-xl font-bold text-[#0F213A] leading-tight">JDIH UIN SGD</h1>
-                            <p class="text-xs text-gray-500">Jaringan Dokumentasi & Informasi Hukum</p>
-                        </div>
+                        <Link href="/">
+                            <div class="hidden md:block">
+                                <h1 class="text-xl font-bold text-[#0F213A] leading-tight">JDIH UIN SGD</h1>
+                                <p class="text-xs text-gray-500">Jaringan Dokumentasi & Informasi Hukum</p>
+                            </div>
+                        </Link>
                     </div>
 
                     <!-- Desktop Menu -->
                     <div class="hidden md:flex space-x-8 items-center">
-                        <Link href="/" class="text-[#0F213A] font-semibold hover:text-yellow-500 transition">Beranda
+                        <Link href="/"
+                            :class="[page.component === 'Home' ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500', 'transition']">
+                            Beranda
                         </Link>
-                        <Link href="/produk-hukum" class="text-gray-600 hover:text-yellow-500 transition">Produk Hukum
+                        <Link href="/produk-hukum"
+                            :class="[page.component.startsWith('ProdukHukum') ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500', 'transition']">
+                            Produk Hukum
                         </Link>
-                        <Link href="#" class="text-gray-600 hover:text-yellow-500 transition">Berita</Link>
-                        <Link href="#" class="text-gray-600 hover:text-yellow-500 transition">Tentang</Link>
-                        <Link href="#" class="text-gray-600 hover:text-yellow-500 transition">Kontak</Link>
+                        <Link href="/informasi-hukum"
+                            :class="[route().current('information.*') ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500', 'transition']">
+                            Informasi Hukum
+                        </Link>
+                        <Link href="#" class="text-gray-600 font-semibold hover:text-yellow-500 transition">Tentang
+                        </Link>
+                        <Link href="#" class="text-gray-600 font-semibold hover:text-yellow-500 transition">Kontak
+                        </Link>
                     </div>
 
                     <!-- Mobile Menu Button -->
@@ -66,16 +78,16 @@ const showingNavigationDropdown = ref(false);
             <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }" class="md:hidden">
                 <div class="pt-2 pb-3 space-y-1">
                     <Link href="/"
-                        class="block w-full ps-3 pe-4 py-2 border-l-4 border-yellow-400 text-start text-base font-medium text-[#0F213A] bg-yellow-50 focus:outline-none transition duration-150 ease-in-out">
+                        :class="[page.component === 'Home' ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium focus:outline-none transition duration-150 ease-in-out']">
                         Beranda
                     </Link>
                     <Link href="/produk-hukum"
-                        class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none transition duration-150 ease-in-out">
+                        :class="[page.component.startsWith('ProdukHukum') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium focus:outline-none transition duration-150 ease-in-out']">
                         Produk Hukum
                     </Link>
-                    <Link href="#"
-                        class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none transition duration-150 ease-in-out">
-                        Berita
+                    <Link href="/informasi-hukum"
+                        :class="[route().current('information.*') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium focus:outline-none transition duration-150 ease-in-out']">
+                        Informasi Hukum
                     </Link>
                     <Link href="#"
                         class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none transition duration-150 ease-in-out">

@@ -36,4 +36,9 @@ class Type extends Model
     {
         return $this->hasMany(LegalProduct::class);
     }
+
+    public function views()
+    {
+        return $this->hasManyThrough(LegalProductView::class, LegalProduct::class);
+    }
 }

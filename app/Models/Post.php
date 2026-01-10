@@ -48,4 +48,16 @@ class Post extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function views()
+    {
+        return $this->hasMany(PostView::class);
+    }
+
+    public function scopeCategoryType($query, $type)
+    {
+        return $query->whereHas('category', function ($q) use ($type) {
+            $q->where('type', $type);
+        });
+    }
 }

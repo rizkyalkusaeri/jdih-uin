@@ -50,10 +50,10 @@ const formatDate = (dateString) => {
     <Head :title="legalProduct.title" />
 
     <GuestLayout>
-        <!-- Breadcrumb -->
-        <div class="bg-gray-50 border-b border-gray-100 py-4">
+
+        <div class="bg-white border-b border-gray-100 py-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <nav class="flex text-xs text-gray-500">
+                <nav class="flex text-sm text-gray-500 mb-4">
                     <Link href="/" class="hover:text-yellow-600 transition">Beranda</Link>
                     <span class="mx-2">/</span>
                     <Link href="/produk-hukum" class="hover:text-yellow-600 transition">Produk Hukum</Link>
@@ -62,6 +62,7 @@ const formatDate = (dateString) => {
                     <span class="mx-2">/</span>
                     <span class="text-[#0F213A] font-medium">Detail</span>
                 </nav>
+                <h1 class="text-3xl font-extrabold text-[#0F213A]">Detail</h1>
             </div>
         </div>
 
