@@ -82,6 +82,7 @@ class InformationController extends Controller
       ->get()
       ->map(function ($p) {
         return [
+          'id' => $p->id,
           'title' => $p->title,
           'slug' => $p->slug,
           'date' => Carbon::parse($p->published_at)->translatedFormat('d F Y'),

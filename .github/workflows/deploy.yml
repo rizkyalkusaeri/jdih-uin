@@ -36,6 +36,10 @@ jobs:
             # Migrasi Database
             php artisan migrate --force
 
+            # Frontend (Node.js/Inertia)
+            npm install
+            npm run build
+
             # Optimize
             php artisan optimize:clear
             php artisan config:cache
@@ -51,6 +55,10 @@ jobs:
             sudo chown -R www-data:www-data bootstrap/cache
             sudo chmod -R 775 storage
             sudo chmod -R 775 bootstrap/cache
+
+            # Restart server SSR Inertia
+            # php artisan inertia:stop-ssr || true
+            # pm2 restart ssr-server || pm2 start "php artisan inertia:start-ssr" --name "ssr-server"
 
             # FIX 3: Git Safe Directory (Pencegahan error 'dubious ownership')
             # Karena owner folder sering berubah, kita whitelist folder ini di git

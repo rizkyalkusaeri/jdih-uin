@@ -105,7 +105,9 @@ defineProps({
                 <Link v-for="related in relatedPosts" :key="related.slug"
                   :href="route('information.show', related.slug)" class="flex gap-4 group">
                   <div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-gray-100 relative">
-                    <img v-if="related.image" :src="related.image" :alt="related.title"
+                    <img v-if="related.image"
+                      :src="route('posts.pathimage', related.id) || 'https://via.placeholder.com/600x400?text=No+Image'"
+                      :alt="related.title"
                       class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                     <div v-else class="w-full h-full flex items-center justify-center">
                       <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

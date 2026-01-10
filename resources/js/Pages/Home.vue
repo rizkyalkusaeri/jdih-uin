@@ -233,7 +233,7 @@ const pieChartOptions = {
                         Belum ada dokumen yang tersedia.
                     </div>
 
-                    <div v-for="doc in displayedProducts" :key="doc.id"
+                    <Link v-for="doc in displayedProducts" :key="doc.id" :href="route('produk-hukum.show', doc.slug)"
                         class="flex items-start gap-4 p-5 rounded-xl bg-white border border-gray-200 hover:shadow-lg hover:border-blue-900/30 transition-all group cursor-pointer">
                         <!-- Icon -->
                         <div
@@ -286,7 +286,7 @@ const pieChartOptions = {
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </Link>
                 </div>
             </div>
         </div>
@@ -373,31 +373,6 @@ const pieChartOptions = {
             </div>
         </div>
 
-        <!-- Testimonials Section (New: Gray) -->
-        <!-- <div v-if="feedbacks.length > 0" class="bg-gray-50 py-20 border-t border-gray-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-10">
-                    <h2 class="text-2xl md:text-3xl font-extrabold text-[#0F213A]">Apa Kata Mereka</h2>
-                    <p class="text-gray-500 mt-2">Ulasan terbaru dari pengunjung JDIH UIN SGD</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div v-for="(feedback, idx) in feedbacks.slice(0, 3)" :key="idx"
-                        class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex text-yellow-400 text-sm">
-                                <template v-for="n in 5">
-                                    <span v-if="n <= feedback.rating">★</span>
-                                    <span v-else class="text-gray-200">★</span>
-                                </template>
-</div>
-<span class="text-xs text-gray-400">Pengunjung</span>
-</div>
-<p class="text-gray-600 italic leading-relaxed">"{{ feedback.feedback }}"</p>
-</div>
-</div>
-</div>
-</div> -->
-
         <!-- News Section (Alternating: White) -->
         <div v-if="news.length > 0" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div class="flex justify-between items-center mb-10">
@@ -415,7 +390,7 @@ const pieChartOptions = {
 
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 cursor-pointer">
-                <div v-for="(item, idx) in news" :key="idx"
+                <Link v-for="(item, idx) in news" :key="idx" :href="route('information.show', item.slug)"
                     class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition group border border-gray-100 h-full flex flex-col">
                     <div class="h-48 overflow-hidden relative">
                         <!-- Use placeholder if no image -->
@@ -445,7 +420,7 @@ const pieChartOptions = {
                                 Selengkapnya <span class="bg-gray-100 rounded-full p-1">&rarr;</span></span>
                         </div>
                     </div>
-                </div>
+                </Link>
             </div>
         </div>
     </GuestLayout>
