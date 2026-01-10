@@ -1,12 +1,14 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import Toast from '@/Components/Toast.vue';
 
 const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
     <div class="min-h-screen bg-gray-50 font-sans text-gray-900">
+        <Toast />
         <!-- Header -->
         <header class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,10 +16,13 @@ const showingNavigationDropdown = ref(false);
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center gap-3">
                         <Link href="/">
-                            <img src="/images/logo-jdihn.png" alt="JDIH UIN SGD" class="h-12 w-auto" />
+                            <img src="/images/logo-jdihn.png" alt="Jaringan Dokumentasi dan Informasi Hukum Nasional"
+                                class="h-12 w-auto" />
                         </Link>
                         <Link href="/">
-                            <img src="/images/jdih.png" alt="JDIH UIN SGD" class="h-12 w-auto" />
+                            <img src="/images/jdih.png"
+                                alt="Jaringan Dokumentasi dan Informasi Hukum UIN Sunan Gunung Djati"
+                                class="h-12 w-auto" />
                         </Link>
                         <div class="hidden md:block">
                             <h1 class="text-xl font-bold text-[#0F213A] leading-tight">JDIH UIN SGD</h1>

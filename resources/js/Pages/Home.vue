@@ -3,6 +3,14 @@ import { Head, Link } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { ref } from 'vue';
 
+const props = defineProps({
+    canLogin: Boolean,
+    canRegister: Boolean,
+    laravelVersion: String,
+    phpVersion: String,
+    totalVisitors: Number // Add this prop
+});
+
 const activeTab = ref('terbaru');
 
 const documents = [
@@ -51,7 +59,8 @@ const documents = [
 const stats = [
     { label: 'Total Produk Hukum', value: '1,250+', icon: 'M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3' },
     { label: 'Pengunjung Hari Ini', value: '450', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' },
-    { label: 'Total Pengunjung', value: '125k+', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z' },
+    // Use props.totalVisitors here
+    { label: 'Total Pengunjung', value: props.totalVisitors ? props.totalVisitors.toLocaleString() : '0', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z' },
     { label: 'Indeks Kepuasan', value: '4.8/5', icon: 'M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
 ];
 
@@ -95,7 +104,7 @@ const collections = [
             <!-- Background Image & Gradient -->
             <div class="absolute inset-0">
                 <img src="/images/944597_720.jpg" alt="Background" class="w-full h-full object-cover" />
-                <div class="absolute inset-0 bg-gradient-to-b from-[#0F213A]/90 via-[#0F213A]/80 to-[#0F213A]/60"></div>
+                <div class="absolute inset-0 bg-linear-to-b from-[#0F213A]/90 via-[#0F213A]/80 to-[#0F213A]/60"></div>
             </div>
 
             <div
@@ -262,13 +271,6 @@ const collections = [
                                         </svg>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="mt-6 flex justify-between items-center px-2">
-                                <div class="text-sm text-gray-500">Total Digitalisasi Dokumen</div>
-                                <div class="text-lg font-bold text-[#0F213A]">65%</div>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-                                <div class="bg-[#0F213A] h-1.5 rounded-full" style="width: 65%"></div>
                             </div>
                         </div>
                     </div>

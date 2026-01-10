@@ -28,6 +28,14 @@ const resetFilters = () => {
     };
 };
 
+// Format Date Helper
+const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    // Format: 20 Januari 2026
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('id-ID', options);
+};
+
 watch(filtersState, debounce((value) => {
     router.get('/produk-hukum', value, {
         preserveState: true,
@@ -77,9 +85,9 @@ watch(filtersState, debounce((value) => {
                         <div class="p-5 border-b border-gray-100">
                             <h4 class="font-bold text-sm text-[#0F213A] mb-3">Tahun</h4>
                             <div class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                                <label v-for="year in filters.years" :key="year"
+                                <label v-for="year in options.years" :key="year"
                                     class="flex items-center gap-3 cursor-pointer group">
-                                    <input type="checkbox"
+                                    <input type="checkbox" v-model="filtersState.year" :value="year"
                                         class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
                                     <span class="text-gray-600 text-sm group-hover:text-[#0F213A] transition">{{ year
                                     }}</span>
@@ -91,9 +99,9 @@ watch(filtersState, debounce((value) => {
                         <div class="p-5 border-b border-gray-100">
                             <h4 class="font-bold text-sm text-[#0F213A] mb-3">Jenis Produk</h4>
                             <div class="space-y-2">
-                                <label v-for="type in filters.types" :key="type"
+                                <label v-for="type in options.types" :key="type"
                                     class="flex items-center gap-3 cursor-pointer group">
-                                    <input type="checkbox"
+                                    <input type="checkbox" v-model="filtersState.type" :value="type"
                                         class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
                                     <span class="text-gray-600 text-sm group-hover:text-[#0F213A] transition">{{ type
                                     }}</span>
@@ -105,9 +113,9 @@ watch(filtersState, debounce((value) => {
                         <div class="p-5">
                             <h4 class="font-bold text-sm text-[#0F213A] mb-3">Status Produk</h4>
                             <div class="space-y-2">
-                                <label v-for="status in filters.statuses" :key="status"
+                                <label v-for="status in options.statuses" :key="status"
                                     class="flex items-center gap-3 cursor-pointer group">
-                                    <input type="checkbox"
+                                    <input type="checkbox" v-model="filtersState.status" :value="status"
                                         class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
                                     <span class="text-gray-600 text-sm group-hover:text-[#0F213A] transition">{{ status
                                     }}</span>
@@ -137,11 +145,27 @@ watch(filtersState, debounce((value) => {
                         </div>
                     </div>
 
+                    <!-- Search Bar (Added) -->
+                    <div class="mb-6 relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </span>
+                        <input type="text" v-model="filtersState.search"
+                            placeholder="Cari berdasarkan judul atau nomor peraturan..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500" />
+                    </div>
+
                     <!-- List -->
                     <div class="space-y-4">
                         <div v-for="item in props.legalProducts.data" :key="item.id"
                             class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition group relative overflow-hidden">
-                            <div class="flex gap-5">
+                            <!-- Clickable Overlay -->
+                            <Link :href="route('produk-hukum.show', item.slug)" class="absolute inset-0 z-10"></Link>
+
+                            <div class="flex gap-5 relative z-20 pointer-events-none">
                                 <!-- Type Icon -->
                                 <div class="shrink-0 hidden sm:block">
                                     <div
@@ -162,7 +186,7 @@ watch(filtersState, debounce((value) => {
                                             class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-0.5 rounded">{{
                                                 item.year }}</span>
                                         <div class="ml-auto">
-                                            <span v-if="item.status === 'Berlaku'"
+                                            <span v-if="item.status === 'active' || item.status === 'Berlaku'"
                                                 class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                                                 <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24"
                                                     stroke="currentColor">
@@ -178,13 +202,13 @@ watch(filtersState, debounce((value) => {
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                 </svg>
-                                                {{ item.status }}
+                                                Tidak Berlaku
                                             </span>
                                         </div>
                                     </div>
 
                                     <h3
-                                        class="text-lg font-bold text-[#0F213A] leading-snug mb-3 group-hover:text-yellow-600 transition">
+                                        class="text-lg font-bold text-[#0F213A] leading-snug mb-3 group-hover:text-yellow-600 transition pointer-events-auto">
                                         <Link :href="route('produk-hukum.show', item.slug)">{{ item.title }}</Link>
                                     </h3>
 
@@ -198,7 +222,7 @@ watch(filtersState, debounce((value) => {
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
-                                            {{ item.published_date }}
+                                            {{ formatDate(item.published_date) }}
                                         </span>
                                         <span class="flex items-center gap-1.5">
                                             <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24"
@@ -208,11 +232,11 @@ watch(filtersState, debounce((value) => {
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                             </svg>
-                                            {{ item.view_count || 0 }} Dilihat
+                                            {{ item.views_count || 0 }} Dilihat
                                         </span>
                                     </div>
 
-                                    <div class="mt-4 flex justify-end">
+                                    <div class="mt-4 flex justify-end pointer-events-auto">
                                         <Link :href="route('produk-hukum.show', item.slug)"
                                             class="text-sm font-bold text-[#0F213A] border border-gray-200 px-4 py-2 rounded-lg hover:border-[#0F213A] hover:bg-[#0F213A] hover:text-white transition flex items-center gap-2">
                                             Lihat Detail

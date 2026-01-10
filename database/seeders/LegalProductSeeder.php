@@ -26,10 +26,10 @@ class LegalProductSeeder extends Seeder
                     'year' => $year,
                     'type_id' => $type->id,
                     'category_id' => $type->category_id, // Inherit category from Type
-                    'status' => rand(0, 1) ? 'Berlaku' : 'Tidak Berlaku',
+                    'status' => rand(0, 1) ? 'active' : 'inactive',
                     'determination_date' => now()->subDays(rand(1, 1000)),
                     'published_date' => now()->subDays(rand(1, 1000)),
-                    'file_path' => 'example.pdf',
+                    'file_path' => '2025pmnaker014.pdf',
                     'abstract' => "Ini adalah abstrak contoh untuk {$title}. Dokumen ini dibuat otomatis oleh seeder.",
                 ]);
             }

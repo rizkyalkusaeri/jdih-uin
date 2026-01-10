@@ -42,6 +42,8 @@ jobs:
             php artisan route:cache
             php artisan view:cache
             php artisan filament:optimize
+            php artisan ziggy:generate
+            php artisan route:clear
 
             # FIX 2: Permission Storage
             # Pastikan www-data (Nginx) bisa tulis data session/cache/upload
