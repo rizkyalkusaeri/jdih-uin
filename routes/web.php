@@ -30,6 +30,12 @@ Route::get('/tentang/prasyarat', function () {
     ]);
 })->name('about.prasyarat');
 
+Route::get('/tentang/kebijakan-privasi', function () {
+    return Inertia::render('About/Privacy', [
+        'links' => \App\Models\Link::all()
+    ]);
+})->name('about.privacy');
+
 
 Route::get('/produk-hukum', [\App\Http\Controllers\Public\LegalProductController::class, 'index'])
     ->name('produk-hukum.index');
@@ -55,6 +61,13 @@ Route::get('/links/{link}/logo', [\App\Http\Controllers\Public\LinkController::c
 // Post Image
 Route::get('/posts/{post}/image', [\App\Http\Controllers\Public\HomeController::class, 'postImage'])
     ->name('posts.pathimage');
+
+// Contact
+Route::get('/kontak', [\App\Http\Controllers\Public\ContactController::class, 'index'])
+    ->name('contact.index');
+
+Route::post('/kontak', [\App\Http\Controllers\Public\ContactController::class, 'store'])
+    ->name('contact.store');
 
 // Informasi Hukum
 Route::get('/informasi-hukum', [\App\Http\Controllers\Public\InformationController::class, 'index'])

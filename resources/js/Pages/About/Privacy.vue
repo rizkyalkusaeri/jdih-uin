@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-
+import { route } from 'ziggy-js';
 
 const props = defineProps({
   links: Array
@@ -10,7 +10,7 @@ const props = defineProps({
 
 <template>
 
-  <Head title="Tentang JDIH" />
+  <Head title="Kebijakan Privasi" />
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->
@@ -19,9 +19,11 @@ const props = defineProps({
         <nav class="flex text-sm text-gray-500 mb-4">
           <Link href="/" class="hover:text-yellow-600 transition">Beranda</Link>
           <span class="mx-2 text-gray-300">/</span>
-          <span class="text-[#0F213A] font-medium">Tentang JDIH</span>
+          <span class="text-gray-500">Tentang</span>
+          <span class="mx-2 text-gray-300">/</span>
+          <span class="text-[#0F213A] font-medium">Kebijakan Privasi</span>
         </nav>
-        <h1 class="text-3xl font-extrabold text-[#0F213A]">Tentang JDIH UIN SGD</h1>
+        <h1 class="text-3xl font-extrabold text-[#0F213A]">Kebijakan Privasi</h1>
       </div>
     </div>
 
@@ -31,76 +33,74 @@ const props = defineProps({
           <!-- Main Content -->
           <div class="lg:w-2/3 space-y-8">
 
-            <!-- Tentang JDIH -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <h2 class="text-2xl font-bold text-[#0F213A] mb-4">Tentang JDIH UIN SGD</h2>
+
               <div class="prose prose-yellow text-gray-600 max-w-none">
+                <h2 class="text-xl font-bold text-[#0F213A] mb-2">Pendahuluan</h2>
                 <p>
-                  Jaringan Dokumentasi dan Informasi Hukum (JDIH) Universitas Islam Negeri Sunan Gunung Djati Bandung
-                  adalah wadah pendayagunaan bersama atas dokumen hukum secara tertib, terpadu, dan berkesinambungan
-                  yang bersarana pemberian pelayanan informasi hukum secara lengkap, akurat, mudah, dan cepat.
+                  Kami di JDIH UIN Sunan Gunung Djati Bandung menghargai privasi Anda. Kebijakan Privasi ini menjelaskan
+                  bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi pribadi Anda saat Anda menggunakan
+                  situs web kami. Dengan menggunakan layanan kami, Anda menyetujui pengumpulan dan penggunaan informasi
+                  sesuai dengan kebijakan ini.
                 </p>
-              </div>
-            </div>
 
-            <!-- Dasar Hukum -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <h2 class="text-xl font-bold text-[#0F213A] mb-4">Dasar Hukum</h2>
-              <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li>Peraturan Presiden Nomor 33 Tahun 2012 tentang Jaringan Dokumentasi dan Informasi Hukum Nasional.
-                </li>
-                <li>Peraturan Menteri Hukum dan Hak Asasi Manusia Nomor 8 Tahun 2019 tentang Standar Pengelolaan Dokumen
-                  dan Informasi Hukum.</li>
-                <li>Keputusan Rektor UIN Sunan Gunung Djati Bandung tentang Pembentukan Tim Pengelola JDIH.</li>
-              </ul>
-            </div>
-
-            <!-- Visi dan Misi -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <h2 class="text-xl font-bold text-[#0F213A] mb-4">Visi dan Misi</h2>
-
-              <div class="mb-6">
-                <h3 class="font-bold text-lg text-gray-800 mb-2">Visi</h3>
-                <p class="text-gray-600 italic">
-                  "Terwujudnya Jaringan Dokumentasi dan Informasi Hukum yang Terpadu dan Terintegrasi untuk Mendukung
-                  UIN Sunan Gunung Djati Bandung yang Unggul dan Kompetitif."
-                </p>
-              </div>
-
-              <div>
-                <h3 class="font-bold text-lg text-gray-800 mb-2">Misi</h3>
-                <ul class="list-decimal list-inside space-y-2 text-gray-600">
-                  <li>Mewujudkan pengelolaan dokumentasi dan informasi hukum yang tertib, terpadu, dan berkesinambungan.
-                  </li>
-                  <li>Menyediakan informasi hukum yang lengkap, akurat, mudah, dan cepat diakses.</li>
-                  <li>Mengembangkan kerjasama jaringan dokumentasi dan informasi hukum dengan instansi lain.</li>
-                  <li>Meningkatkan kualitas sumber daya manusia pengelola JDIH.</li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Maksud dan Tujuan -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <h2 class="text-xl font-bold text-[#0F213A] mb-4">Maksud dan Tujuan</h2>
-              <div class="space-y-4 text-gray-600">
+                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Informasi yang Kami Kumpulkan</h2>
                 <p>
-                  <strong class="text-gray-800">Maksud:</strong><br>
-                  Penyelenggaraan JDIH dimaksudkan untuk menjamin ketersediaan dokumentasi dan informasi hukum yang
-                  lengkap dan akurat, serta dapat diakses secara cepat dan mudah oleh sivitas akademika dan masyarakat
-                  umum.
+                  Kami dapat mengumpulkan informasi yang dapat mengidentifikasi Anda secara pribadi ("Informasi
+                  Pribadi"), seperti nama, alamat email, dan nomor telepon, terutama ketika Anda menghubungi kami
+                  melalui formulir kontak atau menggunakan layanan tertentu. Kami juga mengumpulkan informasi
+                  non-pribadi secara otomatis, seperti alamat IP, jenis browser, halaman yang dikunjungi, dan waktu
+                  akses, untuk tujuan analitik dan peningkatan layanan.
                 </p>
+
+                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Penggunaan Informasi</h2>
                 <p>
-                  <strong class="text-gray-800">Tujuan:</strong><br>
-                <ul class="list-disc list-inside mt-2 space-y-1">
-                  <li>Menjamin terciptanya pengelolaan dokumentasi dan informasi hukum yang terpadu dan terintegrasi.
-                  </li>
-                  <li>Menjamin ketersediaan dokumentasi dan informasi hukum yang lengkap dan akurat.</li>
-                  <li>Meningkatkan kualitas pelayanan informasi hukum kepada publik.</li>
-                  <li>Mendukung proses pengambilan keputusan dan pembentukan produk hukum di lingkungan Universitas.
-                  </li>
+                  Informasi yang kami kumpulkan digunakan untuk:
+                <ul>
+                  <li>Menyediakan dan memelihara layanan kami.</li>
+                  <li>Memberitahu Anda tentang perubahan pada layanan kami.</li>
+                  <li>Memungkinkan Anda untuk berpartisipasi dalam fitur interaktif layanan kami.</li>
+                  <li>Memberikan dukungan pelanggan.</li>
+                  <li>Mengumpulkan analisis atau informasi berharga sehingga kami dapat meningkatkan layanan kami.</li>
+                  <li>Memantau penggunaan layanan kami.</li>
+                  <li>Mendeteksi, mencegah, dan mengatasi masalah teknis.</li>
                 </ul>
                 </p>
+
+                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Cookies</h2>
+                <p>
+                  Kami menggunakan cookie dan teknologi pelacakan serupa untuk melacak aktivitas di layanan kami dan
+                  menyimpan informasi tertentu. Cookie adalah file dengan sejumlah kecil data yang mungkin menyertakan
+                  pengenal unik anonim. Anda dapat menginstruksikan browser Anda untuk menolak semua cookie atau untuk
+                  menunjukkan kapan cookie dikirim. Namun, jika Anda tidak menerima cookie, Anda mungkin tidak dapat
+                  menggunakan beberapa bagian dari layanan kami.
+                </p>
+
+                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Keamanan Data</h2>
+                <p>
+                  Keamanan data Anda penting bagi kami, tetapi ingatlah bahwa tidak ada metode transmisi melalui
+                  Internet atau metode penyimpanan elektronik yang 100% aman. Meskipun kami berusaha menggunakan cara
+                  yang dapat diterima secara komersial untuk melindungi Informasi Pribadi Anda, kami tidak dapat
+                  menjamin keamanannya secara mutlak.
+                </p>
+
+                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Tautan ke Situs Lain</h2>
+                <p>
+                  Layanan kami mungkin berisi tautan ke situs lain yang tidak dioperasikan oleh kami. Jika Anda mengklik
+                  tautan pihak ketiga, Anda akan diarahkan ke situs pihak ketiga tersebut. Kami sangat menyarankan Anda
+                  untuk meninjau Kebijakan Privasi setiap situs yang Anda kunjungi. Kami tidak memiliki kendali atas dan
+                  tidak bertanggung jawab atas konten, kebijakan privasi, atau praktik situs atau layanan pihak ketiga
+                  mana pun.
+                </p>
+
+                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Perubahan Kebijakan Privasi Ini</h2>
+                <p>
+                  Kami dapat memperbarui Kebijakan Privasi kami dari waktu ke waktu. Kami akan memposting kebijakan
+                  privasi baru di halaman ini. Anda disarankan untuk meninjau Kebijakan Privasi ini secara berkala untuk
+                  setiap perubahan. Perubahan pada Kebijakan Privasi ini efektif ketika diposting di halaman ini.
+                </p>
               </div>
+
             </div>
 
           </div>

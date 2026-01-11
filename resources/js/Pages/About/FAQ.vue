@@ -107,7 +107,7 @@ const toggleFaq = (index) => {
                 Hubungi kami jika anda membutuhkan bantuan terkait layanan informasi hukum, kendala akses, atau
                 pertanyaan seputar produk hukum.
               </p>
-              <Link href="#"
+              <Link href="/kontak"
                 class="inline-flex items-center justify-center gap-2 bg-yellow-500 text-[#0F213A] px-6 py-3 rounded-xl font-bold hover:bg-yellow-400 transition w-full group">
                 <span>Kontak Kami</span>
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" viewBox="0 0 24 24"

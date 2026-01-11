@@ -51,7 +51,7 @@ const page = usePage();
                         <div class="relative group">
                             <button
                                 class="flex items-center gap-1 text-gray-600 font-semibold hover:text-yellow-500 transition focus:outline-none"
-                                :class="{ 'text-yellow-500 font-bold': route().current('about.index') || route().current('about.structure') || route().current('about.faq') || route().current('about.prasyarat') }">
+                                :class="{ 'text-yellow-500 font-bold': route().current('about.index') || route().current('about.structure') || route().current('about.faq') || route().current('about.prasyarat') || route().current('about.privacy') }">
                                 Tentang
                                 <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -83,9 +83,16 @@ const page = usePage();
                                     :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.prasyarat') }">
                                     Prasyarat
                                 </Link>
+                                <Link href="/tentang/kebijakan-privasi"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.privacy') }">
+                                    Kebijakan Privasi
+                                </Link>
                             </div>
                         </div>
-                        <Link href="#" class="text-gray-600 font-semibold hover:text-yellow-500 transition">Kontak
+                        <Link href="/kontak"
+                            :class="[route().current('contact.index') ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500', 'transition']">
+                            Kontak
                         </Link>
                     </div>
 
@@ -147,9 +154,13 @@ const page = usePage();
                             :class="[route().current('about.prasyarat') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
                             Prasyarat
                         </Link>
+                        <Link href="/tentang/kebijakan-privasi"
+                            :class="[route().current('about.privacy') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                            Kebijakan Privasi
+                        </Link>
                     </div>
-                    <Link href="#"
-                        class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none transition duration-150 ease-in-out">
+                    <Link href="/kontak"
+                        :class="[route().current('contact.index') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
                         Kontak
                     </Link>
                 </div>
@@ -164,7 +175,7 @@ const page = usePage();
         <!-- Footer -->
         <footer class="bg-[#0F213A] text-white pt-16 pb-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                     <!-- Brand -->
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
@@ -184,14 +195,11 @@ const page = usePage();
                     <div>
                         <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-wider">Tautan Cepat</h4>
                         <ul class="space-y-3 text-sm text-gray-400">
-                            <li><a href="{{ route('about.index') }}" class="hover:text-yellow-400 transition">Profil
-                                    JDIH</a></li>
-                            <li><a href="{{ route('about.structure') }}"
-                                    class="hover:text-yellow-400 transition">Struktur Organisasi</a></li>
-                            <li><a href="{{ route('about.faq') }}" class="hover:text-yellow-400 transition">FAQ</a></li>
-                            <li><a href="{{ route('about.prasyarat') }}" class="hover:text-yellow-400 transition">SK
-                                    Rektor</a></li>
-                            <li><a href="{{ route('contact') }}" class="hover:text-yellow-400 transition">Kontak
+                            <li><a href="/tentang" class="hover:text-yellow-400 transition">Profil JDIH</a></li>
+                            <li><a href="/tentang/struktur-organisasi" class="hover:text-yellow-400 transition">Struktur
+                                    Organisasi</a></li>
+                            <li><a href="/tentang/faq" class="hover:text-yellow-400 transition">FAQ</a></li>
+                            <li><a href="/kontak" class="hover:text-yellow-400 transition">Kontak
                                     Kami</a></li>
                         </ul>
                     </div>
@@ -228,45 +236,14 @@ const page = usePage();
                             </li>
                         </ul>
                     </div>
-
-                    <!-- Lokasi (Map Placeholder) -->
-                    <div>
-                        <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-wider">Lokasi</h4>
-                        <div class="bg-gray-800 rounded-lg overflow-hidden h-40 w-full relative group">
-                            <!-- Placeholder for map -->
-                            <img src="https://via.placeholder.com/300x200.png?text=Map+Location" alt="Map"
-                                class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition" />
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <span class="bg-white text-gray-900 px-3 py-1 rounded text-xs font-bold shadow">Buka
-                                    Peta</span>
-                            </div>
-                        </div>
-                        <div class="flex gap-4 mt-6">
-                            <a href="#" class="text-gray-400 hover:text-white transition"><svg class="w-6 h-6"
-                                    fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2.04c-5.5 0-10 4.49-10 10.02c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89c1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02Z" />
-                                </svg></a>
-                            <a href="#" class="text-gray-400 hover:text-white transition"><svg class="w-6 h-6"
-                                    fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M23.953 4.57a10 10 0 0 1-2.825.775 4.958 4.958 0 0 0 2.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 0 0-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 0 0-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 0 1-2.228-.616v.06a4.923 4.923 0 0 0 3.946 4.827 4.996 4.996 0 0 1-2.212.085 4.936 4.936 0 0 0 4.604 3.417 9.867 9.867 0 0 1-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 0 0 7.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0 0 24 4.59z" />
-                                </svg></a>
-                            <a href="#" class="text-gray-400 hover:text-white transition"><svg class="w-6 h-6"
-                                    fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.073-4.948-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
-                                </svg></a>
-                        </div>
-                    </div>
                 </div>
 
                 <div
                     class="border-t border-gray-700 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
                     <p>&copy; 2024 JDIH UIN Sunan Gunung Djati Bandung. All Rights Reserved.</p>
                     <div class="flex space-x-6 mt-4 md:mt-0">
-                        <a href="#" class="hover:text-white transition">Kebijakan Privasi</a>
-                        <a href="#" class="hover:text-white transition">Syarat & Ketentuan</a>
+                        <a href="/tentang/kebijakan-privasi" class="hover:text-white transition">Kebijakan Privasi</a>
+                        <a href="/tentang/prasyarat" class="hover:text-white transition">Syarat & Ketentuan</a>
                     </div>
                 </div>
             </div>

@@ -162,7 +162,7 @@ const pieChartOptions = {
                 <div class="w-full max-w-3xl bg-white rounded-lg p-2 flex gap-2 shadow-lg">
                     <div class="hidden md:flex items-center pl-3 pr-2 border-r border-gray-200 min-w-[160px] relative">
                         <select v-model="searchType"
-                            class="w-full bg-transparent border-none focus:ring-0 focus:outline-0 text-gray-700 text-sm font-medium appearance-none cursor-pointer pr-8">
+                            class="w-full bg-transparent border-none transition-all duration-200 ease-in-out focus:ring-0 focus:outline-0 text-gray-700 text-sm font-medium appearance-none cursor-pointer pr-8">
                             <option>Semua Jenis</option>
                             <option v-for="type in types" :key="type.id" :value="type.name">{{ type.name }}</option>
                         </select>
