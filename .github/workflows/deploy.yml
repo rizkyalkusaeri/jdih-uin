@@ -20,49 +20,59 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # Masuk ke folder project
-            cd /var/www/html/jdih-uin
+            # 1. [UPDATED] Stop Script jika ada error (PENTING!)
+             set -e 
 
-            # FIX 1: Gunakan SUDO karena folder storage mungkin milik www-data dari deploy sebelumnya
-            sudo php artisan down || true 
-            # (|| true artinya: jika gagal/sudah down, jangan stop script, lanjut saja)
+             cd /var/www/html/jdih-uin
 
-            # Tarik kode terbaru
-            git pull origin master
+             # 2. [UPDATED] Atur Safe Directory di AWAL
+             git config --global --add safe.directory /var/www/html/jdih-uin
 
-            # Install dependency
-            composer install --optimize-autoloader --no-dev
+             echo "🚀 Mulai Deploy..."
 
-            # Migrasi Database
-            php artisan migrate --force
+             # Matikan aplikasi
+             sudo php artisan down || true
 
-            # Frontend (Node.js/Inertia)
-            npm install
-            npm run build
+             # 3. [UPDATED] Paksa Git Reset (Solusi kode tidak update)
+             # Ini akan membuang perubahan lokal di VPS dan memaksa sama persis dengan GitHub
+             echo "⬇️ Menarik kode dari git..."
+             git fetch origin master
+             git reset --hard origin/master
 
-            # Optimize
-            php artisan optimize:clear
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan filament:optimize
-            php artisan ziggy:generate
-            php artisan route:clear
+             echo "📦 Install Dependency..."
+             composer install --optimize-autoloader --no-dev
 
-            # FIX 2: Permission Storage
-            # Pastikan www-data (Nginx) bisa tulis data session/cache/upload
-            sudo chown -R www-data:www-data storage
-            sudo chown -R www-data:www-data bootstrap/cache
-            sudo chmod -R 775 storage
-            sudo chmod -R 775 bootstrap/cache
+             echo "🗄️ Migrasi Database..."
+             php artisan migrate --force
 
-            # Restart server SSR Inertia
-            # php artisan inertia:stop-ssr || true
-            # pm2 restart ssr-server || pm2 start "php artisan inertia:start-ssr" --name "ssr-server"
+             echo "🎨 Build Frontend..."
+             npm install
+             npm run build
 
-            # FIX 3: Git Safe Directory (Pencegahan error 'dubious ownership')
-            # Karena owner folder sering berubah, kita whitelist folder ini di git
-            git config --global --add safe.directory /var/www/html/jdih-uin
+             echo "🧹 Clearing Cache..."
+             php artisan optimize:clear
+             php artisan config:cache
+             php artisan route:cache
+             php artisan view:cache
+             php artisan filament:optimize
+             
+             # Khusus Ziggy kadang butuh clear dulu
+             php artisan route:clear 
+             php artisan ziggy:generate
 
-            # Website Live Lagi
-            sudo php artisan up
+             echo "🔒 Fixing Permissions..."
+             # Pastikan www-data (Nginx) bisa tulis data
+             sudo chown -R www-data:www-data storage
+             sudo chown -R www-data:www-data bootstrap/cache
+             sudo chmod -R 775 storage
+             sudo chmod -R 775 bootstrap/cache
+
+             # 4. [UPDATED] Reload PHP-FPM (PENTING jika pakai Nginx)
+             # Sesuaikan versinya, misal php8.1-fpm, php8.2-fpm, atau php8.3-fpm
+             echo "🔄 Reloading PHP FPM..."
+             sudo service php8.2-fpm reload 
+
+             # Nyalakan aplikasi
+             sudo php artisan up
+             
+             echo "✅ Deploy Selesai!"
