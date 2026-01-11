@@ -47,8 +47,44 @@ const page = usePage();
                             :class="[route().current('information.*') ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500', 'transition']">
                             Informasi Hukum
                         </Link>
-                        <Link href="#" class="text-gray-600 font-semibold hover:text-yellow-500 transition">Tentang
-                        </Link>
+                        <!-- Tentang Dropdown -->
+                        <div class="relative group">
+                            <button
+                                class="flex items-center gap-1 text-gray-600 font-semibold hover:text-yellow-500 transition focus:outline-none"
+                                :class="{ 'text-yellow-500 font-bold': route().current('about.index') || route().current('about.structure') || route().current('about.faq') || route().current('about.prasyarat') }">
+                                Tentang
+                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div
+                                class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50">
+                                <Link href="/tentang"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.index') }">
+                                    Profil JDIH
+                                </Link>
+                                <Link href="/tentang/struktur-organisasi"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.structure') }">
+                                    Struktur Organisasi
+                                </Link>
+                                <Link href="/tentang/faq"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.faq') }">
+                                    FAQ
+                                </Link>
+                                <Link href="/tentang/prasyarat"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.prasyarat') }">
+                                    Prasyarat
+                                </Link>
+                            </div>
+                        </div>
                         <Link href="#" class="text-gray-600 font-semibold hover:text-yellow-500 transition">Kontak
                         </Link>
                     </div>
@@ -89,10 +125,29 @@ const page = usePage();
                         :class="[route().current('information.*') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium focus:outline-none transition duration-150 ease-in-out']">
                         Informasi Hukum
                     </Link>
-                    <Link href="#"
-                        class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none transition duration-150 ease-in-out">
-                        Tentang
-                    </Link>
+                    <!-- Tentang Group -->
+                    <div class="space-y-1">
+                        <div
+                            class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600">
+                            Tentang
+                        </div>
+                        <Link href="/tentang"
+                            :class="[route().current('about.index') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                            Profil JDIH
+                        </Link>
+                        <Link href="/tentang/struktur-organisasi"
+                            :class="[route().current('about.structure') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                            Struktur Organisasi
+                        </Link>
+                        <Link href="/tentang/faq"
+                            :class="[route().current('about.faq') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                            FAQ
+                        </Link>
+                        <Link href="/tentang/prasyarat"
+                            :class="[route().current('about.prasyarat') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                            Prasyarat
+                        </Link>
+                    </div>
                     <Link href="#"
                         class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none transition duration-150 ease-in-out">
                         Kontak
@@ -129,11 +184,15 @@ const page = usePage();
                     <div>
                         <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-wider">Tautan Cepat</h4>
                         <ul class="space-y-3 text-sm text-gray-400">
-                            <li><a href="#" class="hover:text-yellow-400 transition">Profil JDIH</a></li>
-                            <li><a href="#" class="hover:text-yellow-400 transition">Struktur Organisasi</a></li>
-                            <li><a href="#" class="hover:text-yellow-400 transition">SOP Layanan</a></li>
-                            <li><a href="#" class="hover:text-yellow-400 transition">SK Rektor</a></li>
-                            <li><a href="#" class="hover:text-yellow-400 transition">Kontak Kami</a></li>
+                            <li><a href="{{ route('about.index') }}" class="hover:text-yellow-400 transition">Profil
+                                    JDIH</a></li>
+                            <li><a href="{{ route('about.structure') }}"
+                                    class="hover:text-yellow-400 transition">Struktur Organisasi</a></li>
+                            <li><a href="{{ route('about.faq') }}" class="hover:text-yellow-400 transition">FAQ</a></li>
+                            <li><a href="{{ route('about.prasyarat') }}" class="hover:text-yellow-400 transition">SK
+                                    Rektor</a></li>
+                            <li><a href="{{ route('contact') }}" class="hover:text-yellow-400 transition">Kontak
+                                    Kami</a></li>
                         </ul>
                     </div>
 

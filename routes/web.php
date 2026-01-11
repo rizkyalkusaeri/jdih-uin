@@ -6,6 +6,30 @@ use Inertia\Inertia;
 
 Route::get('/', [\App\Http\Controllers\Public\HomeController::class, 'index'])->name('home');
 
+Route::get('/tentang', function () {
+    return Inertia::render('About/Index', [
+        'links' => \App\Models\Link::all()
+    ]);
+})->name('about.index');
+
+Route::get('/tentang/struktur-organisasi', function () {
+    return Inertia::render('About/Structure', [
+        'links' => \App\Models\Link::all()
+    ]);
+})->name('about.structure');
+
+Route::get('/tentang/faq', function () {
+    return Inertia::render('About/FAQ', [
+        'links' => \App\Models\Link::all()
+    ]);
+})->name('about.faq');
+
+Route::get('/tentang/prasyarat', function () {
+    return Inertia::render('About/Prasyarat', [
+        'links' => \App\Models\Link::all()
+    ]);
+})->name('about.prasyarat');
+
 
 Route::get('/produk-hukum', [\App\Http\Controllers\Public\LegalProductController::class, 'index'])
     ->name('produk-hukum.index');
