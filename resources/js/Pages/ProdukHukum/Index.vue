@@ -73,7 +73,7 @@ watch(filtersState, debounce((value) => {
 
 <template>
 
-    <Head title="Pencarian Produk Hukum" />
+    <Head title="Produk Hukum" />
 
     <GuestLayout>
         <!-- Breadcrumb & Header -->
