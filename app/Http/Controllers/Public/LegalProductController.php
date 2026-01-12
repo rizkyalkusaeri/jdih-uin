@@ -83,6 +83,20 @@ class LegalProductController extends Controller
 
         $legalProducts = $query->paginate(10)->withQueryString();
 
+        // Log Search
+        if ($request->filled('search')) {
+            try {
+                \App\Models\SearchLog::create([
+                    'keyword' => $request->input('search'),
+                    'hits' => $legalProducts->total(),
+                    'ip_address' => $request->ip(),
+                ]);
+            } catch (\Exception $e) {
+                // Fail silently to not disrupt user experience
+                \Illuminate\Support\Facades\Log::error('Failed to log search: ' . $e->getMessage());
+            }
+        }
+
         // Filter Data for Sidebar (Rich Data with Counts)
         $availableYears = LegalProduct::select('year')->distinct()->orderBy('year', 'desc')->pluck('year');
 
@@ -176,6 +190,7 @@ class LegalProductController extends Controller
         // Advanced logic: Filter by Type, then sort by shared subjects desc, then published_date desc
         $relatedDocuments = LegalProduct::where('type_id', $legalProduct->type_id)
             ->where('id', '!=', $legalProduct->id)
+            ->where('status', 'Active')
             ->latest('published_date')
             ->limit(4)
             ->get();

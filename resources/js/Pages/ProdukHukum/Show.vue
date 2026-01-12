@@ -261,10 +261,11 @@ const formatDate = (dateString) => {
                                     class="mt-6 pt-6 border-t border-gray-100">
                                     <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">SUBJEK</p>
                                     <div class="flex flex-wrap gap-2">
-                                        <span v-for="subject in legalProduct.subjects" :key="subject.id"
-                                            class="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs font-medium border border-gray-200">
+                                        <Link v-for="subject in legalProduct.subjects" :key="subject.id"
+                                            :href="route('produk-hukum.index', { subject: [subject.name] })"
+                                            class="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs font-medium border border-gray-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition cursor-pointer">
                                             {{ subject.name }}
-                                        </span>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
@@ -403,10 +404,12 @@ const formatDate = (dateString) => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h4
-                                        class="text-sm font-bold text-gray-700 group-hover:text-blue-600 transition leading-snug mb-1">
-                                        {{ doc.title }}
-                                    </h4>
+                                    <Link :href="route('produk-hukum.show', doc.slug)">
+                                        <h4
+                                            class="text-sm font-bold text-gray-700 group-hover:text-blue-600 transition leading-snug mb-1">
+                                            {{ doc.title }}
+                                        </h4>
+                                    </Link>
                                     <p class="text-[10px] text-gray-500">{{ doc.type?.name }}</p>
                                 </div>
                             </div>
