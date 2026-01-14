@@ -83,10 +83,10 @@ defineProps({
                 <div v-if="post.tags && post.tags.length > 0" class="mt-10 pt-6 border-t border-gray-100">
                   <h3 class="text-sm font-bold text-gray-900 mb-3">Tags:</h3>
                   <div class="flex flex-wrap gap-2">
-                    <span v-for="tag in post.tags" :key="tag.id"
+                    <Link v-for="tag in post.tags" :key="tag.id" :href="route('information.index', { tag: tag.slug })"
                       class="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-yellow-50 hover:text-yellow-700 transition cursor-default">
                       #{{ tag.name }}
-                    </span>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -135,7 +135,7 @@ defineProps({
               <h3 class="font-bold text-xl mb-2">Butuh Bantuan?</h3>
               <p class="text-gray-400 text-sm mb-6">Hubungi kami jika anda membutuhkan bantuan tekait layanan informasi
                 hukum.</p>
-              <Link href="#"
+              <Link :href="route('contact.index')"
                 class="inline-block bg-yellow-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-yellow-400 transition w-full">
                 Kontak Kami
               </Link>

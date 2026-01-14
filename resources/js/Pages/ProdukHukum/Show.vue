@@ -202,7 +202,7 @@ const formatDate = (dateString) => {
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">BIDANG
                                             HUKUM</p>
                                         <p class="text-base font-bold text-[#0F213A]">{{ legalProduct.legalField?.name
-                                        }}</p>
+                                            }}</p>
                                     </div>
                                     <div v-if="legalProduct.location?.name">
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">LOKASI
@@ -219,7 +219,7 @@ const formatDate = (dateString) => {
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">URUSAN
                                             PEMERINTAHAN</p>
                                         <p class="text-base font-bold text-[#0F213A]">{{ legalProduct.government_affair
-                                        }}</p>
+                                            }}</p>
                                     </div>
                                     <div v-if="legalProduct.language">
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">BAHASA
@@ -235,7 +235,7 @@ const formatDate = (dateString) => {
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
                                             DESKRIPSI FISIK</p>
                                         <p class="text-base font-bold text-[#0F213A]">{{ legalProduct.page_description
-                                        }}</p>
+                                            }}</p>
                                     </div>
                                     <div v-if="legalProduct.source">
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">SUMBER
@@ -485,13 +485,24 @@ const formatDate = (dateString) => {
                         <div class="flex items-center justify-between border-t border-gray-100 pt-4">
                             <span class="text-[10px] font-bold text-gray-400 uppercase">RATING PENGGUNA</span>
                             <span class="text-sm font-extrabold text-[#0F213A]">{{ ratingStats?.average || 0
-                            }}/5.0</span>
+                                }}/5.0</span>
                         </div>
                         <div class="flex gap-1 text-yellow-400 mt-1 text-sm">
                             <span v-for="i in 5" :key="i"
                                 :class="i <= Math.round(ratingStats?.average || 0) ? 'text-yellow-400' : 'text-gray-200'">★</span>
                         </div>
                         <p class="text-[10px] text-gray-400 mt-1">(Berdasarkan {{ ratingStats?.count || 0 }} ulasan)</p>
+                    </div>
+
+                    <div class="bg-[#0F213A] text-white p-8 rounded-2xl text-center">
+                        <h3 class="font-bold text-xl mb-2">Butuh Bantuan?</h3>
+                        <p class="text-gray-400 text-sm mb-6">Hubungi kami jika anda membutuhkan bantuan tekait layanan
+                            informasi
+                            hukum.</p>
+                        <Link :href="route('contact.index')"
+                            class="inline-block bg-yellow-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-yellow-400 transition w-full">
+                            Kontak Kami
+                        </Link>
                     </div>
 
                     <!-- Disclaimer -->

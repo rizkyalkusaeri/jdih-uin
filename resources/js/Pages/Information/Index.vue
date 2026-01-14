@@ -8,22 +8,30 @@ import { debounce } from 'lodash';
 const props = defineProps({
   posts: Object,
   categories: Array,
+  tags: Array,
   filters: Object,
 });
 
 const search = ref(props.filters.q || '');
 const selectedCategories = ref(props.filters.category ? [].concat(props.filters.category) : []);
+const selectedTags = ref(props.filters.tag ? [].concat(props.filters.tag) : []);
 const sort = ref(props.filters.sort || 'newest');
 
 // Category Search state
 const searchCategory = ref('');
 const showAllCategories = ref(false);
 
+// Tag Search state
+const searchTag = ref('');
+const showAllTags = ref(false);
+
 const resetFilters = () => {
   search.value = '';
   selectedCategories.value = [];
+  selectedTags.value = [];
   sort.value = 'newest';
   searchCategory.value = '';
+  searchTag.value = '';
 };
 
 // Filtered Categories logic for Sidebar
@@ -35,13 +43,23 @@ const filteredCategories = computed(() => {
   return showAllCategories.value ? items : items.slice(0, 5);
 });
 
+// Filtered Tags logic for Sidebar
+const filteredTags = computed(() => {
+  let items = props.tags || [];
+  if (searchTag.value) {
+    return items.filter(t => t.name.toLowerCase().includes(searchTag.value.toLowerCase()));
+  }
+  return showAllTags.value ? items : items.slice(0, 5);
+});
+
 // Watchers
-watch([search, selectedCategories, sort], debounce(() => {
+watch([search, selectedCategories, selectedTags, sort], debounce(() => {
   router.get(
     route('information.index'),
     {
       q: search.value,
       category: selectedCategories.value,
+      tag: selectedTags.value,
       sort: sort.value,
     },
     { preserveState: true, replace: true }
@@ -120,6 +138,46 @@ watch([search, selectedCategories, sort], debounce(() => {
                   class="text-xs font-bold text-blue-600 hover:text-blue-800 mt-2 flex items-center gap-1">
                   {{ showAllCategories ? 'Sembunyikan' : 'Lihat Selengkapnya' }}
                   <svg class="w-3 h-3" :class="{ 'rotate-180': showAllCategories }" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="p-5 border-b border-gray-100">
+              <h4 class="font-bold text-sm text-[#0F213A] mb-3">Tag</h4>
+
+              <!-- Search Tag -->
+              <div class="mb-3 relative">
+                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input type="text" v-model="searchTag" placeholder="Cari tag..."
+                  class="w-full pl-9 pr-3 py-2 text-xs border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50" />
+              </div>
+
+              <div class="space-y-2">
+                <div v-for="tag in filteredTags" :key="tag.id" class="flex items-center justify-between group">
+                  <label class="flex items-center gap-3 cursor-pointer flex-1">
+                    <input type="checkbox" v-model="selectedTags" :value="tag.slug"
+                      class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
+                    <span class="text-gray-600 text-sm group-hover:text-[#0F213A] transition truncate max-w-[150px]"
+                      :title="tag.name">{{ tag.name }}</span>
+                  </label>
+                  <span
+                    class="bg-gray-100 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-full group-hover:bg-yellow-100 group-hover:text-yellow-700 transition">
+                    {{ tag.posts_count || 0 }}
+                  </span>
+                </div>
+
+                <button v-if="!searchTag && tags.length > 5" @click="showAllTags = !showAllTags"
+                  class="text-xs font-bold text-blue-600 hover:text-blue-800 mt-2 flex items-center gap-1">
+                  {{ showAllTags ? 'Sembunyikan' : 'Lihat Selengkapnya' }}
+                  <svg class="w-3 h-3" :class="{ 'rotate-180': showAllTags }" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>

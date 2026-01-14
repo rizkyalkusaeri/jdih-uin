@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
-use App\Models\PostView;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
@@ -35,6 +35,14 @@ class InformationController extends Controller
       });
     }
 
+    // Filter by Tag
+    if ($request->filled('tag')) {
+      $tags = (array) $request->input('tag');
+      $query->whereHas('tags', function ($q) use ($tags) {
+        $q->whereIn('slug', $tags);
+      });
+    }
+
     // Sorting
     $sort = $request->input('sort', 'newest');
     if ($sort === 'popular') {
@@ -58,10 +66,20 @@ class InformationController extends Controller
 
     $categories = Category::where('type', 'post')->withCount('posts')->get();
 
+    // Get tags with posts count, sorted by count descending
+    $tags = Tag::withCount(['posts' => function ($q) {
+      $q->whereNotNull('published_at')
+        ->whereHas('category', fn($c) => $c->where('type', 'post'));
+    }])
+      ->having('posts_count', '>', 0)
+      ->orderBy('posts_count', 'desc')
+      ->get();
+
     return Inertia::render('Information/Index', [
       'posts' => $posts,
       'categories' => $categories,
-      'filters' => $request->only(['q', 'category', 'sort']),
+      'tags' => $tags,
+      'filters' => $request->only(['q', 'category', 'tag', 'sort']),
     ]);
   }
 
