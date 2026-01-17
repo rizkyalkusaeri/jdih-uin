@@ -73,5 +73,20 @@ Route::post('/kontak', [\App\Http\Controllers\Public\ContactController::class, '
 Route::get('/informasi-hukum', [\App\Http\Controllers\Public\InformationController::class, 'index'])
     ->name('information.index');
 
+Route::get('/glosarium', [\App\Http\Controllers\Public\GlossaryController::class, 'index'])
+    ->name('glossary.index');
+
 Route::get('/informasi-hukum/{slug}', [\App\Http\Controllers\Public\InformationController::class, 'show'])
     ->name('information.show');
+
+// Infografis
+Route::get('/infografis', [\App\Http\Controllers\Public\InfographicController::class, 'index'])
+    ->name('infographics.index');
+Route::get('/infografis/{infographic}/cover', [\App\Http\Controllers\Public\InfographicController::class, 'cover'])
+    ->name('infographics.cover');
+Route::get('/infografis/{infographic}/gallery/{index}', [\App\Http\Controllers\Public\InfographicController::class, 'gallery'])
+    ->name('infographics.gallery');
+
+// Statistik
+Route::get('/statistik', [\App\Http\Controllers\Public\StatisticsController::class, 'index'])
+    ->name('statistics.index');

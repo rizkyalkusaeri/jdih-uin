@@ -43,10 +43,44 @@ const page = usePage();
                             :class="[page.component.startsWith('ProdukHukum') ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500', 'transition']">
                             Produk Hukum
                         </Link>
-                        <Link href="/informasi-hukum"
-                            :class="[route().current('information.*') ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500', 'transition']">
-                            Informasi Hukum
-                        </Link>
+                        <!-- Berita, Event & Dokumentasi Dropdown -->
+                        <div class="relative group">
+                            <button
+                                class="flex items-center gap-1 text-gray-600 font-semibold hover:text-yellow-500 transition focus:outline-none"
+                                :class="{ 'text-yellow-500 font-bold': route().current('information.*') || route().current('infographics.*') || route().current('glossary.*') }">
+                                Informasi Hukum
+                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div
+                                class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50">
+                                <Link href="/informasi-hukum"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('information.*') }">
+                                    Berita, Event & Dokumentasi
+                                </Link>
+                                <Link href="/infografis"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('infographics.*') }">
+                                    Info Grafis
+                                </Link>
+                                <Link href="/glosarium"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('glossary.*') }">
+                                    Glosarium
+                                </Link>
+                                <Link href="/statistik"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('statistics.*') }">
+                                    Statistik & Data
+                                </Link>
+                            </div>
+                        </div>
                         <!-- Tentang Dropdown -->
                         <div class="relative group">
                             <button
@@ -128,10 +162,25 @@ const page = usePage();
                         :class="[page.component.startsWith('ProdukHukum') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium focus:outline-none transition duration-150 ease-in-out']">
                         Produk Hukum
                     </Link>
-                    <Link href="/informasi-hukum"
-                        :class="[route().current('information.*') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium focus:outline-none transition duration-150 ease-in-out']">
-                        Informasi Hukum
-                    </Link>
+                    <!-- Berita, Event & Dokumentasi Group -->
+                    <div class="space-y-1">
+                        <div
+                            class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600">
+                            Berita, Event & Dokumentasi
+                        </div>
+                        <Link href="/informasi-hukum"
+                            :class="[route().current('information.*') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                            Informasi Hukum
+                        </Link>
+                        <Link href="/infografis"
+                            :class="[route().current('infographics.*') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                            Info Grafis
+                        </Link>
+                        <Link href="/statistik"
+                            :class="[route().current('statistics.*') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                            Statistik & Data
+                        </Link>
+                    </div>
                     <!-- Tentang Group -->
                     <div class="space-y-1">
                         <div

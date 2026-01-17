@@ -31,6 +31,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('sys-admin-panel')
             ->brandName('CMS JDIH UIN')
             ->brandLogo(asset('images/jdih.png'))
+            ->favicon(asset('images/jdih.png'))
+            ->sidebarCollapsibleOnDesktop()
             ->spa()
             ->login()
             ->bootUsing(function () {
@@ -61,10 +63,6 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
-            ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
-            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
