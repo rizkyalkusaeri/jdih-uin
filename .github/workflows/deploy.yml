@@ -44,6 +44,7 @@ jobs:
             php artisan migrate --force
 
             echo "🎨 Build Frontend..."
+            php artisan ziggy:generate
             npm install
             npm run build
 
