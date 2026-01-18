@@ -76,6 +76,9 @@ Route::get('/informasi-hukum', [\App\Http\Controllers\Public\InformationControll
 Route::get('/glosarium', [\App\Http\Controllers\Public\GlossaryController::class, 'index'])
     ->name('glossary.index');
 
+Route::get('/kamus-hukum', [\App\Http\Controllers\Public\LegalDictionaryController::class, 'index'])
+    ->name('legal-dictionary.index');
+
 Route::get('/informasi-hukum/{slug}', [\App\Http\Controllers\Public\InformationController::class, 'show'])
     ->name('information.show');
 

@@ -47,7 +47,7 @@ const page = usePage();
                         <div class="relative group">
                             <button
                                 class="flex items-center gap-1 text-gray-600 font-semibold hover:text-yellow-500 transition focus:outline-none"
-                                :class="{ 'text-yellow-500 font-bold': route().current('information.*') || route().current('infographics.*') || route().current('glossary.*') }">
+                                :class="{ 'text-yellow-500 font-bold': route().current('information.*') || route().current('infographics.*') || route().current('glossary.*') || route().current('legal-dictionary.*') }">
                                 Informasi Hukum
                                 <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -68,6 +68,11 @@ const page = usePage();
                                     class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
                                     :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('infographics.*') }">
                                     Info Grafis
+                                </Link>
+                                <Link href="/kamus-hukum"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('legal-dictionary.*') }">
+                                    Kamus Hukum
                                 </Link>
                                 <Link href="/glosarium"
                                     class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
