@@ -120,6 +120,11 @@ class HomeController extends Controller
       'types' => $types,
       'topTypes' => $topTypes,
       'visitorStats' => $visitorStats,
+      'awards' => \App\Models\Award::all()->map(fn($a) => [
+        'id' => $a->id,
+        'title' => $a->title,
+        'image' => $a->image ? \Illuminate\Support\Facades\Storage::url($a->image) : null,
+      ]),
     ]);
   }
 

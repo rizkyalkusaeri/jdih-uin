@@ -35,8 +35,12 @@ const props = defineProps({
     feedbacks: Array,
     types: Array,
     topTypes: Array,
-    visitorStats: Object
+    topTypes: Array,
+    visitorStats: Object,
+    awards: Array
 });
+
+import AwardsCarousel from '@/Components/AwardsCarousel.vue';
 
 // Search
 const searchQuery = ref('');
@@ -423,5 +427,8 @@ const pieChartOptions = {
                 </Link>
             </div>
         </div>
+
+        <!-- Awards Section -->
+        <AwardsCarousel :awards="awards" />
     </GuestLayout>
 </template>
