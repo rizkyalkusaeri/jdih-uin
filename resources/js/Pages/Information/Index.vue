@@ -1,9 +1,10 @@
 <script setup>
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { ref, watch, computed } from 'vue';
 import { debounce } from 'lodash';
+import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
   posts: Object,
@@ -12,64 +13,66 @@ const props = defineProps({
   filters: Object,
 });
 
+// State
 const search = ref(props.filters.q || '');
-const selectedCategories = ref(props.filters.category ? [].concat(props.filters.category) : []);
-const selectedTags = ref(props.filters.tag ? [].concat(props.filters.tag) : []);
 const sort = ref(props.filters.sort || 'newest');
+const selectedCategories = ref(props.filters.categories ? String(props.filters.categories).split(',') : []);
+const selectedTags = ref(props.filters.tags ? String(props.filters.tags).split(',') : []);
 
-// Category Search state
+// Sidebar Search State
 const searchCategory = ref('');
-const showAllCategories = ref(false);
-
-// Tag Search state
 const searchTag = ref('');
+const showAllCategories = ref(false);
 const showAllTags = ref(false);
 
-const resetFilters = () => {
-  search.value = '';
-  selectedCategories.value = [];
-  selectedTags.value = [];
-  sort.value = 'newest';
-  searchCategory.value = '';
-  searchTag.value = '';
-};
-
-// Filtered Categories logic for Sidebar
+// Filtered Lists for Sidebar
 const filteredCategories = computed(() => {
-  let items = props.categories;
+  let cats = props.categories;
   if (searchCategory.value) {
-    return items.filter(c => c.name.toLowerCase().includes(searchCategory.value.toLowerCase()));
+    cats = cats.filter(c => c.name.toLowerCase().includes(searchCategory.value.toLowerCase()));
   }
-  return showAllCategories.value ? items : items.slice(0, 5);
+  return showAllCategories.value ? cats : cats.slice(0, 5);
 });
 
-// Filtered Tags logic for Sidebar
 const filteredTags = computed(() => {
-  let items = props.tags || [];
+  let tgs = props.tags;
   if (searchTag.value) {
-    return items.filter(t => t.name.toLowerCase().includes(searchTag.value.toLowerCase()));
+    tgs = tgs.filter(t => t.name.toLowerCase().includes(searchTag.value.toLowerCase()));
   }
-  return showAllTags.value ? items : items.slice(0, 5);
+  return showAllTags.value ? tgs : tgs.slice(0, 5);
 });
 
-// Watchers
-watch([search, selectedCategories, selectedTags, sort], debounce(() => {
+// Watchers for Filters
+const updateParams = debounce(() => {
   router.get(
     route('information.index'),
     {
       q: search.value,
-      category: selectedCategories.value,
-      tag: selectedTags.value,
       sort: sort.value,
+      categories: selectedCategories.value.join(','),
+      tags: selectedTags.value.join(','),
     },
     { preserveState: true, replace: true }
   );
-}, 300), { deep: true });
+}, 300);
+
+watch(search, updateParams);
+watch(sort, updateParams);
+watch(selectedCategories, updateParams, { deep: true });
+watch(selectedTags, updateParams, { deep: true });
+
+const resetFilters = () => {
+  search.value = '';
+  sort.value = 'newest';
+  selectedCategories.value = [];
+  selectedTags.value = [];
+};
 </script>
 
 <template>
 
-  <Head title="Informasi Hukum" />
+  <SeoHead title="Informasi Hukum - JDIH UIN Sunan Gunung Djati"
+    description="Berita dan artikel menarik seputar hukum di lingkungan Universitas Islam Negeri Sunan Gunung Djati Bandung." />
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->

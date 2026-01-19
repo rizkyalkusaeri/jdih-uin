@@ -1,8 +1,9 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { ref } from 'vue';
 import { route } from 'ziggy-js';
+import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
   links: Array
@@ -43,7 +44,8 @@ const toggleFaq = (index) => {
 
 <template>
 
-  <Head title="FAQ - Pertanyaan Umum" />
+  <SeoHead title="FAQ - JDIH UIN SGD"
+    description="Pertanyaan yang sering diajukan mengenai layanan Jaringan Dokumentasi dan Informasi Hukum UIN Sunan Gunung Djati Bandung." />
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->

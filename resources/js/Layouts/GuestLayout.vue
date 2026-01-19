@@ -2,12 +2,14 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Toast from '@/Components/Toast.vue';
+import SeoHead from '@/Components/SeoHead.vue';
 
 const showingNavigationDropdown = ref(false);
 const page = usePage();
 </script>
 
 <template>
+    <SeoHead />
     <div class="min-h-screen bg-gray-50 font-sans text-gray-900">
         <Toast />
         <!-- Header -->

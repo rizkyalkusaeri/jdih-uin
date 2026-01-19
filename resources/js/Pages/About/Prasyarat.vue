@@ -1,7 +1,8 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { route } from 'ziggy-js';
+import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
   links: Array
@@ -10,7 +11,8 @@ const props = defineProps({
 
 <template>
 
-  <Head title="Prasyarat & Syarat Penggunaan" />
+  <SeoHead title="Prasyarat & Syarat Penggunaan - JDIH UIN SGD"
+    description="Syarat dan ketentuan penggunaan layanan Jaringan Dokumentasi dan Informasi Hukum UIN Sunan Gunung Djati Bandung." />
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->

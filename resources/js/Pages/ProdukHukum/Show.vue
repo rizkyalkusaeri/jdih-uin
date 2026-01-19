@@ -1,14 +1,27 @@
 <script setup>
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { Link, useForm, usePage } from '@inertiajs/vue3'; // Head removed
 import { route } from 'ziggy-js';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
     legalProduct: Object,
     relatedDocuments: Array,
     links: Array,
     ratingStats: Object // { average: 4.5, count: 10 }
+});
+
+// clean abstract for description
+const cleanDescription = computed(() => {
+    if (!props.legalProduct.abstract) return '';
+    return props.legalProduct.abstract.replace(/<[^>]*>/g, '').substring(0, 160);
+});
+
+// generate keywords
+const keywords = computed(() => {
+    const subjects = props.legalProduct.subjects?.map(s => s.name) || [];
+    return [...subjects, 'JDIH', 'Hukum', props.legalProduct.type?.name].join(', ');
 });
 
 const showPreviewModal = ref(false);
@@ -35,8 +48,6 @@ const submitRating = () => {
     });
 };
 
-
-
 // Format Date Helper
 const formatDate = (dateString) => {
     if (!dateString) return '-';
@@ -47,7 +58,7 @@ const formatDate = (dateString) => {
 
 <template>
 
-    <Head :title="legalProduct.title" />
+    <SeoHead :title="legalProduct.title" :description="cleanDescription" :keywords="keywords" />
 
     <GuestLayout>
 

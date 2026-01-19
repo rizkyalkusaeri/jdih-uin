@@ -1,9 +1,10 @@
 <script setup>
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3'; // Head removed
 import { route } from 'ziggy-js';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { ref, watch } from 'vue';
 import { debounce } from 'lodash';
+import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
   legalDictionaries: Object,
@@ -38,7 +39,8 @@ const selectChar = (char) => {
 
 <template>
 
-  <Head title="Kamus Hukum" />
+  <SeoHead title="Kamus Hukum - JDIH UIN SGD"
+    description="Kamus istilah hukum lengkap untuk membantu memahami terminologi hukum di lingkungan UIN Sunan Gunung Djati Bandung." />
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->

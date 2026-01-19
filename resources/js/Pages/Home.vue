@@ -3,7 +3,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { ref, computed } from 'vue';
-
+import SeoHead from '@/Components/SeoHead.vue';
 
 
 import {

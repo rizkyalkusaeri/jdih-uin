@@ -1,6 +1,7 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
+import SeoHead from '@/Components/SeoHead.vue';
 
 
 const props = defineProps({
@@ -10,7 +11,8 @@ const props = defineProps({
 
 <template>
 
-  <Head title="Tentang JDIH" />
+  <SeoHead title="Tentang JDIH - JDIH UIN SGD"
+    description="Tentang Jaringan Dokumentasi dan Informasi Hukum Universitas Islam Negeri Sunan Gunung Djati Bandung." />
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->

@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import {
   Chart as ChartJS,
@@ -13,96 +13,119 @@ import {
   PointElement,
   LineElement,
 } from 'chart.js'
-import { Bar, Doughnut, Line } from 'vue-chartjs'
+import { Bar, Doughnut } from 'vue-chartjs'
 import { computed } from 'vue';
+import SeoHead from '@/Components/SeoHead.vue';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement)
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  PointElement,
+  LineElement
+)
 
 const props = defineProps({
   visitorStats: Object,
   productsByType: Array,
   productsByYear: Array,
   topProducts: Array,
-});
+})
 
-// -- Charts Config --
+const formatNumber = (num) => {
+  return new Intl.NumberFormat('id-ID').format(num || 0)
+}
 
-const typeChartData = computed(() => {
-  return {
-    labels: props.productsByType.map(item => item.label),
-    datasets: [
-      {
-        backgroundColor: props.productsByType.map(item => item.color || '#41B883'),
-        data: props.productsByType.map(item => item.value),
-        hoverOffset: 4
-      }
-    ]
-  }
-});
-
-const typeChartOptions = {
+// Chart Options
+const commonOptions = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
       position: 'bottom',
       labels: {
+        font: { family: "'Inter', sans-serif", size: 12 },
         usePointStyle: true,
-        padding: 20,
+        padding: 20
       }
     }
   }
-};
+}
 
+// 1. Doughnut Chart (Types)
+const typeChartData = computed(() => {
+  return {
+    labels: props.productsByType.map(item => item.label),
+    datasets: [
+      {
+        backgroundColor: props.productsByType.map(item => item.color),
+        data: props.productsByType.map(item => item.value),
+        borderWidth: 0,
+        hoverOffset: 4
+      }
+    ]
+  }
+})
+
+const typeChartOptions = {
+  ...commonOptions,
+  cutout: '60%',
+}
+
+// 2. Bar Chart (Year Trend)
 const yearChartData = computed(() => {
   return {
     labels: props.productsByYear.map(item => item.year),
     datasets: [
       {
-        label: 'Jumlah Dokumen',
-        backgroundColor: '#0F213A',
-        borderColor: '#0F213A',
-        data: props.productsByYear.map(item => item.count),
+        label: 'Dokumen',
+        backgroundColor: '#F59E0B', // Amber-500
         borderRadius: 4,
+        data: props.productsByYear.map(item => item.count)
       }
     ]
   }
-});
+})
 
 const yearChartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
+  ...commonOptions,
   scales: {
     y: {
       beginAtZero: true,
       grid: {
         display: true,
-        drawBorder: false,
-        color: '#f3f4f6',
+        borderDash: [2, 2],
+        color: '#f3f4f6'
+      },
+      ticks: {
+        font: { family: "'Inter', sans-serif", size: 11 }
       }
     },
     x: {
       grid: {
         display: false
+      },
+      ticks: {
+        font: { family: "'Inter', sans-serif", size: 11 }
       }
     }
   },
   plugins: {
     legend: {
-      display: false
+      display: false // Hide legend for single bar chart
     }
   }
-};
-
-// -- Formatting --
-const formatNumber = (num) => {
-  return new Intl.NumberFormat('id-ID').format(num);
-};
+}
 </script>
 
 <template>
 
-  <Head title="Statistik & Data" />
+  <SeoHead title="Statistik & Data - JDIH UIN SGD"
+    description="Visualisasi data produk hukum, statistik pengunjung, dan tren unduhan di JDIH UIN Sunan Gunung Djati Bandung." />
 
   <GuestLayout>
     <!-- Header -->

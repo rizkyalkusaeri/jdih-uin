@@ -1,8 +1,9 @@
 <script setup>
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { Link, useForm, usePage } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { ref } from 'vue';
 import { route } from 'ziggy-js';
+import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
   links: Array
@@ -101,7 +102,7 @@ const successMessage = ref(usePage().props.flash.success);
                   <input type="text" id="name" v-model="form.name" placeholder="Nama Lengkap / Nama Instansi"
                     class="w-full appearance-none rounded-lg border px-4 py-2.5 text-sm transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-1" />
                   <div v-if="form.errors.name" class="text-red-500 text-sm mt-1">{{ form.errors.name
-                  }}</div>
+                    }}</div>
                 </div>
 
                 <!-- Alamat -->

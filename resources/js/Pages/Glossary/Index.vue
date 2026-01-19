@@ -1,9 +1,10 @@
 <script setup>
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3'; // Head removed
 import { route } from 'ziggy-js';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { ref, watch } from 'vue';
 import { debounce } from 'lodash';
+import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
   glossaries: Object,
@@ -38,7 +39,8 @@ const selectChar = (char) => {
 
 <template>
 
-  <Head title="Glosarium" />
+  <SeoHead title="Glosarium - JDIH UIN SGD"
+    description="Daftar istilah dan definisi hukum yang sering digunakan dalam lingkungan Universitas Islam Negeri Sunan Gunung Djati Bandung." />
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->

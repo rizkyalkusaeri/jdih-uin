@@ -1,8 +1,9 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { route } from 'ziggy-js';
+import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
   infographics: Object,
@@ -12,47 +13,29 @@ const props = defineProps({
 const showLightbox = ref(false);
 const activeInfographic = ref(null);
 const currentImageIndex = ref(0);
-const lightboxImages = ref([]);
 
-// Open Lightbox
-const openLightbox = (infographic) => {
-  activeInfographic.value = infographic;
+const lightboxImages = computed(() => {
+  if (!activeInfographic.value || !activeInfographic.value.images) return [];
 
-  // Combine cover + gallery images
-  const images = [];
-  if (infographic.cover_image) {
-    images.push({
-      // src: '/storage/' + infographic.cover_image,
-      src: route('infographics.cover', infographic.id),
-      alt: infographic.title + ' - Cover'
-    });
-  }
+  return activeInfographic.value.images.map((img, index) => ({
+    src: route('infographics.gallery', [activeInfographic.value.id, index]),
+    alt: activeInfographic.value.title
+  }));
+});
 
-  if (infographic.images && Array.isArray(infographic.images)) {
-    infographic.images.forEach((img, index) => {
-      images.push({
-        // src: '/storage/' + img,
-        src: route('infographics.gallery', { infographic: infographic.id, index: index }),
-        alt: infographic.title + ' - Image ' + (index + 1)
-      });
-    });
-  }
-
-  lightboxImages.value = images;
+const openLightbox = (item) => {
+  activeInfographic.value = item;
   currentImageIndex.value = 0;
   showLightbox.value = true;
   document.body.style.overflow = 'hidden'; // Prevent scrolling
 };
 
-// Close Lightbox
 const closeLightbox = () => {
   showLightbox.value = false;
   activeInfographic.value = null;
-  lightboxImages.value = [];
-  document.body.style.overflow = '';
+  document.body.style.overflow = ''; // Restore scrolling
 };
 
-// Navigation
 const nextImage = () => {
   if (currentImageIndex.value < lightboxImages.value.length - 1) {
     currentImageIndex.value++;
@@ -65,10 +48,9 @@ const prevImage = () => {
   }
 };
 
-// Keyboard Navigation
+// Keyboard navigation
 const handleKeydown = (e) => {
   if (!showLightbox.value) return;
-
   if (e.key === 'Escape') closeLightbox();
   if (e.key === 'ArrowRight') nextImage();
   if (e.key === 'ArrowLeft') prevImage();
@@ -85,7 +67,8 @@ onUnmounted(() => {
 
 <template>
 
-  <Head title="Info Grafis" />
+  <SeoHead title="Info Grafis - JDIH UIN SGD"
+    description="Galeri informasi hukum dalam bentuk grafis visual yang menarik dan mudah dipahami." />
 
   <GuestLayout>
     <!-- Header -->

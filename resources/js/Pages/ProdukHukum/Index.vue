@@ -1,46 +1,68 @@
 <script setup>
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { ref, watch } from 'vue';
-import { computed } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { debounce } from 'lodash';
+import { route } from 'ziggy-js';
+import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
     legalProducts: Object,
+    options: Object, // types, subjects, statuses
     filters: Object,
-    options: Object
 });
 
+// Filter State initialization
+// Filter State initialization
 const filtersState = ref({
-    search: props.filters.search || '',
-    year: props.filters.year || '',
-    type: props.filters.type || [],
-    subject: props.filters.subject || [],
-    status: props.filters.status || [],
-    sort: props.filters.sort || 'Terbaru'
+    search: props.filters?.search || '',
+    year: props.filters?.year || '',
+    type: (props.filters?.type ? String(props.filters.type).split(',') : []),
+    subject: (props.filters?.subject ? String(props.filters.subject).split(',') : []),
+    status: (props.filters?.status ? String(props.filters.status).split(',') : []),
+    sort: props.filters?.sort || 'Terbaru',
 });
 
+// Sidebar Search State
 const searchType = ref('');
-const showAllTypes = ref(false);
-
 const searchSubject = ref('');
+const showAllTypes = ref(false);
 const showAllSubjects = ref(false);
 
+// Filtered Lists for Sidebar
 const filteredTypes = computed(() => {
-    let items = props.options.types;
+    let list = props.options.types || [];
     if (searchType.value) {
-        return items.filter(t => t.name.toLowerCase().includes(searchType.value.toLowerCase()));
+        list = list.filter(t => t.name.toLowerCase().includes(searchType.value.toLowerCase()));
     }
-    return showAllTypes.value ? items : items.slice(0, 5);
+    return showAllTypes.value ? list : list.slice(0, 5);
 });
 
 const filteredSubjects = computed(() => {
-    let items = props.options.subjects;
+    let list = props.options.subjects || [];
     if (searchSubject.value) {
-        return items.filter(s => s.name.toLowerCase().includes(searchSubject.value.toLowerCase()));
+        list = list.filter(s => s.name.toLowerCase().includes(searchSubject.value.toLowerCase()));
     }
-    return showAllSubjects.value ? items : items.slice(0, 5);
+    return showAllSubjects.value ? list : list.slice(0, 5);
 });
+
+// Watcher for Filters
+const updateParams = debounce(() => {
+    router.get(
+        route('produk-hukum.index'),
+        {
+            search: filtersState.value.search,
+            year: filtersState.value.year,
+            type: filtersState.value.type.join(','),
+            subject: filtersState.value.subject.join(','),
+            status: filtersState.value.status.join(','),
+            sort: filtersState.value.sort,
+        },
+        { preserveState: true, replace: true }
+    );
+}, 500);
+
+watch(filtersState, updateParams, { deep: true });
 
 const resetFilters = () => {
     filtersState.value = {
@@ -49,31 +71,24 @@ const resetFilters = () => {
         type: [],
         subject: [],
         status: [],
-        sort: 'Terbaru'
+        sort: 'Terbaru',
     };
-    searchType.value = '';
-    searchSubject.value = '';
 };
 
-// Format Date Helper
 const formatDate = (dateString) => {
     if (!dateString) return '-';
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('id-ID', options);
-};
-
-watch(filtersState, debounce((value) => {
-    router.get('/produk-hukum', value, {
-        preserveState: true,
-        preserveScroll: true,
-        replace: true
+    return new Date(dateString).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
     });
-}, 500), { deep: true });
+};
 </script>
 
 <template>
 
-    <Head title="Produk Hukum" />
+    <SeoHead title="Produk Hukum - JDIH UIN Sunan Gunung Djati"
+        description="Cari dan temukan produk hukum, peraturan, dan keputusan di lingkungan UIN Sunan Gunung Djati Bandung." />
 
     <GuestLayout>
         <!-- Breadcrumb & Header -->

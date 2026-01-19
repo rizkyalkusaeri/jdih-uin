@@ -56,6 +56,16 @@ jobs:
             php artisan filament:optimize
             php artisan route:clear 
 
+            echo "🔗 Linking Storage..."
+            php artisan storage:link
+
+            echo "🗺️ Generating Sitemap..."
+            php artisan sitemap:generate
+
+            echo "🔄 Restarting SSR..."
+            # Stopping the SSR process allows Supervisor to automatically restart it with the new code
+            php artisan inertia:stop-ssr || true 
+
             echo "🔒 Mengembalikan Permission ke www-data..."
             # Kembalikan permission storage ke www-data agar aplikasi jalan normal
             sudo chown -R www-data:www-data storage

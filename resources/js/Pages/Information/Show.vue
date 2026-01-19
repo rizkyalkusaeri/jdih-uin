@@ -1,17 +1,25 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { route } from 'ziggy-js';
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3'; // Head removed
+import SeoHead from '@/Components/SeoHead.vue';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
   post: Object,
   relatedPosts: Array,
+});
+
+const keywords = computed(() => {
+  const tags = props.post.tags?.map(t => t.name) || [];
+  return [...tags, 'Berita Hukum', 'JDIH UIN SGD'].join(', ');
 });
 </script>
 
 <template>
 
-  <Head :title="post.title" />
+  <SeoHead :title="post.title" :description="post.desc"
+    :image="post.image ? route('posts.pathimage', post.id) : undefined" :keywords="keywords" :author="post.author" />
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->
