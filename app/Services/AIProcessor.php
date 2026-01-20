@@ -1,0 +1,137 @@
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Smalot\PdfParser\Parser;
+
+class AIProcessor
+{
+  protected string $apiKey;
+  protected string $baseUrl;
+  protected string $model;
+
+  public function __construct()
+  {
+    $this->apiKey = env('SUMOPOD_API_KEY');
+    $this->baseUrl = env('SUMOPOD_BASE_URL', 'https://ai.sumopod.com/v1/chat/completions');
+    $this->model = env('SUMOPOD_MODEL', 'gpt-4o-mini');
+
+    if (empty($this->apiKey)) {
+      throw new \Exception('Sumopod API Key is not configured.');
+    }
+  }
+
+  /**
+   * Extract metadata from a PDF file using Sumopod (via extracted text).
+   *
+   * @param string $filePath Absolute path to the local PDF file.
+   * @param array $fieldConfig Field configuration from the Category.
+   * @return array Extracted data.
+   */
+  public function extractMetadata(string $filePath, array $fieldConfig): array
+  {
+    Log::info("AIProcessor: Parsing PDF at path: " . $filePath);
+
+    // 1. Parse PDF to Text
+    $text = $this->parsePdfToText($filePath);
+
+    Log::info("AIProcessor: Extracted text length: " . strlen($text));
+
+    if (empty($text)) {
+      Log::warning("AIProcessor: Extracted text is empty.");
+      throw new \Exception('Failed to extract text from PDF.');
+    }
+
+    // 2. Construct Prompt
+    $systemPrompt = $this->constructSystemPrompt($fieldConfig);
+
+    // Truncate text if too long (simple character limit for now, approx 100k chars ~ 20-30k tokens)
+    // Adjust based on model limits. gpt-4o-mini has 128k context.
+    $text = substr($text, 0, 100000);
+
+    // 3. Call Sumopod API
+    $response = Http::withHeaders([
+      'Authorization' => 'Bearer ' . $this->apiKey,
+      'Content-Type' => 'application/json',
+    ])->post($this->baseUrl, [
+      'model' => $this->model,
+      'messages' => [
+        [
+          'role' => 'system',
+          'content' => $systemPrompt
+        ],
+        [
+          'role' => 'user',
+          'content' => "Here is the document text:\n\n" . $text
+        ]
+      ],
+      'temperature' => 0.1, // Low temperature for factual extraction
+      'response_format' => ['type' => 'json_object']
+    ]);
+
+    if ($response->failed()) {
+      Log::error('Sumopod API Error: ' . $response->body());
+      throw new \Exception('Failed to generate content from Sumopod.');
+    }
+
+    $json = $response->json();
+
+    // 4. Parse Result
+    try {
+      $content = $json['choices'][0]['message']['content'];
+      return json_decode($content, true) ?? [];
+    } catch (\Exception $e) {
+      Log::error('Sumopod Response Parsing Error: ' . $e->getMessage(), ['response' => $json]);
+      return [];
+    }
+  }
+
+  protected function parsePdfToText(string $filePath): string
+  {
+    try {
+      $parser = new Parser();
+      $pdf = $parser->parseFile($filePath);
+      return $pdf->getText();
+    } catch (\Exception $e) {
+      Log::error('PDF Parsing Error: ' . $e->getMessage());
+      throw $e;
+    }
+  }
+
+  protected function constructSystemPrompt(array $fieldConfig): string
+  {
+    $fields = [];
+    foreach ($fieldConfig as $key => $config) {
+      if (($config['visible'] ?? false) === true) {
+        $fields[] = $key;
+      }
+    }
+    $fieldsList = implode(', ', $fields);
+
+    return <<<EOT
+You are an expert legal document analyzer. 
+Please extract the following metadata from the provided legal document text.
+Return ONLY a valid JSON object.
+
+Target Fields: {$fieldsList}
+
+Instructions for specific fields:
+- title: The full title of the regulation/decree.
+- number: The official number/nomor of the regulation.
+- year: The year of the regulation.
+- determination_date: Date formatted as YYYY-MM-DD.
+- published_date: Date formatted as YYYY-MM-DD.
+- validity_start: Date formatted as YYYY-MM-DD.
+- abstract: A concise summary of the content (1 paragraph).
+- signer_id: Name of the signer (person/position). Note: This maps to an ID in DB, but just return the Name string found.
+- publisher_id: Publisher name.
+- place_id: Place of signing (City).
+- author: If applicable.
+- topic: The main topic or subject.
+
+If a field is not found or not applicable, strictly use null.
+EOT;
+  }
+}
