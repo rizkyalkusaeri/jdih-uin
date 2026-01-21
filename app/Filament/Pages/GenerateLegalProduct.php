@@ -28,7 +28,7 @@ class GenerateLegalProduct extends Page implements HasForms
 
   public static function getNavigationGroup(): ?string
   {
-    return 'Manajemen Konten';
+    return 'Tools';
   }
   protected static ?string $navigationLabel = 'Generate Produk Hukum';
   protected static ?string $title = 'Generate Produk Hukum (AI)';

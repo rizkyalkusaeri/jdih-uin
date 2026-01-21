@@ -1,6 +1,7 @@
 <x-filament-panels::page>
   <form wire:submit="generate">
     {{ $this->form }}
+    <br>
 
     <div class="mt-6 flex gap-x-3">
       <x-filament::button type="submit" wire:loading.attr="disabled">

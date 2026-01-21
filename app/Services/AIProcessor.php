@@ -125,10 +125,14 @@ Instructions for specific fields:
 - published_date: Date formatted as YYYY-MM-DD.
 - validity_start: Date formatted as YYYY-MM-DD.
 - abstract: A concise summary of the content (1 paragraph).
-- signer_id: Name of the signer (person/position). Note: This maps to an ID in DB, but just return the Name string found.
-- publisher_id: Publisher name.
-- place_id: Place of signing (City).
-- author: If applicable.
+- signer_name: Name of the signer (person/position).
+- publisher_name: Publisher name (Penerbit/Pemrakarsa).
+- place_name: Place of signing (City) e.g. Jakarta, Bandung.
+- location_name: Name of the storage location (e.g. Biro Hukum).
+- legal_field_name: Name of the legal field (Bidang Hukum).
+- language: Language of the document (Bahasa Indonesia or English).
+- source: Source of the document.
+- author: The author name (if explicit).
 - topic: The main topic or subject.
 
 If a field is not found or not applicable, strictly use null.
