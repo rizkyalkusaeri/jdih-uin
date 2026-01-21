@@ -393,6 +393,7 @@ class LegalProductResource extends Resource
                             ->schema([
                                 FileUpload::make('file_path')
                                     ->label('File Lampiran')
+                                    ->disk('public')
                                     ->directory('legal-products')
                                     ->acceptedFileTypes(['application/pdf'])
                                     ->openable()
