@@ -43,6 +43,12 @@ class CreateLegalProduct extends CreateRecord
                     $tempFilePathRel = $data['document'];
                     $tempFilePathAbs = \Illuminate\Support\Facades\Storage::disk('public')->path($tempFilePathRel);
 
+                    \Filament\Notifications\Notification::make()
+                        ->title('Sedang memproses AI...')
+                        ->info()
+                        ->send();
+
+
                     try {
                         // 1. Get Config
                         $type = \App\Models\Type::with('category')->findOrFail($typeId);
