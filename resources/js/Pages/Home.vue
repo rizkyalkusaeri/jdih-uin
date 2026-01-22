@@ -242,56 +242,86 @@ const pieChartOptions = {
                     </div>
 
                     <Link v-for="doc in displayedProducts" :key="doc.id" :href="route('produk-hukum.show', doc.slug)"
-                        class="flex items-start gap-4 p-5 rounded-xl bg-white border border-gray-200 hover:shadow-lg hover:border-blue-900/30 transition-all group cursor-pointer">
-                        <!-- Icon -->
+                        class="flex flex-col bg-white rounded-xl border border-gray-100 hover:shadow-xl hover:border-yellow-400 transition-all duration-300 group cursor-pointer relative overflow-hidden">
+
+                        <!-- Decorative Top Border -->
                         <div
-                            class="hidden sm:flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-900 shrink-0">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
+                            class="h-1 w-full bg-linear-to-r from-[#0F213A] to-[#1E3A5F] group-hover:from-yellow-400 group-hover:to-yellow-500 transition-all duration-500">
                         </div>
 
-                        <div class="flex flex-col gap-2 flex-1">
-                            <!-- Badge & No Year -->
-                            <div class="flex items-center gap-2">
-                                <span
-                                    :class="[doc.badge_style, 'px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide']">
-                                    {{ doc.type }}
-                                </span>
+                        <div class="p-6 flex flex-col h-full">
+                            <!-- Header: Type & Year -->
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex flex-col gap-1">
+                                    <span
+                                        :class="[doc.badge_style, 'px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase tracking-wider inline-block w-fit']">
+                                        {{ doc.type }}
+                                    </span>
+                                    <span v-if="doc.year" class="text-xs font-bold text-gray-400">
+                                        Tahun {{ doc.year }}
+                                    </span>
+                                </div>
+                                <!-- Status Badge (Only for Peraturan) -->
+                                <div v-if="doc.status && doc.category_name && doc.category_name.toLowerCase().includes('peraturan')"
+                                    :class="['px-2 py-0.5 rounded-full text-[10px] font-bold border',
+                                        doc.status === 'Berlaku' || doc.status === 'active' ? 'bg-green-50 text-green-600 border-green-200' : 'bg-red-50 text-red-600 border-red-200']">
+                                    {{ doc.status === 'active' ? 'Berlaku' : doc.status }}
+                                </div>
                             </div>
 
-                            <!-- Title/Number -->
-                            <h3
-                                class="text-[#212529] text-base font-bold leading-snug group-hover:text-blue-900 transition-colors">
-                                <Link :href="route('produk-hukum.show', doc.slug)">{{ doc.number }}</Link>
+                            <!-- Title -->
+                            <h3 class="text-[#0F213A] text-lg font-bold leading-snug mb-2 group-hover:text-blue-700 transition-colors line-clamp-2"
+                                :title="doc.title">
+                                {{ doc.title }}
                             </h3>
 
-                            <!-- Description -->
-                            <p class="text-gray-500 text-sm line-clamp-2">
-                                {{ doc.desc }}
-                            </p>
+                            <!-- Meta Info Grid -->
+                            <div class="mt-auto space-y-2 pt-4">
+                                <!-- Number -->
+                                <div class="flex items-center gap-2 text-sm text-gray-600">
+                                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                                    </svg>
+                                    <span class="font-medium truncate">{{ doc.number }}</span>
+                                </div>
 
-                            <!-- Actions -->
-                            <div class="flex items-center gap-4 mt-2">
-                                <Link :href="route('produk-hukum.show', doc.slug)"
-                                    class="flex items-center gap-1 text-xs font-bold text-gray-500 group-hover:text-blue-900 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <!-- Signer (For SK/Keputusan) -->
+                                <div v-if="doc.signer" class="flex items-center gap-2 text-sm text-gray-600">
+                                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <span class="truncate">Oleh: {{ doc.signer }}</span>
+                                </div>
+
+                                <!-- Views (For Popular Tab) -->
+                                <div v-if="activeTab === 'terpopuler'"
+                                    class="flex items-center gap-2 text-sm text-gray-500">
+                                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                     </svg>
-                                    Lihat Detail
-                                </Link>
-                                <a :href="route('produk-hukum.download', doc.slug)" target="_blank"
-                                    class="flex items-center gap-1 text-xs font-bold text-gray-500 group-hover:text-blue-900 transition-colors">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <span>{{ doc.views }}x Dilihat</span>
+                                </div>
+                            </div>
+
+                            <!-- Footer Action -->
+                            <div class="mt-4 pt-4 border-t border-gray-50 flex justify-end">
+                                <span
+                                    class="text-xs font-bold text-gray-400 group-hover:text-yellow-600 flex items-center gap-1 transition-colors">
+                                    Selengkapnya
+                                    <svg class="w-3 h-3 transition-transform group-hover:translate-x-1" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                     </svg>
-                                    Unduh
-                                </a>
+                                </span>
                             </div>
                         </div>
                     </Link>

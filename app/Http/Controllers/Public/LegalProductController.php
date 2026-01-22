@@ -91,14 +91,14 @@ class LegalProductController extends Controller
             case 'Terpopuler':
                 // Assuming logic for popularity (e.g., view_count or similar)
                 // For now fall back to new
-                $query->latest('published_date');
+                $query->orderBy('views_count', 'desc');
                 break;
             case 'Tahun Terlama':
                 $query->orderBy('year', 'asc');
                 break;
             case 'Terbaru':
             default:
-                $query->latest('published_date');
+                $query->orderBy('created_at', 'desc');
                 break;
         }
 

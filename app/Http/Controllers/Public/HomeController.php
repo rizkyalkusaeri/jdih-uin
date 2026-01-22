@@ -37,7 +37,7 @@ class HomeController extends Controller
     });
 
     // 2. Products
-    $recentProducts = LegalProduct::with('type')
+    $recentProducts = LegalProduct::with(['type', 'signer'])
       ->whereIn('status', ['active', 'Berlaku'])
       ->latest()
       ->take(4)
@@ -46,7 +46,7 @@ class HomeController extends Controller
         return $this->transformProduct($product);
       });
 
-    $popularProducts = LegalProduct::with('type')
+    $popularProducts = LegalProduct::with(['type', 'signer'])
       ->withCount('views')
       ->whereIn('status', ['active', 'Berlaku'])
       ->orderByDesc('views_count')
@@ -156,12 +156,7 @@ class HomeController extends Controller
       $badgeStyle = 'bg-green-50 text-green-700';
     } elseif (str_contains(strtolower($categoryName), 'monografi')) {
       $badgeStyle = 'bg-amber-50 text-amber-600';
-    } elseif (str_contains(strtolower($categoryName), 'khusus') || str_contains(strtolower($categoryName), 'sk')) { // Assuming SK/Khusus map to Blue
-      $badgeStyle = 'bg-red-50 text-red-700'; // Using Red/Blue as per design, let's stick to the request: SK Rektor (Blue in one, Red in another? Let's follow logic). 
-      // HTML provided: SK Rektor (Blue/10 text-ho-blue-dark), Surat Edaran (Amber), Peraturan (Green).
-      // Let's map strictly to the HTML example if possible, or general category logic.
-      // User said: "Peraturan Perundang-Undangan, Monografi Hukum, Dokumen Hukum Khusus". 
-      // Let's map 'Khusus' to Blue.
+    } elseif (str_contains(strtolower($categoryName), 'khusus') || str_contains(strtolower($categoryName), 'sk')) {
       $badgeStyle = 'bg-blue-50 text-blue-900';
     }
 
@@ -170,12 +165,16 @@ class HomeController extends Controller
       'title' => $product->title,
       'number' => $product->number,
       'slug' => $product->slug,
-      // 'year' => $product->year, // Removed Year as per request
+      'year' => $product->year,
       'type' => $product->type->name ?? 'Dokumen',
+      'category_name' => $categoryName,
+      'status' => $product->status,
+      'signer' => $product->signer->name ?? $product->author ?? null,
       'badge_style' => $badgeStyle,
-      'desc' => \Illuminate\Support\Str::limit($product->title, 120), // Description matches logic
+      'desc' => \Illuminate\Support\Str::limit($product->title, 120),
       'downloads' => 'PDF',
-      'published_at' => Carbon::parse($product->published_date)->translatedFormat('d F Y')
+      'published_at' => Carbon::parse($product->published_date)->translatedFormat('d F Y'),
+      'views' => $product->views_count ?? 0,
     ];
   }
 
