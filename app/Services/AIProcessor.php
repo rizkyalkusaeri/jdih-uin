@@ -14,9 +14,9 @@ class AIProcessor
 
   public function __construct()
   {
-    $this->apiKey = env('SUMOPOD_API_KEY');
-    $this->baseUrl = env('SUMOPOD_BASE_URL', 'https://ai.sumopod.com/v1/chat/completions');
-    $this->model = env('SUMOPOD_MODEL', 'gpt-4o-mini');
+    $this->apiKey = config('services.sumopod.key');
+    $this->baseUrl = config('services.sumopod.base_url', 'https://ai.sumopod.com/v1/chat/completions');
+    $this->model = config('services.sumopod.model', 'gpt-4o-mini');
 
     if (empty($this->apiKey)) {
       throw new \Exception('Sumopod API Key is not configured.');

@@ -39,4 +39,8 @@ return [
         'key' => env('GEMINI_API_KEY'),
     ],
 
+    'sumopod' => [
+        'key' => env('SUMOPOD_API_KEY'),
+    ],
+
 ];
