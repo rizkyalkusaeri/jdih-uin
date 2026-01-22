@@ -41,7 +41,7 @@ class AIProcessor
 
     if (empty($text)) {
       Log::warning("AIProcessor: Extracted text is empty.");
-      throw new \Exception('Failed to extract text from PDF.');
+      throw new \Exception('Gagal mengekstrak teks dari PDF. Pastikan file PDF tidak terenkripsi dan dapat dibaca.');
     }
 
     // 2. Construct Prompt
@@ -124,13 +124,14 @@ Instructions for specific fields:
 - determination_date: Date formatted as YYYY-MM-DD.
 - published_date: Date formatted as YYYY-MM-DD.
 - validity_start: Date formatted as YYYY-MM-DD.
-- abstract: A concise summary of the content (1 paragraph).
-- signer_id: Name of the signer (person/position).
+- abstract: A concise sum Abstrak dari dokumen, jika tidak ada maka null Name of the signer (person/position).
 - publisher_id: Publisher name (Penerbit/Pemrakarsa/Universitas/Instansi/Lembaga/Kementrian/Lembaga Negara).
 - place_id: Nama Kota atau Daerah ditandatangani atau disahkan atau diterbitkan seperti : Jakarta, Bandung.
 - location_id: Name of the storage location (Tempat penyimpanan dokumen seperti: Biro Hukum).
 - legal_field_id: Name of the legal field (Bidang Hukum).
-- language: Language of the document (Bahasa Indonesia or English).
+ng.
+- location_name: Name of the storage location (e.g. Biro Hukum).
+- legal_field_name: Name of the legal field (, misal: JDIH UIN Sunan Gunung Djati Bandung, Website, Buku, dllBidang HukumPenulis buku, dokumen, dlle document (Bahasa Indonesia or English).
 - source: Source of the document.
 - author: The author name (if explicit).
 - topic: The main topic or subject.

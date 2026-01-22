@@ -8,8 +8,8 @@ const props = defineProps({
   }
 });
 
-// Double the list for seamless infinite scroll
-const displayAwards = computed(() => [...props.awards, ...props.awards]);
+// Triple the list to ensure no headers/gaps on wide screens
+const displayAwards = computed(() => [...props.awards, ...props.awards, ...props.awards]);
 </script>
 
 <template>
@@ -30,23 +30,24 @@ const displayAwards = computed(() => [...props.awards, ...props.awards]);
       </div>
 
       <!-- Scroll Track -->
-      <div class="flex gap-16 animate-marquee w-max py-4 group-hover/track:[animation-play-state:paused] px-4">
+      <div class="flex gap-16 animate-marquee w-max pt-4 pb-20 group-hover/track:[animation-play-state:paused] px-4">
         <div v-for="(award, index) in displayAwards" :key="index"
           class="relative group/item flex flex-col items-center justify-center cursor-pointer">
           <!-- Image -->
-          <div class="h-24 w-24 md:h-32 md:w-32 transition-transform duration-300 transform group-hover/item:scale-125">
-            <img :src="award.image" :alt="award.title" class="w-full h-full object-contain drop-shadow-lg"
-              loading="lazy" />
+          <div class="h-24 w-24 md:h-32 md:w-32 transition-transform duration-300 transform group-hover/item:scale-110">
+            <img :src="award.image" :alt="award.title" :title="award.title"
+              class="w-full h-full object-contain drop-shadow-lg" loading="lazy" />
           </div>
 
-          <!-- Tooltip / Title Toggle -->
+          <!-- Title Toggle (Visible on Hover/Click) -->
           <div
-            class="absolute -bottom-12 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 translate-y-2 group-hover/item:translate-y-0 text-center w-48 z-20 pointer-events-none">
+            class="absolute -bottom-14 opacity-0 group-hover/item:opacity-100 transition-all duration-300 translate-y-2 group-hover/item:translate-y-0 text-center w-48 z-20 pointer-events-none">
             <div
-              class="bg-white text-[#0F213A] text-xs font-bold py-1 px-3 rounded shadow-lg mx-auto inline-block relative">
+              class="bg-white text-[#0F213A] text-xs font-bold py-2 px-3 rounded-lg shadow-xl mx-auto inline-block relative border border-gray-100">
               {{ award.title }}
               <!-- Arrow -->
-              <div class="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rotate-45">
+              <div
+                class="absolute -top-1.5 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white rotate-45 border-t border-l border-gray-100">
               </div>
             </div>
           </div>

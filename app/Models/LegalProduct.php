@@ -14,6 +14,11 @@ class LegalProduct extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
 
+    public function supportingLinks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(LegalProductSupportingLink::class);
+    }
+
     public function getRouteKeyName()
     {
         return 'slug';

@@ -41,10 +41,37 @@ const page = usePage();
                             :class="[page.component === 'Home' ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500', 'transition']">
                             Beranda
                         </Link>
-                        <Link href="/produk-hukum"
-                            :class="[page.component.startsWith('ProdukHukum') ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500', 'transition']">
-                            Produk Hukum
-                        </Link>
+                        <!-- Produk Hukum Dropdown -->
+                        <div class="relative group">
+                            <button
+                                class="flex items-center gap-1 text-gray-600 font-semibold hover:text-yellow-500 transition focus:outline-none"
+                                :class="{ 'text-yellow-500 font-bold': page.component.startsWith('ProdukHukum') }">
+                                Produk Hukum
+                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div
+                                class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50">
+                                <Link href="/produk-hukum"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700 border-b border-gray-50 mb-1"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('produk-hukum.index') && !route().params.category }">
+                                Semua Produk Hukum
+                                </Link>
+                                <template v-if="page.props.categories">
+                                    <Link v-for="category in page.props.categories" :key="category.id"
+                                        :href="`/produk-hukum?category=${encodeURIComponent(category.name)}`"
+                                        class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                        :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().params.category === category.name }">
+                                    {{ category.name }}
+                                    </Link>
+                                </template>
+                            </div>
+                        </div>
                         <!-- Berita, Event & Dokumentasi Dropdown -->
                         <div class="relative group">
                             <button

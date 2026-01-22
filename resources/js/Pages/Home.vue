@@ -148,22 +148,26 @@ const pieChartOptions = {
             <!-- Background Decoration -->
             <!-- Background Image & Gradient -->
             <div class="absolute inset-0">
-                <img src="/images/944597_720.jpg" alt="Background" class="w-full h-full object-cover" />
+                <img src="/images/uinsgdbdg_cover.jpg" alt="Background" class="w-full h-full object-cover" />
                 <div class="absolute inset-0 bg-linear-to-b from-[#0F213A]/90 via-[#0F213A]/80 to-[#0F213A]/60"></div>
             </div>
 
             <div
-                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 flex flex-col items-center text-center">
-                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-                    Cari Produk Hukum UIN SGD
+                class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10 flex flex-col items-center text-center">
+                <h1
+                    class="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight fade-in-up drop-shadow-md">
+                    Pusat Data Hukum & Regulasi <br class="hidden md:block" />
+                    <span class="text-[#FFC700] mt-2 inline-block">UIN Sunan Gunung Djati</span>
                 </h1>
-                <p class="text-gray-300 text-lg md:text-xl max-w-2xl mb-10">
-                    Pusat pencarian & informasi produk hukum resmi Universitas Islam Negeri Sunan Gunung Djati Bandung.
-                    Transparan, Akuntabel, dan Terpercaya.
+                <p
+                    class="text-gray-100 text-lg md:text-xl max-w-4xl mb-12 fade-in-up delay-100 leading-relaxed drop-shadow-sm font-medium">
+                    Selamat datang di Jaringan Dokumentasi dan Informasi Hukum (JDIH) UIN Sunan Gunung Djati
+                    <br class="hidden md:block" />
+                    Akses seluruh dokumen hukum dan regulasi kampus dengan mudah.
                 </p>
 
                 <!-- Search Bar -->
-                <div class="w-full max-w-3xl bg-white rounded-lg p-2 flex gap-2 shadow-lg">
+                <div class="w-full max-w-3xl bg-white rounded-lg p-2 flex gap-2 shadow-2xl fade-in-up delay-200">
                     <div class="hidden md:flex items-center pl-3 pr-2 border-r border-gray-200 min-w-[160px] relative">
                         <select v-model="searchType"
                             class="w-full bg-transparent border-none transition-all duration-200 ease-in-out focus:ring-0 focus:outline-0 text-gray-700 text-sm font-medium appearance-none cursor-pointer pr-8">
@@ -432,3 +436,31 @@ const pieChartOptions = {
         <AwardsCarousel :awards="awards" />
     </GuestLayout>
 </template>
+
+<style scoped>
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-100 {
+    animation-delay: 0.15s;
+}
+
+.delay-200 {
+    animation-delay: 0.3s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>

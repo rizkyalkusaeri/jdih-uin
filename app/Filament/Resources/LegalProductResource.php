@@ -400,6 +400,24 @@ class LegalProductResource extends Resource
                                     ->helperText('File lampiran harus berformat PDF')
                                     ->required(),
                             ]),
+                        Section::make('Data Dukung')
+                            ->schema([
+                                \Filament\Forms\Components\Repeater::make('supportingLinks')
+                                    ->relationship('supportingLinks')
+                                    ->schema([
+                                        TextInput::make('name')
+                                            ->label('Nama/Judul')
+                                            ->required(),
+                                        TextInput::make('url')
+                                            ->label('Link URL')
+                                            ->url()
+                                            ->required(),
+                                    ])
+                                    ->addActionLabel('Tambah Data Dukung')
+                                    ->reorderableWithButtons()
+                                    ->collapsible()
+                                    ->cloneable(),
+                            ]),
                     ])->columnSpan(['lg' => 1]),
             ])->columns(3);
     }

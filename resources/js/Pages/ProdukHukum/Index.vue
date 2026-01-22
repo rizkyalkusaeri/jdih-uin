@@ -18,6 +18,7 @@ const filtersState = ref({
     search: props.filters?.search || '',
     year: props.filters?.year || '',
     type: (props.filters?.type ? String(props.filters.type).split(',') : []),
+    category: (props.filters?.category ? String(props.filters.category).split(',') : []), // Added category
     subject: (props.filters?.subject ? String(props.filters.subject).split(',') : []),
     status: (props.filters?.status ? String(props.filters.status).split(',') : []),
     sort: props.filters?.sort || 'Terbaru',
@@ -25,8 +26,10 @@ const filtersState = ref({
 
 // Sidebar Search State
 const searchType = ref('');
+const searchCategory = ref(''); // Added searchCategory
 const searchSubject = ref('');
 const showAllTypes = ref(false);
+const showAllCategories = ref(false); // Added showAllCategories
 const showAllSubjects = ref(false);
 
 // Filtered Lists for Sidebar
@@ -36,6 +39,15 @@ const filteredTypes = computed(() => {
         list = list.filter(t => t.name.toLowerCase().includes(searchType.value.toLowerCase()));
     }
     return showAllTypes.value ? list : list.slice(0, 5);
+    return showAllTypes.value ? list : list.slice(0, 5);
+});
+
+const filteredCategories = computed(() => {
+    let list = props.options.categories || [];
+    if (searchCategory.value) {
+        list = list.filter(c => c.name.toLowerCase().includes(searchCategory.value.toLowerCase()));
+    }
+    return showAllCategories.value ? list : list.slice(0, 5);
 });
 
 const filteredSubjects = computed(() => {
@@ -53,7 +65,10 @@ const updateParams = debounce(() => {
         {
             search: filtersState.value.search,
             year: filtersState.value.year,
+            search: filtersState.value.search,
+            year: filtersState.value.year,
             type: filtersState.value.type.join(','),
+            category: filtersState.value.category.join(','), // Added category
             subject: filtersState.value.subject.join(','),
             status: filtersState.value.status.join(','),
             sort: filtersState.value.sort,
@@ -69,6 +84,7 @@ const resetFilters = () => {
         search: '',
         year: '',
         type: [],
+        category: [], // Added category
         subject: [],
         status: [],
         sort: 'Terbaru',
@@ -166,6 +182,51 @@ const formatDate = (dateString) => {
                                     class="text-xs font-bold text-blue-600 hover:text-blue-800 mt-2 flex items-center gap-1">
                                     {{ showAllTypes ? 'Sembunyikan' : 'Lihat Selengkapnya' }}
                                     <svg class="w-3 h-3" :class="{ 'rotate-180': showAllTypes }" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <!-- Kategori (New) -->
+                        <div class="p-5 border-b border-gray-100">
+                            <h4 class="font-bold text-sm text-[#0F213A] mb-3">Kategori</h4>
+
+                            <!-- Search Category -->
+                            <div class="mb-3 relative">
+                                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <input type="text" v-model="searchCategory" placeholder="Cari kategori..."
+                                    class="w-full pl-9 pr-3 py-2 text-xs border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50" />
+                            </div>
+
+                            <div class="space-y-2">
+                                <div v-for="category in filteredCategories" :key="category.id"
+                                    class="flex items-center justify-between group">
+                                    <label class="flex items-center gap-3 cursor-pointer flex-1">
+                                        <input type="checkbox" v-model="filtersState.category" :value="category.name"
+                                            class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
+                                        <span
+                                            class="text-gray-600 text-sm group-hover:text-[#0F213A] transition truncate max-w-[150px]"
+                                            :title="category.name">{{ category.name }}</span>
+                                    </label>
+                                    <span
+                                        class="bg-gray-100 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-full group-hover:bg-yellow-100 group-hover:text-yellow-700 transition">
+                                        {{ category.count }}
+                                    </span>
+                                </div>
+
+                                <button v-if="!searchCategory && options.categories?.length > 5"
+                                    @click="showAllCategories = !showAllCategories"
+                                    class="text-xs font-bold text-blue-600 hover:text-blue-800 mt-2 flex items-center gap-1">
+                                    {{ showAllCategories ? 'Sembunyikan' : 'Lihat Selengkapnya' }}
+                                    <svg class="w-3 h-3" :class="{ 'rotate-180': showAllCategories }" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 9l-7 7-7-7" />
@@ -386,6 +447,7 @@ const formatDate = (dateString) => {
                 </div>
             </div>
         </div>
+
     </GuestLayout>
 </template>
 

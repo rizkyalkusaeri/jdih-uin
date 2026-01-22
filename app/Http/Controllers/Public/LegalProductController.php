@@ -41,6 +41,23 @@ class LegalProductController extends Controller
             }
         }
 
+        if ($request->filled('category')) {
+            $categories = $request->input('category');
+            if (is_array($categories) && count($categories) > 0) {
+                $query->whereHas('category', function ($q) use ($categories) {
+                    $q->whereIn('name', $categories);
+                });
+            } elseif (is_string($categories)) {
+                // Support single string param from URL (e.g. ?category=Monografi%20Hukum)
+                // If it comes from navbar, it might be a single string, but our filter logic uses arrays.
+                // We'll wrap it in array or handle it.
+                // Ideally, sidebar filter uses array. Navbar link ?category=... is single.
+                $query->whereHas('category', function ($q) use ($categories) {
+                    $q->where('name', $categories);
+                });
+            }
+        }
+
         if ($request->filled('subject')) {
             $subjects = $request->input('subject');
             if (is_array($subjects) && count($subjects) > 0) {
@@ -110,6 +127,16 @@ class LegalProductController extends Controller
             ];
         });
 
+        $availableCategories = \App\Models\Category::where('type', 'legal')->withCount(['legalProducts' => function ($q) {
+            $q->where('status', '!=', 'Draft');
+        }])->orderBy('legal_products_count', 'desc')->get()->map(function ($cat) {
+            return [
+                'id' => $cat->id,
+                'name' => $cat->name,
+                'count' => $cat->legal_products_count
+            ];
+        });
+
         $availableSubjects = \App\Models\Subject::withCount(['legalProducts' => function ($q) {
             $q->where('status', '!=', 'Draft');
         }])->orderBy('legal_products_count', 'desc')->get()->map(function ($subject) {
@@ -138,13 +165,15 @@ class LegalProductController extends Controller
                 'search' => $request->input('search'),
                 'year' => $request->input('year'), // Single value now
                 'type' => $request->input('type', []),
-                'subject' => $request->input('subject', []), // Added subject
+                'category' => $request->input('category', []), // Added category filter
+                'subject' => $request->input('subject', []),
                 'status' => $request->input('status', []),
                 'sort' => $sort,
             ],
             'options' => [
                 'years' => $availableYears,
                 'types' => $availableTypes,
+                'categories' => $availableCategories, // Added available categories
                 'subjects' => $availableSubjects,
                 'statuses' => $availableStatuses
             ]
@@ -166,7 +195,8 @@ class LegalProductController extends Controller
                 'location',
                 'items',
                 'replacedDocuments',
-                'replacedBy'
+                'replacedBy',
+                'supportingLinks'
             ])
             ->withCount('views')
             ->firstOrFail();
