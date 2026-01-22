@@ -125,11 +125,11 @@ Instructions for specific fields:
 - published_date: Date formatted as YYYY-MM-DD.
 - validity_start: Date formatted as YYYY-MM-DD.
 - abstract: A concise summary of the content (1 paragraph).
-- signer_name: Name of the signer (person/position).
-- publisher_name: Publisher name (Penerbit/Pemrakarsa/Universitas/Instansi/Lembaga/Kementrian/Lembaga Negara).
-- place_name: Place of signing (City) e.g. Jakarta, Bandung.
-- location_name: Name of the storage location (e.g. Biro Hukum).
-- legal_field_name: Name of the legal field (Bidang Hukum).
+- signer_id: Name of the signer (person/position).
+- publisher_id: Publisher name (Penerbit/Pemrakarsa/Universitas/Instansi/Lembaga/Kementrian/Lembaga Negara).
+- place_id: Nama Kota atau Daerah ditandatangani atau disahkan atau diterbitkan seperti : Jakarta, Bandung.
+- location_id: Name of the storage location (Tempat penyimpanan dokumen seperti: Biro Hukum).
+- legal_field_id: Name of the legal field (Bidang Hukum).
 - language: Language of the document (Bahasa Indonesia or English).
 - source: Source of the document.
 - author: The author name (if explicit).
