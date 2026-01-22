@@ -33,6 +33,9 @@ class LegalProductController extends Controller
 
         if ($request->filled('type')) {
             $types = $request->input('type');
+            if (is_string($types)) {
+                $types = explode(',', $types);
+            }
             if (is_array($types) && count($types) > 0) {
                 // Filter by Type Name
                 $query->whereHas('type', function ($q) use ($types) {
@@ -43,23 +46,21 @@ class LegalProductController extends Controller
 
         if ($request->filled('category')) {
             $categories = $request->input('category');
+            if (is_string($categories)) {
+                $categories = explode(',', $categories);
+            }
             if (is_array($categories) && count($categories) > 0) {
                 $query->whereHas('category', function ($q) use ($categories) {
                     $q->whereIn('name', $categories);
-                });
-            } elseif (is_string($categories)) {
-                // Support single string param from URL (e.g. ?category=Monografi%20Hukum)
-                // If it comes from navbar, it might be a single string, but our filter logic uses arrays.
-                // We'll wrap it in array or handle it.
-                // Ideally, sidebar filter uses array. Navbar link ?category=... is single.
-                $query->whereHas('category', function ($q) use ($categories) {
-                    $q->where('name', $categories);
                 });
             }
         }
 
         if ($request->filled('subject')) {
             $subjects = $request->input('subject');
+            if (is_string($subjects)) {
+                $subjects = explode(',', $subjects);
+            }
             if (is_array($subjects) && count($subjects) > 0) {
                 $query->whereHas('subjects', function ($q) use ($subjects) {
                     $q->whereIn('name', $subjects);
@@ -69,6 +70,9 @@ class LegalProductController extends Controller
 
         if ($request->filled('status')) {
             $statuses = $request->input('status');
+            if (is_string($statuses)) {
+                $statuses = explode(',', $statuses);
+            }
             if (is_array($statuses) && count($statuses) > 0) {
                 $query->where(function ($q) use ($statuses) {
                     if (in_array('Berlaku', $statuses)) {
@@ -241,20 +245,20 @@ class LegalProductController extends Controller
 
     public function download(LegalProduct $legalProduct)
     {
-        if (!$legalProduct->file_path || !\Illuminate\Support\Facades\Storage::disk('local')->exists($legalProduct->file_path)) {
+        if (!$legalProduct->file_path || !\Illuminate\Support\Facades\Storage::disk('public')->exists($legalProduct->file_path)) {
             abort(404);
         }
 
-        return \Illuminate\Support\Facades\Storage::disk('local')->download($legalProduct->file_path, $legalProduct->slug . '.pdf');
+        return \Illuminate\Support\Facades\Storage::disk('public')->download($legalProduct->file_path, $legalProduct->slug . '.pdf');
     }
 
     public function preview(LegalProduct $legalProduct)
     {
-        if (!$legalProduct->file_path || !\Illuminate\Support\Facades\Storage::disk('local')->exists($legalProduct->file_path)) {
+        if (!$legalProduct->file_path || !\Illuminate\Support\Facades\Storage::disk('public')->exists($legalProduct->file_path)) {
             abort(404);
         }
 
-        $path = \Illuminate\Support\Facades\Storage::disk('local')->path($legalProduct->file_path);
+        $path = \Illuminate\Support\Facades\Storage::disk('public')->path($legalProduct->file_path);
 
         return response()->file($path, [
             'Content-Type' => 'application/pdf',
