@@ -27,6 +27,8 @@ class CreateLegalProduct extends CreateRecord
                     }
                 }
 
+                dd($data);
+
                 $this->form->fill($data);
 
                 // Optional: Clear cache after use? Maybe not immediately in case of refresh, 
