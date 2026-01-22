@@ -126,7 +126,7 @@ Instructions for specific fields:
 - validity_start: Date formatted as YYYY-MM-DD.
 - abstract: A concise summary of the content (1 paragraph).
 - signer_name: Name of the signer (person/position).
-- publisher_name: Publisher name (Penerbit/Pemrakarsa).
+- publisher_name: Publisher name (Penerbit/Pemrakarsa/Universitas/Instansi/Lembaga/Kementrian/Lembaga Negara).
 - place_name: Place of signing (City) e.g. Jakarta, Bandung.
 - location_name: Name of the storage location (e.g. Biro Hukum).
 - legal_field_name: Name of the legal field (Bidang Hukum).

@@ -23,6 +23,8 @@ class CreateLegalProduct extends CreateRecord
                 ->label('Generate Metadata (AI)')
                 ->icon('heroicon-o-sparkles')
                 ->color('primary')
+                ->closeModalByClickingAway(false)
+                ->closeModalByEscaping(false)
                 ->schema([
                     \Filament\Forms\Components\Select::make('type_id')
                         ->label('Jenis Produk Hukum')
@@ -43,10 +45,6 @@ class CreateLegalProduct extends CreateRecord
                     $tempFilePathRel = $data['document'];
                     $tempFilePathAbs = \Illuminate\Support\Facades\Storage::disk('public')->path($tempFilePathRel);
 
-                    \Filament\Notifications\Notification::make()
-                        ->title('Sedang memproses AI...')
-                        ->info()
-                        ->send();
 
 
                     try {
@@ -85,11 +83,11 @@ class CreateLegalProduct extends CreateRecord
 
                         // 6. Auto-Create Relations
                         $relations = [
-                            'publisher_name' => [\App\Models\Publisher::class, 'publisher_id'],
-                            'place_name' => [\App\Models\Place::class, 'place_id'],
-                            'signer_name' => [\App\Models\Signer::class, 'signer_id'],
-                            'location_name' => [\App\Models\Location::class, 'location_id'],
-                            'legal_field_name' => [\App\Models\LegalField::class, 'legal_field_id'],
+                            'publisher_id' => [\App\Models\Publisher::class, 'publisher_id'],
+                            'place_id' => [\App\Models\Place::class, 'place_id'],
+                            'signer_id' => [\App\Models\Signer::class, 'signer_id'],
+                            'location_id' => [\App\Models\Location::class, 'location_id'],
+                            'legal_field_id' => [\App\Models\LegalField::class, 'legal_field_id'],
                         ];
 
                         foreach ($relations as $nameKey => $config) {
@@ -105,12 +103,15 @@ class CreateLegalProduct extends CreateRecord
                         }
 
                         if (isset($fillData['publisher_id'])) {
+                            $publisher = \App\Models\Publisher::class::find($fillData['publisher_id']);
                             $initiator = \App\Models\Initiator::firstOrCreate(
-                                ['name' => $fillData['publisher_name']],
-                                ['slug' => Str::slug($fillData['publisher_name'])]
+                                ['name' => $publisher->name],
+                                ['slug' => Str::slug($publisher->name)]
                             );
                             $fillData['initiator_id'] = $initiator->id;
                         }
+
+                        $fillData['status'] = 'active';
 
                         // 7. Fill Main Form
                         $livewire->form->fill($fillData);
@@ -127,6 +128,11 @@ class CreateLegalProduct extends CreateRecord
                 ->modalHeading('Generate Metadata Produk Hukum')
                 ->modalDescription('Mohon tunggu sebentar setelah menekan tombol. Proses analisis dokumen memakan waktu sekitar 5-10 detik. Jangan tutup modal ini.')
                 ->modalSubmitActionLabel('Mulai Proses AI')
+                ->extraAttributes([
+                    'class' => 'cursor-pointer',
+                    'wire:loading.class' => 'opacity-50 cursor-wait',
+                    'wire:loading.attr' => 'disabled',
+                ])
                 ->color('primary')
         ];
     }
