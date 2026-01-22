@@ -125,13 +125,65 @@ Instructions for specific fields:
 - published_date: Date formatted as YYYY-MM-DD.
 - validity_start: Date formatted as YYYY-MM-DD.
 - abstract: A concise summary of the content (1 paragraph).
-- signer_id: Name of the signer (person/position). Note: This maps to an ID in DB, but just return the Name string found.
-- publisher_id: Publisher name.
-- place_id: Place of signing (City).
-- author: If applicable.
+- signer_name: Name of the signer (person/position).
+- publisher_name: Publisher name (Penerbit/Pemrakarsa).
+- place_name: Place of signing (City) e.g. Jakarta, Bandung.
+- location_name: Name of the storage location (e.g. Biro Hukum).
+- legal_field_name: Name of the legal field (Bidang Hukum).
+- language: Language of the document (Bahasa Indonesia or English).
+- source: Source of the document.
+- author: The author name (if explicit).
 - topic: The main topic or subject.
 
 If a field is not found or not applicable, strictly use null.
 EOT;
+  }
+
+  /**
+   * Generate a description/definition for a given legal term/title.
+   *
+   * @param string $title
+   * @return string
+   */
+  public function generateDescription(string $title): string
+  {
+    $systemPrompt = <<<EOT
+You are an expert legal dictionary assistant.
+Your task is to provide a clear, concise, and accurate definition for the legal term provided.
+The definition MUST be in Bahasa Indonesia.
+The definition should be suitable for a general audience but legally accurate within the context of Indonesian Law.
+Format the output as a simple paragraph. Do not include quotes or "Definition: " prefixes.
+EOT;
+
+    $response = Http::withHeaders([
+      'Authorization' => 'Bearer ' . $this->apiKey,
+      'Content-Type' => 'application/json',
+    ])->post($this->baseUrl, [
+      'model' => $this->model,
+      'messages' => [
+        [
+          'role' => 'system',
+          'content' => $systemPrompt
+        ],
+        [
+          'role' => 'user',
+          'content' => "Term: " . $title
+        ]
+      ],
+      'temperature' => 0.3,
+    ]);
+
+    if ($response->failed()) {
+      Log::error('Sumopod API Error (Description): ' . $response->body());
+      throw new \Exception('Failed to generate description from AI.');
+    }
+
+    $json = $response->json();
+
+    try {
+      return $json['choices'][0]['message']['content'] ?? '';
+    } catch (\Exception $e) {
+      return '';
+    }
   }
 }

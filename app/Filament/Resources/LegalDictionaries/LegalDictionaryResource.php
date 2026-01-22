@@ -4,12 +4,15 @@ namespace App\Filament\Resources\LegalDictionaries;
 
 use App\Filament\Resources\LegalDictionaries\Pages;
 use App\Models\LegalDictionary;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -33,7 +36,50 @@ class LegalDictionaryResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->label('Judul')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->suffixAction(
+                        Action::make('generate_ai')
+                            ->icon('heroicon-o-sparkles')
+                            ->tooltip('Generate Deskripsi via AI')
+                            ->action(function (Get $get, Set $set) {
+                                $title = $get('title');
+                                if (!$title) {
+                                    \Filament\Notifications\Notification::make()
+                                        ->title('Judul harus diisi terlebih dahulu')
+                                        ->warning()
+                                        ->send();
+                                    return;
+                                }
+
+                                \Filament\Notifications\Notification::make()
+                                    ->title('Sedang memproses AI...')
+                                    ->info()
+                                    ->send();
+
+                                try {
+                                    $processor = new \App\Services\AIProcessor();
+                                    $description = $processor->generateDescription($title);
+
+                                    if ($description) {
+                                        $set('description', $description);
+                                        \Filament\Notifications\Notification::make()
+                                            ->title('Deskripsi berhasil digenerate!')
+                                            ->success()
+                                            ->send();
+                                    } else {
+                                        \Filament\Notifications\Notification::make()
+                                            ->title('Gagal mendapatkan respon AI')
+                                            ->danger()
+                                            ->send();
+                                    }
+                                } catch (\Exception $e) {
+                                    \Filament\Notifications\Notification::make()
+                                        ->title('Error: ' . $e->getMessage())
+                                        ->danger()
+                                        ->send();
+                                }
+                            })
+                    ),
                 Forms\Components\RichEditor::make('description')
                     ->label('Deskripsi')
                     ->required()
