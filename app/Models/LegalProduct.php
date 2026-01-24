@@ -55,6 +55,10 @@ class LegalProduct extends Model
         'validity_end',
         'doc_nature',
         'file_path',
+        'description',
+        'accreditation',
+        'link',
+        'cover_image',
     ];
 
     protected $casts = [

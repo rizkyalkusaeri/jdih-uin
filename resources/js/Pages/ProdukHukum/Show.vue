@@ -141,6 +141,13 @@ const formatDate = (dateString) => {
                                     v-html="legalProduct.abstract">
                                 </div>
                             </div>
+                            <div v-if="legalProduct.description" class="border-l-4 border-yellow-400 pl-4 mb-8">
+                                <span
+                                    class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">DESKRIPSI</span>
+                                <div class="text-gray-600 text-lg leading-relaxed prose max-w-none"
+                                    v-html="legalProduct.description">
+                                </div>
+                            </div>
 
 
 
@@ -167,6 +174,12 @@ const formatDate = (dateString) => {
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
                                             KATEGORI</p>
                                         <p class="text-base font-bold text-[#0F213A]">{{ legalProduct.category?.name }}
+                                        </p>
+                                    </div>
+                                    <div v-if="legalProduct.accreditation">
+                                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
+                                            AKREDITASI</p>
+                                        <p class="text-base font-bold text-[#0F213A]">{{ legalProduct.accreditation }}
                                         </p>
                                     </div>
                                     <div v-if="legalProduct.determination_date">
@@ -284,7 +297,8 @@ const formatDate = (dateString) => {
                     </div>
 
                     <!-- PDF Viewer Section -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div v-if="legalProduct.file_path"
+                        class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                         <!-- Action Bar -->
                         <div
                             class="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center bg-gray-50/50 gap-4">
@@ -340,6 +354,34 @@ const formatDate = (dateString) => {
 
                 <!-- Right Sidebar -->
                 <div class="space-y-6">
+
+                    <!-- Cover Widget (New) -->
+                    <div v-if="legalProduct.cover_image"
+                        class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 overflow-hidden">
+                        <h3 class="font-bold text-[#0F213A] mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Cover
+                        </h3>
+                        <div class="rounded-lg overflow-hidden border border-gray-100 relative group">
+                            <component :is="legalProduct.link ? 'a' : 'div'" :href="legalProduct.link || null"
+                                :target="legalProduct.link ? '_blank' : null" class="block relative">
+                                <img :src="`/storage/${legalProduct.cover_image}`" :alt="legalProduct.title"
+                                    class="w-full h-auto object-cover transition duration-300 group-hover:scale-105">
+
+                                <div v-if="legalProduct.link"
+                                    class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                    <svg class="w-8 h-8 text-white drop-shadow-md" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                </div>
+                            </component>
+                        </div>
+                    </div>
 
                     <!-- Document History Widget (Moved) -->
                     <div v-if="(legalProduct.replaced_documents && legalProduct.replaced_documents.length > 0) || (legalProduct.replaced_by && legalProduct.replaced_by.length > 0)"

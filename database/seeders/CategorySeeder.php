@@ -48,6 +48,10 @@ class CategorySeeder extends Seeder
                     'edition' => ['visible' => true, 'required' => false],
                     'page_description' => ['visible' => true, 'required' => false],
                     'language' => ['visible' => true, 'required' => false],
+                    'description' => ['visible' => true, 'required' => false],
+                    'accreditation' => ['visible' => true, 'required' => false],
+                    'link' => ['visible' => true, 'required' => true],
+                    'cover_image' => ['visible' => true, 'required' => true],
                 ]
             ],
             [

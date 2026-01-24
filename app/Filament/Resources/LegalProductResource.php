@@ -202,10 +202,6 @@ class LegalProductResource extends Resource
                                     ->label('Edisi')
                                     ->required(fn(Get $get) => $get('field_config.edition.required') ?? false)
                                     ->visible(fn(Get $get) => $get('field_config.edition.visible') ?? false),
-                                TextInput::make('page_description')
-                                    ->label('Deskripsi Fisik')
-                                    ->required(fn(Get $get) => $get('field_config.page_description.required') ?? false)
-                                    ->visible(fn(Get $get) => $get('field_config.page_description.visible') ?? false),
 
                                 Select::make('publisher_id')
                                     ->label('Penerbit')
@@ -218,6 +214,17 @@ class LegalProductResource extends Resource
                                     ])
                                     ->required(fn(Get $get) => $get('field_config.publisher_id.required') ?? false)
                                     ->visible(fn(Get $get) => $get('field_config.publisher_id.visible') ?? false),
+
+
+                                TextInput::make('accreditation')
+                                    ->label('Akreditasi')
+                                    ->placeholder('Misal: SINTA 2, Scopus')
+                                    ->visible(fn(Get $get) => $get('field_config.accreditation.visible') ?? false),
+
+                                RichEditor::make('description')
+                                    ->label('Deskripsi')
+                                    ->columnSpanFull()
+                                    ->visible(fn(Get $get) => $get('field_config.description.visible') ?? false),
 
                                 Select::make('place_id')
                                     ->label('Tempat/Kota')
@@ -269,6 +276,10 @@ class LegalProductResource extends Resource
                                     ->options(['Terbuka' => 'Terbuka', 'Terbatas' => 'Terbatas', 'Rahasia' => 'Rahasia'])
                                     ->required(fn(Get $get) => $get('field_config.doc_nature.required') ?? false)
                                     ->visible(fn(Get $get) => $get('field_config.doc_nature.visible') ?? false),
+                                TextInput::make('page_description')
+                                    ->label('Deskripsi Fisik')
+                                    ->required(fn(Get $get) => $get('field_config.page_description.required') ?? false)
+                                    ->visible(fn(Get $get) => $get('field_config.page_description.visible') ?? false),
 
                                 Select::make('language')
                                     ->label('Bahasa')
@@ -398,7 +409,20 @@ class LegalProductResource extends Resource
                                     ->acceptedFileTypes(['application/pdf'])
                                     ->openable()
                                     ->helperText('File lampiran harus berformat PDF')
-                                    ->required(),
+                                    ->required(fn(Get $get) => ($get('type_id') && \App\Models\Type::find($get('type_id'))?->name !== 'Jurnal Hukum') && ($get('field_config.file_path.required') ?? true)), // Not required for Jurnal Hukum if link is provided, can be adjusted
+
+                                // Jurnal / Buku Hukum Specifics
+                                FileUpload::make('cover_image')
+                                    ->label('Cover')
+                                    ->disk('public')
+                                    ->directory('legal-product-covers')
+                                    ->image()
+                                    ->visible(fn(Get $get) => $get('field_config.cover_image.visible') ?? false),
+
+                                TextInput::make('link')
+                                    ->label('Link Dokumen/Jurnal')
+                                    ->url()
+                                    ->visible(fn(Get $get) => $get('field_config.link.visible') ?? false),
                             ]),
                         Section::make('Data Dukung')
                             ->schema([
@@ -406,12 +430,10 @@ class LegalProductResource extends Resource
                                     ->relationship('supportingLinks')
                                     ->schema([
                                         TextInput::make('name')
-                                            ->label('Nama/Judul')
-                                            ->required(),
+                                            ->label('Nama/Judul'),
                                         TextInput::make('url')
                                             ->label('Link URL')
                                             ->url()
-                                            ->required(),
                                     ])
                                     ->addActionLabel('Tambah Data Dukung')
                                     ->reorderableWithButtons()

@@ -37,7 +37,9 @@ const props = defineProps({
     topTypes: Array,
     topTypes: Array,
     visitorStats: Object,
-    awards: Array
+    visitorStats: Object,
+    awards: Array,
+    journals: Array
 });
 
 import AwardsCarousel from '@/Components/AwardsCarousel.vue';
@@ -411,54 +413,120 @@ const pieChartOptions = {
             </div>
         </div>
 
-        <!-- News Section (Alternating: White) -->
-        <div v-if="news.length > 0" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div class="flex justify-between items-center mb-10">
-                <div>
-                    <h2 class="text-2xl md:text-3xl font-extrabold text-[#0F213A]">Informasi Hukum</h2>
-                    <div class="h-1.5 w-24 bg-yellow-500 rounded-full mt-1"></div>
+        <!-- Jurnal Hukum Section (Alternating: Gray) -->
+        <div v-if="journals && journals.length > 0" class="bg-gray-50 py-20 border-t border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-end mb-10">
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-[#0F213A]">Jurnal Hukum</h2>
+                        <div class="h-1.5 w-24 bg-yellow-500 rounded-full mt-1"></div>
+                    </div>
+                    <Link :href="route('produk-hukum.index', { type: ['Jurnal Hukum'] })"
+                        class="text-sm font-bold text-gray-500 hover:text-[#0F213A] flex items-center gap-1 transition-colors">
+                        Lihat Semua <span class="ml-1">&rarr;</span>
+                    </Link>
                 </div>
-                <!-- Link to News Index if exists, otherwise # -->
-                <Link :href="route('information.index')" class="text-sm font-bold text-gray-500  hover:text-[#0F213A]">
-                    Lihat
-                    Semua
-                    <span class="ml-1">&rarr;</span>
-                </Link>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <a v-for="journal in journals" :key="journal.id" :href="journal.link" target="_blank"
+                        class="group bg-white rounded-xl shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col overflow-hidden relative">
+
+                        <!-- Accreditation Badge -->
+                        <div v-if="journal.accreditation"
+                            class="absolute top-3 right-3 z-10 bg-yellow-400 text-[#0F213A] text-[10px] font-extrabold px-2 py-1 rounded shadow-md uppercase tracking-wide">
+                            {{ journal.accreditation }}
+                        </div>
+
+                        <!-- Cover Image -->
+                        <div class="h-64 overflow-hidden relative bg-gray-200">
+                            <img v-if="journal.cover_image" :src="journal.cover_image" :alt="journal.title"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div v-else
+                                class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
+                                <svg class="w-12 h-12 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                            </div>
+                            <!-- Overlay -->
+                            <div
+                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
+                            </div>
+                        </div>
+
+                        <div class="p-5 flex-1 flex flex-col">
+                            <h3 class="text-lg font-bold text-[#0F213A] leading-snug mb-2 group-hover:text-yellow-600 transition-colors line-clamp-2"
+                                :title="journal.title">
+                                {{ journal.title }}
+                            </h3>
+                            <!-- Description (Rich text stripped) -->
+                            <p class="text-xs text-gray-500 line-clamp-3 mb-4 leading-relaxed">
+                                {{ journal.description }}
+                            </p>
+
+                            <div class="mt-auto pt-4 border-t border-gray-50">
+                                <span
+                                    class="text-xs font-bold text-[#0F213A] flex items-center gap-1 group-hover:gap-2 transition-all">
+                                    Baca Selengkapnya <span class="bg-gray-100 rounded-full p-1">&rarr;</span>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
+        </div>
+
+        <!-- News Section (Alternating: White) -->
+        <div v-if="news.length > 0" class="bg-white py-20 border-t border-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center mb-10">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-[#0F213A]">Informasi Hukum</h2>
+                        <div class="h-1.5 w-24 bg-yellow-500 rounded-full mt-1"></div>
+                    </div>
+                    <!-- Link to News Index if exists, otherwise # -->
+                    <Link :href="route('information.index')"
+                        class="text-sm font-bold text-gray-500  hover:text-[#0F213A]">
+                        Lihat
+                        Semua
+                        <span class="ml-1">&rarr;</span>
+                    </Link>
+                </div>
 
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 cursor-pointer">
-                <Link v-for="(item, idx) in news" :key="idx" :href="route('information.show', item.slug)"
-                    class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition group border border-gray-100 h-full flex flex-col">
-                    <div class="h-48 overflow-hidden relative">
-                        <!-- Use placeholder if no image -->
-                        <img :src="route('posts.pathimage', item.id) || 'https://via.placeholder.com/600x400?text=No+Image'"
-                            :alt="item.title"
-                            class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                        <div
-                            class="absolute top-0 right-0 bg-yellow-400 text-[#0F213A] text-xs font-bold px-3 py-1 m-4 rounded">
-                            {{ item.category }}</div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <div class="text-gray-400 text-xs mb-3 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            {{ item.date }}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 cursor-pointer">
+                    <Link v-for="(item, idx) in news" :key="idx" :href="route('information.show', item.slug)"
+                        class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition group border border-gray-100 h-full flex flex-col">
+                        <div class="h-48 overflow-hidden relative">
+                            <!-- Use placeholder if no image -->
+                            <img :src="route('posts.pathimage', item.id) || 'https://via.placeholder.com/600x400?text=No+Image'"
+                                :alt="item.title"
+                                class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                            <div
+                                class="absolute top-0 right-0 bg-yellow-400 text-[#0F213A] text-xs font-bold px-3 py-1 m-4 rounded">
+                                {{ item.category }}</div>
                         </div>
-                        <h3
-                            class="text-lg font-bold text-[#0F213A] mb-3 leading-snug group-hover:text-yellow-600 transition">
-                            {{ item.title }}</h3>
-                        <p class="text-gray-500 text-sm line-clamp-3 mb-6">{{ item.desc }}</p>
-                        <div class="mt-auto">
-                            <!-- Link to Post Detail -->
-                            <span
-                                class="text-[#0F213A] text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all">Baca
-                                Selengkapnya <span class="bg-gray-100 rounded-full p-1">&rarr;</span></span>
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="text-gray-400 text-xs mb-3 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                {{ item.date }}
+                            </div>
+                            <h3
+                                class="text-lg font-bold text-[#0F213A] mb-3 leading-snug group-hover:text-yellow-600 transition">
+                                {{ item.title }}</h3>
+                            <p class="text-gray-500 text-sm line-clamp-3 mb-6">{{ item.desc }}</p>
+                            <div class="mt-auto">
+                                <!-- Link to Post Detail -->
+                                <span
+                                    class="text-[#0F213A] text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all">Baca
+                                    Selengkapnya <span class="bg-gray-100 rounded-full p-1">&rarr;</span></span>
+                            </div>
                         </div>
-                    </div>
-                </Link>
+                    </Link>
+                </div>
             </div>
         </div>
 

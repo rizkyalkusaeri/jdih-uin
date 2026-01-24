@@ -341,9 +341,12 @@ const formatDate = (dateString) => {
                             <Link :href="route('produk-hukum.show', item.slug)" class="absolute inset-0 z-10"></Link>
 
                             <div class="flex gap-5 relative z-20 pointer-events-none">
-                                <!-- Type Icon -->
+                                <!-- Type Icon / Cover Image -->
                                 <div class="shrink-0 hidden sm:block">
-                                    <div
+                                    <img v-if="item.cover_image" :src="`/storage/${item.cover_image}`" :alt="item.title"
+                                        class="w-12 h-12 rounded-lg object-cover bg-gray-50 shadow-sm transition group-hover:shadow-md border border-gray-100" />
+
+                                    <div v-else
                                         class="w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-yellow-50 group-hover:text-yellow-600 transition">
                                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

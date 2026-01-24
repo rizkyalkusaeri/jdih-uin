@@ -36,8 +36,11 @@ class HomeController extends Controller
       return round(Rating::avg('rating') ?? 0, 1);
     });
 
-    // 2. Products
+    // 2. Products (Filtered by Category: Peraturan Perundang-Undangan)
     $recentProducts = LegalProduct::with(['type', 'signer'])
+      ->whereHas('category', function ($q) {
+        $q->where('name', 'Peraturan Perundang-Undangan');
+      })
       ->whereIn('status', ['active', 'Berlaku'])
       ->latest()
       ->take(4)
@@ -47,6 +50,9 @@ class HomeController extends Controller
       });
 
     $popularProducts = LegalProduct::with(['type', 'signer'])
+      ->whereHas('category', function ($q) {
+        $q->where('name', 'Peraturan Perundang-Undangan');
+      })
       ->withCount('views')
       ->whereIn('status', ['active', 'Berlaku'])
       ->orderByDesc('views_count')
@@ -101,6 +107,24 @@ class HomeController extends Controller
       ->take(5)
       ->get();
 
+    // 6. Jurnal Hukum
+    $journals = LegalProduct::with(['type', 'signer'])
+      ->whereHas('type', function ($q) {
+        $q->where('name', 'Jurnal Hukum');
+      })
+      ->whereIn('status', ['active', 'Berlaku'])
+      ->latest()
+      ->take(4)
+      ->get()
+      ->map(function ($product) {
+        return array_merge($this->transformProduct($product), [
+          'cover_image' => $product->cover_image ? \Illuminate\Support\Facades\Storage::url($product->cover_image) : null,
+          'description' => strip_tags($product->description), // Strip tags for preview
+          'link' => $product->link,
+          'accreditation' => $product->accreditation,
+        ]);
+      });
+
     $types = Type::orderBy('name')->get();
 
     return Inertia::render('Home', [
@@ -117,6 +141,7 @@ class HomeController extends Controller
       'collections' => $collections,
       'news' => $news,
       'feedbacks' => $feedbacks,
+      'journals' => $journals,
       'types' => $types,
       'topTypes' => $topTypes,
       'visitorStats' => $visitorStats,
