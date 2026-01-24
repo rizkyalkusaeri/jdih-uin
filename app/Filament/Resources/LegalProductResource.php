@@ -430,8 +430,10 @@ class LegalProductResource extends Resource
                                     ->relationship('supportingLinks')
                                     ->schema([
                                         TextInput::make('name')
+                                            ->required()
                                             ->label('Nama/Judul'),
                                         TextInput::make('url')
+                                            ->required()
                                             ->label('Link URL')
                                             ->url()
                                     ])
