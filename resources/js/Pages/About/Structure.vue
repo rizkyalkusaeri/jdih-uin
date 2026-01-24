@@ -4,7 +4,8 @@ import GuestLayout from '@/Layouts/GuestLayout.vue';
 import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
-  links: Array
+  links: Array,
+  general: Object
 });
 </script>
 
@@ -34,35 +35,23 @@ const props = defineProps({
           <!-- Main Content -->
           <div class="lg:w-2/3 space-y-8">
 
-            <!-- Tentang Struktur -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <h2 class="text-2xl font-bold text-[#0F213A] mb-4">Tentang Struktur Organisasi</h2>
-              <div class="prose prose-yellow text-gray-600 max-w-none">
-                <p>
-                  Struktur Organisasi Jaringan Dokumentasi dan Informasi Hukum (JDIH) UIN Sunan Gunung Djati Bandung
-                  dirancang untuk memastikan pengelolaan dokumen dan informasi hukum berjalan secara efektif, efisien,
-                  dan terpadu.
-                </p>
-                <p>
-                  Organisasi ini dipimpin oleh Rektor sebagai Pengarah, dibantu oleh Wakil Rektor sebagai Penanggung
-                  Jawab, dan Kepala Pusat sebagai Ketua Pelaksana harian yang membawahi berbagai divisi teknis.
-                </p>
-              </div>
-            </div>
-
-            <!-- Gambar Struktur -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <h2 class="text-xl font-bold text-[#0F213A] mb-6">Bagan Struktur Organisasi</h2>
-              <div
-                class="bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 p-4 flex items-center justify-center min-h-[400px]">
-                <!-- Placeholder Image -->
-                <div class="text-center">
-                  <img src="https://via.placeholder.com/800x600?text=Struktur+Organisasi+JDIH+UIN+SGD"
-                    alt="Struktur Organisasi JDIH"
-                    class="max-w-full h-auto rounded-lg shadow-sm mx-auto hover:scale-[1.02] transition duration-500 cursor-zoom-in" />
-                  <p class="text-xs text-gray-400 mt-4 italic">Klik gambar untuk memperbesar</p>
+            <template v-if="general">
+              <!-- Tentang Struktur -->
+              <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                <div class="prose prose-yellow text-gray-600 max-w-none" v-html="general.description">
                 </div>
               </div>
+            </template>
+
+            <div v-else class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+              <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-medium text-gray-900">Belum Ada Data</h3>
+              <p class="text-gray-500 mt-2">Data struktur organisasi belum ditambahkan.</p>
             </div>
 
           </div>

@@ -26,7 +26,7 @@ class InitiatorResource extends Resource
 {
     protected static ?string $model = Initiator::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Identification;
 
 
 
@@ -36,6 +36,7 @@ class InitiatorResource extends Resource
     protected static ?string $modelLabel = 'Pemrakarsa';
     protected static ?string $pluralModelLabel = 'Pemrakarsa';
     protected static ?string $navigationLabel = 'Pemrakarsa';
+
 
     public static function getNavigationGroup(): ?string
     {

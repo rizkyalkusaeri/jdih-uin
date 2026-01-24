@@ -5,7 +5,8 @@ import { route } from 'ziggy-js';
 import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
-  links: Array
+  links: Array,
+  general: Object
 });
 </script>
 
@@ -35,68 +36,20 @@ const props = defineProps({
           <!-- Main Content -->
           <div class="lg:w-2/3 space-y-8">
 
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-
-              <div class="prose prose-yellow text-gray-600 max-w-none">
-                <h2 class="text-xl font-bold text-[#0F213A] mb-2">Prasyarat</h2>
-                <p>
-                  Harap baca dengan saksama syarat penggunaan di bawah ini sebelum menggunakan situs web ini, agar Anda
-                  dapat menggunakan informasi di situs web ini. Jika Anda tidak menyetujui syarat penggunaan, Anda tidak
-                  boleh melanjutkan ke langkah berikutnya. Jika Anda langsung menuju halaman berikutnya, maka Anda
-                  dianggap memahami dan menyetujui isi syarat penggunaan. Syarat-syarat ini dapat berubah dari waktu ke
-                  waktu sesuai dengan kebijakan yang telah ditetapkan, oleh karena itu diharapkan Anda mengikuti
-                  perkembangannya secara berkala.
-                </p>
-
-                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Presentasi</h2>
-                <p>
-                  Situs web ini dibangun untuk kenyamanan pengunjung. Untuk itu, kami berusaha menyajikan semua
-                  informasi (teks, grafik, dan semua atribut yang ada) sebaik mungkin. Semua halaman situs web ini
-                  dirancang untuk berjalan pada berbagai ukuran layar. Gunakan browser Chrome, Firefox, Safari, atau
-                  Internet Explorer (versi 11.00 ke atas) untuk mendapatkan hasil terbaik dari layanan ini. Namun, kami
-                  tidak dapat menjamin bahwa informasi yang kami berikan dapat memenuhi keinginan semua pengguna situs
-                  web ini.
-                </p>
-
-                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Hak Cipta</h2>
-                <p>
-                  Situs ini dilindungi hak cipta dan telah terdaftar secara resmi di Sekretariat UIN Sunan Gunung Djati
-                  Bandung. Oleh karena itu, seluruh konten (teks, grafik, dan media lainnya) di situs web ini adalah hak
-                  cipta dan milik UIN Sunan Gunung Djati Bandung. Semua bentuk penggunaan komersial materi harus
-                  mendapatkan izin dari Sekretaris UIN Sunan Gunung Djati Bandung. Setiap tindakan yang sengaja
-                  menyebabkan kerusakan pada data, program, informasi, dan hal-hal terkait dengannya, dianggap sebagai
-                  pelanggaran hukum.
-                </p>
-
-                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Virus</h2>
-                <p>
-                  Dampak perkembangan teknologi informasi adalah munculnya virus komputer baru di internet, sehingga
-                  kami memperingatkan Anda tentang bahaya yang ditimbulkan virus ini terhadap sistem Anda. Merupakan
-                  tanggung jawab Anda untuk mendeteksi semua materi yang diunduh dari internet. Kami tidak bertanggung
-                  jawab atas kerugian atau kerusakan apa pun yang disebabkan oleh virus.
-                </p>
-
-                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Keamanan</h2>
-                <p>
-                  Penggunaan internet dan email tidak bersifat rahasia. Karena ada kemungkinan informasi yang dikirimkan
-                  kepada kami dibaca atau digunakan oleh pihak lain. Untuk melindungi kerahasiaan Anda, disarankan agar
-                  email yang dikirim tidak memuat informasi sensitif seperti nilai rekening, laporan keuangan, dll.
-                </p>
-
-                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Akses</h2>
-                <p>
-                  Kami berhak untuk menghentikan akses yang tidak sah dan berbahaya ke situs ini untuk melindungi semua
-                  konten yang terdapat di dalamnya.
-                </p>
-
-                <h2 class="text-xl font-bold text-[#0F213A] mb-2 mt-4">Umpan Balik</h2>
-                <p>
-                  Kami menghargai setiap umpan balik yang diberikan kepada kami, untuk menghindari kesalahpahaman. Apa
-                  pun yang Anda kirimkan kepada kami, baik ide, saran, dll., akan menjadi milik kami tanpa kompensasi
-                  dan tidak ada klaim atasnya.
-                </p>
+            <div v-if="general" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+              <div class="prose prose-yellow text-gray-600 max-w-none" v-html="general.description">
               </div>
+            </div>
 
+            <div v-else class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+              <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-medium text-gray-900">Belum Ada Data</h3>
+              <p class="text-gray-500 mt-2">Data prasyarat belum ditambahkan.</p>
             </div>
 
           </div>

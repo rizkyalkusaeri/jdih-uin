@@ -10,7 +10,9 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -89,7 +91,7 @@ class FeedbackResource extends Resource
                     ->searchable()
                     ->preload(),
                 Filter::make('created_at')
-                    ->form([
+                    ->schema([
                         DatePicker::make('from')
                             ->label('Dari Tanggal'),
                         DatePicker::make('until')
@@ -107,13 +109,14 @@ class FeedbackResource extends Resource
                             );
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 ViewAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //    Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

@@ -6,33 +6,41 @@ use Inertia\Inertia;
 
 Route::get('/', [\App\Http\Controllers\Public\HomeController::class, 'index'])->name('home');
 
+use App\Models\General;
+use App\Models\Faq;
+
 Route::get('/tentang', function () {
     return Inertia::render('About/Index', [
-        'links' => \App\Models\Link::all()
+        'links' => \App\Models\Link::all(),
+        'general' => General::where('slug', 'profil')->where('is_active', true)->first()
     ]);
 })->name('about.index');
 
 Route::get('/tentang/struktur-organisasi', function () {
     return Inertia::render('About/Structure', [
-        'links' => \App\Models\Link::all()
+        'links' => \App\Models\Link::all(),
+        'general' => General::where('slug', 'struktur')->where('is_active', true)->first()
     ]);
 })->name('about.structure');
 
 Route::get('/tentang/faq', function () {
     return Inertia::render('About/FAQ', [
-        'links' => \App\Models\Link::all()
+        'links' => \App\Models\Link::all(),
+        'faqs' => Faq::where('is_active', true)->orderBy('sort_order', 'asc')->get()
     ]);
 })->name('about.faq');
 
 Route::get('/tentang/prasyarat', function () {
     return Inertia::render('About/Prasyarat', [
-        'links' => \App\Models\Link::all()
+        'links' => \App\Models\Link::all(),
+        'general' => General::where('slug', 'prasyarat')->where('is_active', true)->first()
     ]);
 })->name('about.prasyarat');
 
 Route::get('/tentang/kebijakan-privasi', function () {
     return Inertia::render('About/Privacy', [
-        'links' => \App\Models\Link::all()
+        'links' => \App\Models\Link::all(),
+        'general' => General::where('slug', 'kebijakan-privasi')->where('is_active', true)->first()
     ]);
 })->name('about.privacy');
 

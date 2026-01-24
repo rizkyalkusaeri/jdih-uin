@@ -5,7 +5,8 @@ import SeoHead from '@/Components/SeoHead.vue';
 
 
 const props = defineProps({
-  links: Array
+  links: Array,
+  general: Object
 });
 </script>
 
@@ -33,76 +34,20 @@ const props = defineProps({
           <!-- Main Content -->
           <div class="lg:w-2/3 space-y-8">
 
-            <!-- Tentang JDIH -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <h2 class="text-2xl font-bold text-[#0F213A] mb-4">Tentang JDIH UIN SGD</h2>
-              <div class="prose prose-yellow text-gray-600 max-w-none">
-                <p>
-                  Jaringan Dokumentasi dan Informasi Hukum (JDIH) Universitas Islam Negeri Sunan Gunung Djati Bandung
-                  adalah wadah pendayagunaan bersama atas dokumen hukum secara tertib, terpadu, dan berkesinambungan
-                  yang bersarana pemberian pelayanan informasi hukum secara lengkap, akurat, mudah, dan cepat.
-                </p>
+            <div v-if="general" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+              <div class="prose prose-yellow text-gray-600 max-w-none" v-html="general.description">
               </div>
             </div>
 
-            <!-- Dasar Hukum -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <h2 class="text-xl font-bold text-[#0F213A] mb-4">Dasar Hukum</h2>
-              <ul class="list-disc list-inside space-y-2 text-gray-600">
-                <li>Peraturan Presiden Nomor 33 Tahun 2012 tentang Jaringan Dokumentasi dan Informasi Hukum Nasional.
-                </li>
-                <li>Peraturan Menteri Hukum dan Hak Asasi Manusia Nomor 8 Tahun 2019 tentang Standar Pengelolaan Dokumen
-                  dan Informasi Hukum.</li>
-                <li>Keputusan Rektor UIN Sunan Gunung Djati Bandung tentang Pembentukan Tim Pengelola JDIH.</li>
-              </ul>
-            </div>
-
-            <!-- Visi dan Misi -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <h2 class="text-xl font-bold text-[#0F213A] mb-4">Visi dan Misi</h2>
-
-              <div class="mb-6">
-                <h3 class="font-bold text-lg text-gray-800 mb-2">Visi</h3>
-                <p class="text-gray-600 italic">
-                  "Terwujudnya Jaringan Dokumentasi dan Informasi Hukum yang Terpadu dan Terintegrasi untuk Mendukung
-                  UIN Sunan Gunung Djati Bandung yang Unggul dan Kompetitif."
-                </p>
+            <div v-else class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+              <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
-
-              <div>
-                <h3 class="font-bold text-lg text-gray-800 mb-2">Misi</h3>
-                <ul class="list-decimal list-inside space-y-2 text-gray-600">
-                  <li>Mewujudkan pengelolaan dokumentasi dan informasi hukum yang tertib, terpadu, dan berkesinambungan.
-                  </li>
-                  <li>Menyediakan informasi hukum yang lengkap, akurat, mudah, dan cepat diakses.</li>
-                  <li>Mengembangkan kerjasama jaringan dokumentasi dan informasi hukum dengan instansi lain.</li>
-                  <li>Meningkatkan kualitas sumber daya manusia pengelola JDIH.</li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Maksud dan Tujuan -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <h2 class="text-xl font-bold text-[#0F213A] mb-4">Maksud dan Tujuan</h2>
-              <div class="space-y-4 text-gray-600">
-                <p>
-                  <strong class="text-gray-800">Maksud:</strong><br>
-                  Penyelenggaraan JDIH dimaksudkan untuk menjamin ketersediaan dokumentasi dan informasi hukum yang
-                  lengkap dan akurat, serta dapat diakses secara cepat dan mudah oleh sivitas akademika dan masyarakat
-                  umum.
-                </p>
-                <p>
-                  <strong class="text-gray-800">Tujuan:</strong><br>
-                <ul class="list-disc list-inside mt-2 space-y-1">
-                  <li>Menjamin terciptanya pengelolaan dokumentasi dan informasi hukum yang terpadu dan terintegrasi.
-                  </li>
-                  <li>Menjamin ketersediaan dokumentasi dan informasi hukum yang lengkap dan akurat.</li>
-                  <li>Meningkatkan kualitas pelayanan informasi hukum kepada publik.</li>
-                  <li>Mendukung proses pengambilan keputusan dan pembentukan produk hukum di lingkungan Universitas.
-                  </li>
-                </ul>
-                </p>
-              </div>
+              <h3 class="text-lg font-medium text-gray-900">Belum Ada Data</h3>
+              <p class="text-gray-500 mt-2">Data profil belum ditambahkan.</p>
             </div>
 
           </div>

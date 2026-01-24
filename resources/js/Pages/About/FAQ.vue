@@ -6,39 +6,17 @@ import { route } from 'ziggy-js';
 import SeoHead from '@/Components/SeoHead.vue';
 
 const props = defineProps({
-  links: Array
+  links: Array,
+  faqs: Array
 });
 
-const faqs = ref([
-  {
-    question: "Apa itu JDIH UIN SGD?",
-    answer: "JDIH UIN SGD adalah Jaringan Dokumentasi dan Informasi Hukum di lingkungan Universitas Islam Negeri Sunan Gunung Djati Bandung. Sistem ini menyediakan akses terhadap berbagai koleksi produk hukum yang berlaku di universitas serta instrumen hukum lainnya.",
-    isOpen: true
-  },
-  {
-    question: "Bagaimana cara mencari produk hukum?",
-    answer: "Anda dapat menggunakan fitur pencarian di halaman Beranda atau halaman Produk Hukum. Masukkan kata kunci seperti judul, nomor, atau tahun peraturan untuk menemukan dokumen yang Anda cari. Anda juga dapat menggunakan filter pencarian untuk hasil yang lebih spesifik.",
-    isOpen: false
-  },
-  {
-    question: "Apakah saya perlu mendaftar untuk mengunduh dokumen?",
-    answer: "Sebagian besar dokumen produk hukum yang bersifat publik dapat diunduh tanpa perlu mendaftar. Namun, untuk fitur tertentu atau dokumen khusus, mungkin diperlukan akses login.",
-    isOpen: false
-  },
-  {
-    question: "Bagaimana jika saya menemukan tautan yang rusak?",
-    answer: "Jika Anda menemukan tautan yang rusak atau masalah pada website, silakan hubungi kami melalui halaman Kontak atau widget 'Butuh Bantuan' yang tersedia.",
-    isOpen: false
-  },
-  {
-    question: "Apakah informasi di website ini selalu diperbarui?",
-    answer: "Ya, kami berkomitmen untuk selalu memperbarui basis data produk hukum kami segera setelah ada peraturan baru yang diterbitkan atau perubahan status pada peraturan yang sudah ada.",
-    isOpen: false
-  }
-]);
+const localFaqs = ref(props.faqs.map((faq, index) => ({
+  ...faq,
+  isOpen: index === 0
+})));
 
 const toggleFaq = (index) => {
-  faqs.value[index].isOpen = !faqs.value[index].isOpen;
+  localFaqs.value[index].isOpen = !localFaqs.value[index].isOpen;
 };
 </script>
 
@@ -70,7 +48,7 @@ const toggleFaq = (index) => {
 
             <!-- FAQ List -->
             <div class="space-y-4">
-              <div v-for="(faq, index) in faqs" :key="index"
+              <div v-for="(faq, index) in localFaqs" :key="index"
                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300"
                 :class="{ 'shadow-md': faq.isOpen }">
                 <button @click="toggleFaq(index)"
@@ -86,8 +64,8 @@ const toggleFaq = (index) => {
                   </div>
                 </button>
                 <div v-show="faq.isOpen"
-                  class="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-50 pt-4 animate-fadeIn">
-                  {{ faq.answer }}
+                  class="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-50 pt-4 animate-fadeIn"
+                  v-html="faq.answer">
                 </div>
               </div>
             </div>
