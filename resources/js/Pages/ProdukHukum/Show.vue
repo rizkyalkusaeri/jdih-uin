@@ -54,6 +54,13 @@ const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('id-ID', options);
 };
+
+const isEmptyHtml = (html) => {
+    if (!html) return true;
+    // Menghapus semua tag HTML dan karakter whitespace/spasi kosong
+    const cleanText = html.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, '').trim();
+    return cleanText === '';
+};
 </script>
 
 <template>
@@ -134,14 +141,16 @@ const formatDate = (dateString) => {
                             </h1>
 
                             <!-- Description / Abstract -->
-                            <div v-if="legalProduct.abstract" class="border-l-4 border-yellow-400 pl-4 mb-8">
+                            <div v-if="!isEmptyHtml(legalProduct.abstract)"
+                                class="border-l-4 border-yellow-400 pl-4 mb-8">
                                 <span
                                     class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">ABSTRAK</span>
                                 <div class="text-gray-600 text-lg leading-relaxed prose max-w-none"
                                     v-html="legalProduct.abstract">
                                 </div>
                             </div>
-                            <div v-if="legalProduct.description" class="border-l-4 border-yellow-400 pl-4 mb-8">
+                            <div v-if="!isEmptyHtml(legalProduct.description)"
+                                class="border-l-4 border-yellow-400 pl-4 mb-8">
                                 <span
                                     class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">DESKRIPSI</span>
                                 <div class="text-gray-600 text-lg leading-relaxed prose max-w-none"
@@ -615,7 +624,7 @@ const formatDate = (dateString) => {
 
     <!-- Preview Modal -->
     <div v-if="showPreviewModal"
-        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        class="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
         <div class="bg-white w-full max-w-5xl h-[85vh] rounded-xl overflow-hidden flex flex-col shadow-2xl">
             <div class="bg-[#0F213A] p-4 flex justify-between items-center shrink-0">
                 <h3 class="text-white font-bold truncate pr-4">{{ legalProduct.title }}</h3>
@@ -634,7 +643,7 @@ const formatDate = (dateString) => {
 
     <!-- Rating Modal -->
     <div v-if="showRatingModal"
-        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        class="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <div class="bg-white w-full max-w-md rounded-xl p-6 shadow-2xl relative">
             <button @click="showRatingModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

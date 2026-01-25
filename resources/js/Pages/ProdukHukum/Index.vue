@@ -12,7 +12,9 @@ const props = defineProps({
     filters: Object,
 });
 
-// Filter State initialization
+// Mobile Filter State
+const showMobileFilters = ref(false);
+
 // Filter State initialization
 const filtersState = ref({
     search: props.filters?.search || '',
@@ -123,7 +125,7 @@ const formatDate = (dateString) => {
             <div class="flex flex-col lg:flex-row gap-10">
 
                 <!-- Sidebar Filter -->
-                <div class="w-full lg:w-1/4 shrink-0 space-y-6">
+                <div class="w-full lg:w-1/4 shrink-0 space-y-6" :class="{ 'hidden lg:block': !showMobileFilters }">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                         <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                             <h3 class="font-bold text-[#0F213A] flex items-center gap-2">
@@ -321,16 +323,29 @@ const formatDate = (dateString) => {
                     </div>
 
                     <!-- Search Bar (Added) -->
-                    <div class="mb-6 relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="mb-6 flex gap-3">
+                        <div class="relative flex-1">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </span>
+                            <input type="text" v-model="filtersState.search"
+                                placeholder="Cari berdasarkan judul atau nomor peraturan..."
+                                class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500" />
+                        </div>
+                        <button @click="showMobileFilters = !showMobileFilters"
+                            class="lg:hidden px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:text-[#0F213A] hover:border-[#0F213A] transition flex items-center gap-2 shadow-sm"
+                            :class="{ 'bg-gray-50 text-[#0F213A] border-[#0F213A]': showMobileFilters }">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                             </svg>
-                        </span>
-                        <input type="text" v-model="filtersState.search"
-                            placeholder="Cari berdasarkan judul atau nomor peraturan..."
-                            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500" />
+                            <span class="hidden sm:inline font-medium">Filter</span>
+                        </button>
                     </div>
 
                     <!-- List -->

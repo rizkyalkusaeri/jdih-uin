@@ -193,10 +193,24 @@ const page = usePage();
                         :class="[page.component === 'Home' ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium focus:outline-none transition duration-150 ease-in-out']">
                         Beranda
                     </Link>
-                    <Link href="/produk-hukum"
-                        :class="[page.component.startsWith('ProdukHukum') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium focus:outline-none transition duration-150 ease-in-out']">
-                        Produk Hukum
-                    </Link>
+                    <!-- Produk Hukum Group -->
+                    <div class="space-y-1">
+                        <div
+                            class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600">
+                            Produk Hukum
+                        </div>
+                        <Link href="/produk-hukum"
+                            :class="[route().current('produk-hukum.index') && !route().params.category ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                            Semua Produk Hukum
+                        </Link>
+                        <template v-if="page.props.categories">
+                            <Link v-for="category in page.props.categories" :key="category.id"
+                                :href="`/produk-hukum?category=${encodeURIComponent(category.name)}`"
+                                :class="[route().params.category === category.name ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                                {{ category.name }}
+                            </Link>
+                        </template>
+                    </div>
                     <!-- Berita, Event & Dokumentasi Group -->
                     <div class="space-y-1">
                         <div
