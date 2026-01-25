@@ -10,7 +10,8 @@ class ContactController extends Controller
     public function index()
     {
         return \Inertia\Inertia::render('Contact/Index', [
-            'links' => \App\Models\Link::all()
+            'links' => \App\Models\Link::all(),
+            'generals' => \App\Models\General::all()->keyBy('slug')->toArray()
         ]);
     }
 

@@ -7,6 +7,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class GeneralForm
@@ -16,15 +17,22 @@ class GeneralForm
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->required(),
+                    ->required()
+                    ->label('Judul')
+                    ->placeholder('Judul')
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
                 TextInput::make('slug')
+                    ->label('Kata Kunci')
                     ->required(),
                 RichEditor::make('description')
+                    ->label('Deskripsi')
                     ->columnSpanFull(),
                 // FileUpload::make('image')
                 //     ->image()
                 //     ->directory('generals'),
                 Toggle::make('is_active')
+                    ->label('Status')
                     ->required(),
             ]);
     }

@@ -6,6 +6,7 @@ import SeoHead from '@/Components/SeoHead.vue';
 
 const showingNavigationDropdown = ref(false);
 const page = usePage();
+
 </script>
 
 <template>
@@ -60,14 +61,14 @@ const page = usePage();
                                 <Link href="/produk-hukum"
                                     class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700 border-b border-gray-50 mb-1"
                                     :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('produk-hukum.index') && !route().params.category }">
-                                Semua Produk Hukum
+                                    Semua Produk Hukum
                                 </Link>
                                 <template v-if="page.props.categories">
                                     <Link v-for="category in page.props.categories" :key="category.id"
                                         :href="`/produk-hukum?category=${encodeURIComponent(category.name)}`"
                                         class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
                                         :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().params.category === category.name }">
-                                    {{ category.name }}
+                                        {{ category.name }}
                                     </Link>
                                 </template>
                             </div>
@@ -299,7 +300,9 @@ const page = usePage();
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
-                                <span>Jl. A.H. Nasution No. 105, Cipadung, Cibiru, Kota Bandung, Jawa Barat 40614</span>
+                                <span v-html="$page.props.generals.alamat?.description ?? `Jl. A.H. Nasution No. 105,
+                                    Cipadung,
+                                    Cibiru, Kota Bandung, Jawa Barat 40614`"></span>
                             </li>
                             <li class="flex items-center gap-3">
                                 <svg class="w-5 h-5 text-yellow-400 shrink-0" fill="none" stroke="currentColor"
@@ -307,7 +310,7 @@ const page = usePage();
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                 </svg>
-                                <span>+62 22 7800525</span>
+                                <span v-html="$page.props.generals.telepon?.description ?? '022-7500000'"></span>
                             </li>
                             <li class="flex items-center gap-3">
                                 <svg class="w-5 h-5 text-yellow-400 shrink-0" fill="none" stroke="currentColor"
@@ -315,7 +318,7 @@ const page = usePage();
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
-                                <span>jdih@uinsgd.ac.id</span>
+                                <span v-html="$page.props.generals.email?.description ?? 'email@jdih-uin.com'"></span>
                             </li>
                         </ul>
                     </div>
@@ -323,7 +326,8 @@ const page = usePage();
 
                 <div
                     class="border-t border-gray-700 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
-                    <p>&copy; 2024 JDIH UIN Sunan Gunung Djati Bandung. All Rights Reserved.</p>
+                    <p>&copy; {{ new Date().getFullYear() }} JDIH UIN Sunan Gunung Djati Bandung. All Rights Reserved.
+                    </p>
                     <div class="flex space-x-6 mt-4 md:mt-0">
                         <a href="/tentang/kebijakan-privasi" class="hover:text-white transition">Kebijakan Privasi</a>
                         <a href="/tentang/prasyarat" class="hover:text-white transition">Syarat & Ketentuan</a>
