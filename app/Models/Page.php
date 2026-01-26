@@ -22,6 +22,7 @@ class Page extends Model
     protected $fillable = [
         'title',
         'slug',
-        'content',
+        'description',
+        'is_active',
     ];
 }

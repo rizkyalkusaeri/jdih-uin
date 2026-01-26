@@ -40,6 +40,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'categories' => fn() => \App\Models\Category::where('type', 'legal')->select(['id', 'name', 'slug'])->get(),
             'generals' => fn() => \App\Models\General::all()->keyBy('slug')->toArray(),
+            'pages' => fn() => \App\Models\Page::where('is_active', true)->select(['title', 'slug'])->get(),
         ];
     }
 }

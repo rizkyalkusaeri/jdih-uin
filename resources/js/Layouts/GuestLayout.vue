@@ -132,30 +132,17 @@ const page = usePage();
                             <!-- Dropdown Menu -->
                             <div
                                 class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50">
-                                <Link href="/tentang"
-                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
-                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.index') }">
-                                    Profil JDIH
-                                </Link>
-                                <Link href="/tentang/struktur-organisasi"
-                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
-                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.structure') }">
-                                    Struktur Organisasi
-                                </Link>
+                                <template v-for="pageItem in $page.props.pages" :key="pageItem.slug">
+                                    <Link :href="`/tentang/${pageItem.slug}`"
+                                        class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                        :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current() === 'about.show' && route().params.slug === pageItem.slug }">
+                                        {{ pageItem.title }}
+                                    </Link>
+                                </template>
                                 <Link href="/tentang/faq"
                                     class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
                                     :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.faq') }">
                                     FAQ
-                                </Link>
-                                <Link href="/tentang/prasyarat"
-                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
-                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.prasyarat') }">
-                                    Prasyarat
-                                </Link>
-                                <Link href="/tentang/kebijakan-privasi"
-                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
-                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.privacy') }">
-                                    Kebijakan Privasi
                                 </Link>
                             </div>
                         </div>
@@ -236,25 +223,15 @@ const page = usePage();
                             class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600">
                             Tentang
                         </div>
-                        <Link href="/tentang"
-                            :class="[route().current('about.index') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
-                            Profil JDIH
-                        </Link>
-                        <Link href="/tentang/struktur-organisasi"
-                            :class="[route().current('about.structure') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
-                            Struktur Organisasi
-                        </Link>
+                        <template v-for="pageItem in $page.props.pages" :key="pageItem.slug">
+                            <Link :href="`/tentang/${pageItem.slug}`"
+                                :class="[route().current() === 'about.show' && route().params.slug === pageItem.slug ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                                {{ pageItem.title }}
+                            </Link>
+                        </template>
                         <Link href="/tentang/faq"
                             :class="[route().current('about.faq') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
                             FAQ
-                        </Link>
-                        <Link href="/tentang/prasyarat"
-                            :class="[route().current('about.prasyarat') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
-                            Prasyarat
-                        </Link>
-                        <Link href="/tentang/kebijakan-privasi"
-                            :class="[route().current('about.privacy') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
-                            Kebijakan Privasi
                         </Link>
                     </div>
                     <Link href="/kontak"
