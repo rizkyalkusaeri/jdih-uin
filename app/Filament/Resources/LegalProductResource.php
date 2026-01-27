@@ -440,7 +440,8 @@ class LegalProductResource extends Resource
                                     ->addActionLabel('Tambah Data Dukung')
                                     ->reorderableWithButtons()
                                     ->collapsible()
-                                    ->cloneable(),
+                                    ->cloneable()
+                                    ->defaultItems(0),
                             ]),
                     ])->columnSpan(['lg' => 1]),
             ])->columns(3);
