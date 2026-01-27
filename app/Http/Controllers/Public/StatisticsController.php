@@ -30,15 +30,44 @@ class StatisticsController extends Controller
       ];
     });
 
-    // 2. Legal Products by Type (Pie/Doughnut Chart)
-    $productsByType = Type::withCount(['legalProducts' => function ($q) {
-      $q->whereIn('status', ['active', 'Berlaku']);
-    }])
+    // 2. Total Legals & Total PUU
+    $totalLegalDocuments = LegalProduct::count();
+
+    // PUU defined as category_id = 1 (Peraturan Perundang-undangan)
+    $totalPUU = LegalProduct::whereHas('type', function ($q) {
+      $q->where('category_id', 1);
+    })->count();
+
+    // 3. Stats by Validity (Status Keberlakuan) for PUU only
+    $statStatus = LegalProduct::selectRaw('status, count(*) as count')
+      ->whereHas('type', function ($q) {
+        $q->where('category_id', 1);
+      })
+      ->groupBy('status')
+      ->get()
+      ->map(function ($item) {
+        return [
+          'status' => $item->status,
+          'count' => $item->count,
+          'color' => match ($item->status) {
+            'Berlaku' => '#10B981', // Emerald-500
+            'Dicabut' => '#EF4444', // Red-500
+            'Tidak Berlaku' => '#6B7280', // Gray-500
+            default => '#3B82F6', // Blue-500
+          }
+        ];
+      });
+
+    // 4. Legal Products by Type (PUU Only)
+    $productsByType = Type::where('category_id', 1) // Only PUU
+      ->withCount(['legalProducts' => function ($q) {
+        $q->whereIn('status', ['active', 'Berlaku']);
+      }])
       ->having('legal_products_count', '>', 0)
       ->get()
       ->map(function ($type) {
         return [
-          'label' => $type->name, // e.g. "Peraturan Rektor"
+          'label' => $type->name,
           'value' => $type->legal_products_count,
           'color' => $this->getColorForType($type->name),
         ];
@@ -81,6 +110,9 @@ class StatisticsController extends Controller
       'productsByType' => $productsByType,
       'productsByYear' => $productsByYear,
       'topProducts' => $topProducts,
+      'totalLegalDocuments' => $totalLegalDocuments,
+      'totalPUU' => $totalPUU,
+      'statStatus' => $statStatus,
     ]);
   }
 

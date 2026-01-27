@@ -18,20 +18,21 @@ const page = usePage();
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-20 items-center">
                     <!-- Logo -->
-                    <div class="shrink-0 flex items-center gap-3">
+                    <div class="shrink-0 flex items-center gap-2 md:gap-3">
                         <a href="https://jdihn.go.id/" target="_blank" rel="noopener noreferrer">
                             <img src="/images/logo-jdihn.png" alt="Jaringan Dokumentasi dan Informasi Hukum Nasional"
-                                class="h-12 w-auto" />
+                                class="h-8 md:h-12 w-auto" />
                         </a>
                         <Link href="/">
                             <img src="/images/jdih.png"
                                 alt="Jaringan Dokumentasi dan Informasi Hukum UIN Sunan Gunung Djati"
-                                class="h-12 w-auto" />
+                                class="h-8 md:h-12 w-auto" />
                         </Link>
                         <Link href="/">
-                            <div class="hidden md:block">
-                                <h1 class="text-xl font-bold text-[#0F213A] leading-tight">JDIH UIN SGD</h1>
-                                <p class="text-xs text-gray-500">Jaringan Dokumentasi & Informasi Hukum</p>
+                            <div class="block">
+                                <h1 class="text-sm md:text-xl font-bold text-[#0F213A] leading-tight">JDIH UIN SGD</h1>
+                                <p class="text-[10px] md:text-xs text-gray-500 leading-tight">Jaringan Dokumentasi &
+                                    Informasi Hukum</p>
                             </div>
                         </Link>
                     </div>
@@ -120,7 +121,7 @@ const page = usePage();
                         <div class="relative group">
                             <button
                                 class="flex items-center gap-1 text-gray-600 font-semibold hover:text-yellow-500 transition focus:outline-none"
-                                :class="{ 'text-yellow-500 font-bold': route().current('about.index') || route().current('about.structure') || route().current('about.faq') || route().current('about.prasyarat') || route().current('about.privacy') }">
+                                :class="{ 'text-yellow-500 font-bold': route().current('about.*') }">
                                 Tentang
                                 <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -135,7 +136,7 @@ const page = usePage();
                                 <template v-for="pageItem in $page.props.pages" :key="pageItem.slug">
                                     <Link :href="`/tentang/${pageItem.slug}`"
                                         class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
-                                        :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current() === 'about.show' && route().params.slug === pageItem.slug }">
+                                        :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('about.show', { slug: pageItem.slug }) }">
                                         {{ pageItem.title }}
                                     </Link>
                                 </template>
@@ -225,7 +226,7 @@ const page = usePage();
                         </div>
                         <template v-for="pageItem in $page.props.pages" :key="pageItem.slug">
                             <Link :href="`/tentang/${pageItem.slug}`"
-                                :class="[route().current() === 'about.show' && route().params.slug === pageItem.slug ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                                :class="[route().current('about.show', { slug: pageItem.slug }) ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
                                 {{ pageItem.title }}
                             </Link>
                         </template>
@@ -270,12 +271,19 @@ const page = usePage();
                     <div>
                         <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-wider">Tautan Cepat</h4>
                         <ul class="space-y-3 text-sm text-gray-400">
-                            <li><a href="/tentang" class="hover:text-yellow-400 transition">Profil JDIH</a></li>
-                            <li><a href="/tentang/struktur-organisasi" class="hover:text-yellow-400 transition">Struktur
-                                    Organisasi</a></li>
-                            <li><a href="/tentang/faq" class="hover:text-yellow-400 transition">FAQ</a></li>
-                            <li><a href="/kontak" class="hover:text-yellow-400 transition">Kontak
-                                    Kami</a></li>
+                            <!-- Dynamic Pages -->
+                            <li v-for="pageItem in $page.props.pages" :key="pageItem.slug">
+                                <Link :href="`/tentang/${pageItem.slug}`" class="hover:text-yellow-400 transition">
+                                    {{ pageItem.title }}
+                                </Link>
+                            </li>
+                            <!-- Static Links -->
+                            <li>
+                                <Link href="/tentang/faq" class="hover:text-yellow-400 transition">FAQ</Link>
+                            </li>
+                            <li>
+                                <Link href="/kontak" class="hover:text-yellow-400 transition">Kontak Kami</Link>
+                            </li>
                         </ul>
                     </div>
 

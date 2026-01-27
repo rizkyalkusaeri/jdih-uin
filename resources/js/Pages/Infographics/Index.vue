@@ -4,10 +4,17 @@ import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { route } from 'ziggy-js';
 import SeoHead from '@/Components/SeoHead.vue';
+import Breadcrumb from '@/Components/Breadcrumb.vue';
 
 const props = defineProps({
   infographics: Object,
 });
+
+// Breadcrumb Items
+const breadcrumbItems = [
+  { label: 'Beranda', url: '/' },
+  { label: 'Info Grafis' }
+];
 
 // Lightbox State
 const showLightbox = ref(false);
@@ -48,6 +55,30 @@ const prevImage = () => {
   }
 };
 
+// Swipe Gestures
+const touchStartX = ref(0);
+const touchEndX = ref(0);
+
+const handleTouchStart = (e) => {
+  touchStartX.value = e.changedTouches[0].screenX;
+};
+
+const handleTouchEnd = (e) => {
+  touchEndX.value = e.changedTouches[0].screenX;
+  handleSwipe();
+};
+
+const handleSwipe = () => {
+  // Swipe Left -> Next
+  if (touchStartX.value - touchEndX.value > 50) {
+    nextImage();
+  }
+  // Swipe Right -> Previous
+  if (touchEndX.value - touchStartX.value > 50) {
+    prevImage();
+  }
+};
+
 // Keyboard navigation
 const handleKeydown = (e) => {
   if (!showLightbox.value) return;
@@ -74,11 +105,7 @@ onUnmounted(() => {
     <!-- Header -->
     <div class="bg-white border-b border-gray-100 py-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav class="flex text-sm text-gray-500 mb-4">
-          <Link href="/" class="hover:text-yellow-600 transition">Beranda</Link>
-          <span class="mx-2 text-gray-300">/</span>
-          <span class="text-[#0F213A] font-medium">Info Grafis</span>
-        </nav>
+        <Breadcrumb :items="breadcrumbItems" />
         <h1 class="text-3xl font-extrabold text-[#0F213A]">Info Grafis</h1>
         <p class="mt-2 text-gray-500">Galeri informasi hukum dalam bentuk grafis visual yang menarik.</p>
       </div>
@@ -122,7 +149,7 @@ onUnmounted(() => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              {{ (item.images ? item.images.length : 0) + 1 }} Slide
+              {{ (item.images ? item.images.length : 0) }} Slide
             </div>
           </div>
 
@@ -171,7 +198,7 @@ onUnmounted(() => {
       enter-to-class="opacity-100" leave-active-class="transition duration-200 ease-in" leave-from-class="opacity-100"
       leave-to-class="opacity-0">
       <div v-if="showLightbox" class="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm"
-        @click.self="closeLightbox">
+        @click.self="closeLightbox" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
 
         <!-- Close Button -->
         <button @click="closeLightbox" class="absolute top-4 right-4 text-white/70 hover:text-white z-50 p-2">
@@ -182,7 +209,7 @@ onUnmounted(() => {
 
         <!-- Navigation Buttons -->
         <button v-if="lightboxImages.length > 1" @click.stop="prevImage"
-          class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 hover:bg-white/10 rounded-full transition disabled:opacity-30 disabled:hover:bg-transparent"
+          class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 hover:bg-white/10 rounded-full transition disabled:opacity-30 disabled:hover:bg-transparent hidden md:block"
           :disabled="currentImageIndex === 0">
           <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -190,7 +217,7 @@ onUnmounted(() => {
         </button>
 
         <button v-if="lightboxImages.length > 1" @click.stop="nextImage"
-          class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 hover:bg-white/10 rounded-full transition disabled:opacity-30 disabled:hover:bg-transparent"
+          class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 hover:bg-white/10 rounded-full transition disabled:opacity-30 disabled:hover:bg-transparent hidden md:block"
           :disabled="currentImageIndex === lightboxImages.length - 1">
           <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -211,7 +238,7 @@ onUnmounted(() => {
           </div>
 
           <!-- Caption & Counter -->
-          <div class="absolute bottom-6 left-0 right-0 text-center">
+          <div class="absolute bottom-6 left-0 right-0 text-center pointer-events-none">
             <h3 class="text-white font-bold text-lg mb-1">{{ activeInfographic?.title }}</h3>
             <p class="text-gray-400 text-sm">
               Gambar {{ currentImageIndex + 1 }} dari {{ lightboxImages.length }}

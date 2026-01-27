@@ -340,6 +340,10 @@ const pieChartOptions = {
                         <h2 class="text-3xl font-extrabold text-[#0F213A]">Statistik & Matriks Data</h2>
                         <div class="h-1.5 w-24 bg-yellow-500 rounded-full mt-1"></div>
                     </div>
+                    <Link :href="route('statistics.index')"
+                        class="text-sm font-bold text-gray-500 hover:text-[#0F213A] flex items-center gap-1 transition-colors">
+                        Lihat Detail <span class="ml-1">&rarr;</span>
+                    </Link>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">

@@ -24,6 +24,10 @@ class GeneralResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    protected static ?string $modelLabel = 'General';
+    protected static ?string $pluralModelLabel = 'General';
+    protected static ?string $navigationLabel = 'General';
+
     public static function getNavigationGroup(): ?string
     {
         return 'Manajemen Konten';

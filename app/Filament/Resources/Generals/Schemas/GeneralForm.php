@@ -25,7 +25,7 @@ class GeneralForm
                 TextInput::make('slug')
                     ->label('Kata Kunci')
                     ->required(),
-                RichEditor::make('description')
+                Textarea::make('description')
                     ->label('Deskripsi')
                     ->columnSpanFull(),
                 // FileUpload::make('image')

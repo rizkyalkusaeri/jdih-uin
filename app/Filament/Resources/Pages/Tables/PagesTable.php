@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Pages\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -34,7 +35,7 @@ class PagesTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
+                DeleteAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([

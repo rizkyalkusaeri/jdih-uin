@@ -20,9 +20,13 @@ class PageResource extends Resource
 {
     protected static ?string $model = Page::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Bookmark;
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    protected static ?string $modelLabel = 'Halaman Tentang';
+    protected static ?string $pluralModelLabel = 'Halaman Tentang';
+    protected static ?string $navigationLabel = 'Halaman Tentang';
 
     public static function getNavigationGroup(): ?string
     {
