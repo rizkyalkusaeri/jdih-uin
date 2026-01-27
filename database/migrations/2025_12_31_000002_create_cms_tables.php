@@ -18,14 +18,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('pages', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->longText('content')->nullable();
-            $table->timestamps();
-        });
-
         Schema::create('banners', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();

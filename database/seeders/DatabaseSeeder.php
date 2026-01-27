@@ -28,7 +28,8 @@ class DatabaseSeeder extends Seeder
             PlaceSeeder::class,
             LegalProductSeeder::class,
             FaqSeeder::class,
-            GeneralSeeder::class,
+            SocialMediaAndContactSeeder::class,
+            PageSeeder::class,
         ]);
     }
 }
