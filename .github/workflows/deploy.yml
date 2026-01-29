@@ -41,7 +41,7 @@ jobs:
             composer install --optimize-autoloader --no-dev
 
             echo "🗄️ Migrasi Database..."
-            php artisan migrate:fresh --seed
+            php artisan migrate
 
             echo "🎨 Build Frontend..."
             php artisan ziggy:generate

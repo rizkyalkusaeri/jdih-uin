@@ -430,10 +430,10 @@ class LegalProductResource extends Resource
                                     ->relationship('supportingLinks')
                                     ->schema([
                                         TextInput::make('name')
-                                            ->required()
+                                            ->required(fn(Get $get) => filled($get('url')))
                                             ->label('Nama/Judul'),
                                         TextInput::make('url')
-                                            ->required()
+                                            ->required(fn(Get $get) => filled($get('name')))
                                             ->label('Link URL')
                                             ->url()
                                     ])
@@ -441,7 +441,13 @@ class LegalProductResource extends Resource
                                     ->reorderableWithButtons()
                                     ->collapsible()
                                     ->cloneable()
-                                    ->defaultItems(0),
+                                    ->defaultItems(0)
+                                    ->mutateDehydratedStateUsing(function (array $state): array {
+                                        return collect($state)
+                                            ->filter(fn(array $item) => filled($item['name']) && filled($item['url']))
+                                            ->values()
+                                            ->toArray();
+                                    }),
                             ]),
                     ])->columnSpan(['lg' => 1]),
             ])->columns(3);
