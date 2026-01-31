@@ -1,39 +1,98 @@
 <script setup>
-import { Link, router } from '@inertiajs/vue3'; // Head removed
-import { route } from 'ziggy-js';
+import { Link } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { debounce } from 'lodash';
 import SeoHead from '@/Components/SeoHead.vue';
+import axios from 'axios';
 
-const props = defineProps({
-  legalDictionaries: Object,
-  filters: Object,
-});
-
-const search = ref(props.filters.q || '');
-const selectedChar = ref(props.filters.char || '');
+const search = ref('');
+const selectedChar = ref('');
+const items = ref([]);
+const currentPage = ref(1);
+const lastPage = ref(1);
+const loading = ref(false);
+const total = ref(0);
 
 const alphabet = ['#', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
 
-// Watchers
-watch([search, selectedChar], debounce(() => {
-  router.get(
-    route('legal-dictionary.index'),
-    {
-      q: search.value,
-      char: selectedChar.value,
-    },
-    { preserveState: true, replace: true }
-  );
-}, 300));
+// Fetch data from API
+const fetchData = async (page = 1, reset = false) => {
+  if (loading.value) return;
+  if (!reset && page > lastPage.value) return;
+
+  loading.value = true;
+
+  try {
+    const params = new URLSearchParams();
+    params.append('page', page);
+    if (search.value) params.append('q', search.value);
+    if (selectedChar.value) params.append('char', selectedChar.value);
+
+    const response = await axios.get(`/api/legal-dictionary?${params.toString()}`);
+    const data = response.data;
+
+    if (reset) {
+      items.value = data.data;
+    } else {
+      items.value = [...items.value, ...data.data];
+    }
+
+    currentPage.value = data.current_page;
+    lastPage.value = data.last_page;
+    total.value = data.total;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Initial load
+onMounted(() => {
+  fetchData(1, true);
+});
+
+// Watch for filter changes
+const debouncedFetch = debounce(() => {
+  currentPage.value = 1;
+  fetchData(1, true);
+}, 300);
+
+watch([search, selectedChar], () => {
+  debouncedFetch();
+});
+
+// Infinite scroll
+const handleScroll = () => {
+  const scrollHeight = document.documentElement.scrollHeight;
+  const scrollTop = document.documentElement.scrollTop;
+  const clientHeight = document.documentElement.clientHeight;
+
+  if (scrollTop + clientHeight >= scrollHeight - 200 && !loading.value && currentPage.value < lastPage.value) {
+    fetchData(currentPage.value + 1, false);
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
 
 const selectChar = (char) => {
   if (selectedChar.value === char) {
-    selectedChar.value = ''; // Toggle off
+    selectedChar.value = '';
   } else {
     selectedChar.value = char;
   }
+};
+
+const resetFilters = () => {
+  search.value = '';
+  selectedChar.value = '';
 };
 </script>
 
@@ -89,47 +148,54 @@ const selectChar = (char) => {
         </div>
       </div>
 
+      <!-- Info -->
+      <div class="mb-4 text-sm text-gray-500" v-if="total > 0">
+        Menampilkan {{ items.length }} dari {{ total }} istilah
+      </div>
+
       <!-- Dictionary List -->
-      <div v-if="legalDictionaries.data.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div v-for="item in legalDictionaries.data" :key="item.id"
+      <div v-if="items.length > 0" class="flex flex-col gap-4">
+        <div v-for="item in items" :key="item.id"
           class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition duration-300 group">
-          <h3 class="text-xl font-bold text-[#0F213A] mb-3 group-hover:text-yellow-600 transition">
+          <h3 class="text-lg font-bold text-[#0F213A] mb-2 group-hover:text-yellow-600 transition">
             {{ item.title }}
           </h3>
-          <div class="text-gray-600 text-sm leading-relaxed line-clamp-4" v-html="item.description"></div>
+          <div class="text-gray-600 text-sm leading-relaxed" v-html="item.description"></div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div v-if="loading" class="flex justify-center py-8">
+        <div class="flex items-center gap-3">
+          <svg class="animate-spin h-6 w-6 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+          </svg>
+          <span class="text-gray-500">Memuat data...</span>
         </div>
       </div>
 
       <!-- Empty State -->
-      <div v-else class="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-100">
+      <div v-if="!loading && items.length === 0"
+        class="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-100">
         <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
         </svg>
         <h3 class="text-lg font-medium text-gray-900">Tidak ada istilah ditemukan</h3>
         <p class="text-gray-500 mt-1">Coba kata kunci lain atau pilih abjad lain.</p>
-        <button @click="() => { search = ''; selectedChar = ''; }"
-          class="mt-4 text-yellow-600 hover:text-yellow-700 text-sm font-medium">
+        <button @click="resetFilters" class="mt-4 text-yellow-600 hover:text-yellow-700 text-sm font-medium">
           Reset Filter
         </button>
       </div>
 
-      <!-- Pagination -->
-      <div class="mt-10 flex justify-center text-sm" v-if="legalDictionaries.links.length > 3">
-        <div class="flex flex-wrap justify-center gap-1.5 bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
-          <template v-for="(link, key) in legalDictionaries.links" :key="key">
-            <Link v-if="link.url" :href="link.url"
-              class="h-9 min-w-[36px] px-2 flex items-center justify-center rounded-lg transition text-xs font-bold"
-              :class="[
-                link.active
-                  ? 'bg-[#0F213A] text-white shadow-md transform scale-105'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-[#0F213A]',
-                !link.url && 'opacity-50 cursor-not-allowed'
-              ]" v-html="link.label" />
-            <span v-else v-html="link.label"
-              class="h-9 min-w-[36px] px-2 flex items-center justify-center text-gray-300"></span>
-          </template>
-        </div>
+      <!-- End of List -->
+      <div v-if="!loading && items.length > 0 && currentPage >= lastPage"
+        class="text-center py-6 text-gray-400 text-sm">
+        — Semua data telah dimuat —
       </div>
 
     </div>

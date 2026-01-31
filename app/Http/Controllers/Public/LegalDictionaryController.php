@@ -11,6 +11,14 @@ class LegalDictionaryController extends Controller
 {
   public function index(Request $request)
   {
+    return Inertia::render('LegalDictionary/Index');
+  }
+
+  /**
+   * API endpoint for lazy loading
+   */
+  public function api(Request $request)
+  {
     $query = LegalDictionary::where('is_published', '=', true);
 
     // Search by text (Title or Description)
@@ -33,12 +41,8 @@ class LegalDictionaryController extends Controller
     }
 
     $legalDictionaries = $query->orderBy('title', 'asc')
-      ->paginate(15)
-      ->withQueryString();
+      ->paginate(10);
 
-    return Inertia::render('LegalDictionary/Index', [
-      'legalDictionaries' => $legalDictionaries,
-      'filters' => $request->only(['q', 'char']),
-    ]);
+    return response()->json($legalDictionaries);
   }
 }

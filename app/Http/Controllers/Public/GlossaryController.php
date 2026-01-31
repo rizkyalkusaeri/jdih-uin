@@ -11,6 +11,14 @@ class GlossaryController extends Controller
 {
   public function index(Request $request)
   {
+    return Inertia::render('Glossary/Index');
+  }
+
+  /**
+   * API endpoint for lazy loading
+   */
+  public function api(Request $request)
+  {
     $query = Glossary::where('is_published', '=', true);
 
     // Search by text (Title or Description)
@@ -33,12 +41,8 @@ class GlossaryController extends Controller
     }
 
     $glossaries = $query->orderBy('title', 'asc')
-      ->paginate(15)
-      ->withQueryString();
+      ->paginate(10);
 
-    return Inertia::render('Glossary/Index', [
-      'glossaries' => $glossaries,
-      'filters' => $request->only(['q', 'char']),
-    ]);
+    return response()->json($glossaries);
   }
 }
