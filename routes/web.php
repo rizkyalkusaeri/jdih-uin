@@ -76,3 +76,10 @@ Route::get('/infografis/{infographic}/gallery/{index}', [\App\Http\Controllers\P
 // Statistik
 Route::get('/statistik', [\App\Http\Controllers\Public\StatisticsController::class, 'index'])
     ->name('statistics.index');
+
+// Pengajuan Produk Hukum
+Route::get('/pengajuan', [\App\Http\Controllers\Public\SubmissionController::class, 'create'])
+    ->name('submission.create');
+
+Route::post('/pengajuan', [\App\Http\Controllers\Public\SubmissionController::class, 'store'])
+    ->name('submission.store');

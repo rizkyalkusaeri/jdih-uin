@@ -117,15 +117,6 @@ const toggleMenu = () => {
   isOpen.value = !isOpen.value;
 };
 
-// Close menu when clicking outside
-const closeOnOutsideClick = (event) => {
-  const menu = document.getElementById('accessibility-menu');
-  const trigger = document.getElementById('accessibility-trigger');
-  if (menu && trigger && !menu.contains(event.target) && !trigger.contains(event.target)) {
-    isOpen.value = false;
-  }
-};
-
 // Watch all settings and apply + save
 watch([fontSize, displayMode, highlightLinks, dyslexicFont, pauseAnimation, bigCursor, largeLineHeight, largeLetterSpacing], () => {
   applySettings();
@@ -136,33 +127,41 @@ watch([fontSize, displayMode, highlightLinks, dyslexicFont, pauseAnimation, bigC
 onMounted(() => {
   loadSettings();
   applySettings();
-  document.addEventListener('click', closeOnOutsideClick);
 });
 </script>
 
 <template>
-  <!-- Floating Trigger Button -->
+  <!-- Side Trigger Button -->
   <button id="accessibility-trigger" @click="toggleMenu"
-    class="fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 text-white shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center group"
-    :class="{ 'ring-4 ring-yellow-300 ring-opacity-50': isOpen }" aria-label="Buka Menu Aksesibilitas"
+    class="fixed top-1/2 right-0 -translate-y-1/2 z-[9990] bg-gradient-to-l from-yellow-400 to-yellow-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-center group rounded-l-xl w-10 h-14 hover:w-16 hover:pr-2"
+    :class="{ 'translate-x-full opacity-0 pointer-events-none': isOpen }" aria-label="Buka Menu Aksesibilitas"
     :aria-expanded="isOpen">
-    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
       <path
         d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9H15V22H13V16H11V22H9V9H3V7H21V9Z" />
     </svg>
     <span class="sr-only">Aksesibilitas</span>
   </button>
 
-  <!-- Accessibility Menu Panel -->
-  <Transition enter-active-class="transition duration-200 ease-out" enter-from-class="opacity-0 translate-y-4 scale-95"
-    enter-to-class="opacity-100 translate-y-0 scale-100" leave-active-class="transition duration-150 ease-in"
-    leave-from-class="opacity-100 translate-y-0 scale-100" leave-to-class="opacity-0 translate-y-4 scale-95">
+  <!-- Backdrop -->
+  <Transition enter-active-class="transition-opacity duration-300 ease-linear" enter-from-class="opacity-0"
+    enter-to-class="opacity-100" leave-active-class="transition-opacity duration-300 ease-linear"
+    leave-from-class="opacity-100" leave-to-class="opacity-0">
+    <div v-if="isOpen" class="fixed inset-0 bg-black/50 z-[9998]" @click="isOpen = false" aria-hidden="true"></div>
+  </Transition>
+
+  <!-- Side Drawer -->
+  <Transition enter-active-class="transform transition ease-in-out duration-300"
+    enter-from-class="translate-x-full" enter-to-class="translate-x-0"
+    leave-active-class="transform transition ease-in-out duration-300" leave-from-class="translate-x-0"
+    leave-to-class="translate-x-full">
     <div v-if="isOpen" id="accessibility-menu"
-      class="fixed bottom-24 right-6 z-[9999] w-80 max-h-[80vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-gray-100"
+      class="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-[9999] overflow-y-auto flex flex-col"
       role="dialog" aria-label="Menu Aksesibilitas">
+      
       <!-- Header -->
       <div
-        class="sticky top-0 bg-gradient-to-r from-[#0F213A] to-[#1a3a5c] text-white p-4 rounded-t-2xl flex items-center justify-between">
+        class="sticky top-0 bg-gradient-to-r from-[#0F213A] to-[#1a3a5c] text-white p-5 flex items-center justify-between shadow-md shrink-0 z-10">
         <div class="flex items-center gap-3">
           <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
             <path
@@ -172,24 +171,25 @@ onMounted(() => {
         </div>
         <button @click="isOpen = false" class="p-1 hover:bg-white/20 rounded-lg transition-colors"
           aria-label="Tutup Menu">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
 
-      <div class="p-4 space-y-5">
+      <!-- Content -->
+      <div class="p-5 space-y-6 flex-1 bg-gray-50/50">
         <!-- Font Size Section -->
-        <div class="space-y-3">
-          <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+        <div class="space-y-3 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+          <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2 border-b border-gray-100 pb-2">
             <span class="text-lg">📝</span>
             Ukuran Teks
           </h3>
           <div class="flex gap-2">
             <button v-for="level in fontSizeLevels" :key="level.value" @click="fontSize = level.value"
-              class="flex-1 py-2 px-3 rounded-lg font-semibold transition-all duration-200" :class="[
+              class="flex-1 py-2 px-1 rounded-lg font-semibold transition-all duration-200 text-center" :class="[
                 fontSize === level.value
-                  ? 'bg-yellow-500 text-white shadow-md'
+                  ? 'bg-yellow-500 text-white shadow-md ring-2 ring-yellow-200'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               ]" :style="{ fontSize: `${12 + level.value * 2}px` }">
               {{ level.label }}
@@ -198,17 +198,17 @@ onMounted(() => {
         </div>
 
         <!-- Display Mode Section -->
-        <div class="space-y-3">
-          <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+        <div class="space-y-3 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+          <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2 border-b border-gray-100 pb-2">
             <span class="text-lg">🎨</span>
             Tampilan
           </h3>
           <div class="grid grid-cols-2 gap-2">
             <button v-for="mode in displayModes" :key="mode.value" @click="displayMode = mode.value"
-              class="py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2"
+              class="py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 justify-center"
               :class="[
                 displayMode === mode.value
-                  ? 'bg-yellow-500 text-white shadow-md'
+                  ? 'bg-yellow-500 text-white shadow-md ring-2 ring-yellow-200'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               ]">
               <span>{{ mode.icon }}</span>
@@ -218,59 +218,74 @@ onMounted(() => {
         </div>
 
         <!-- Other Settings Section -->
-        <div class="space-y-3">
-          <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+        <div class="space-y-3 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+          <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2 border-b border-gray-100 pb-2">
             <span class="text-lg">✨</span>
             Pengaturan Lain
           </h3>
           <div class="space-y-2">
             <!-- Highlight Links -->
-            <label class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-              <input type="checkbox" v-model="highlightLinks"
-                class="w-5 h-5 rounded border-gray-300 text-yellow-500 focus:ring-yellow-500" />
-              <span class="text-sm text-gray-700">🔗 Sorot Link</span>
+            <label class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group">
+              <span class="text-sm text-gray-700 group-hover:text-gray-900">🔗 Sorot Link</span>
+              <div class="relative inline-flex items-center cursor-pointer">
+                 <input type="checkbox" v-model="highlightLinks" class="sr-only peer">
+                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-500"></div>
+              </div>
             </label>
 
             <!-- Dyslexic Font -->
-            <label class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-              <input type="checkbox" v-model="dyslexicFont"
-                class="w-5 h-5 rounded border-gray-300 text-yellow-500 focus:ring-yellow-500" />
-              <span class="text-sm text-gray-700">🔤 Font Ramah Disleksia</span>
+            <label class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group">
+              <span class="text-sm text-gray-700 group-hover:text-gray-900">🔤 Font Disleksia</span>
+                <div class="relative inline-flex items-center cursor-pointer">
+                 <input type="checkbox" v-model="dyslexicFont" class="sr-only peer">
+                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-500"></div>
+              </div>
             </label>
 
             <!-- Pause Animation -->
-            <label class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-              <input type="checkbox" v-model="pauseAnimation"
-                class="w-5 h-5 rounded border-gray-300 text-yellow-500 focus:ring-yellow-500" />
-              <span class="text-sm text-gray-700">⏸️ Jeda Animasi</span>
+            <label class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group">
+               <span class="text-sm text-gray-700 group-hover:text-gray-900">⏸️ Jeda Animasi</span>
+                <div class="relative inline-flex items-center cursor-pointer">
+                 <input type="checkbox" v-model="pauseAnimation" class="sr-only peer">
+                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-500"></div>
+              </div>
             </label>
 
             <!-- Big Cursor -->
-            <label class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-              <input type="checkbox" v-model="bigCursor"
-                class="w-5 h-5 rounded border-gray-300 text-yellow-500 focus:ring-yellow-500" />
-              <span class="text-sm text-gray-700">🖱️ Kursor Besar</span>
+            <label class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group">
+               <span class="text-sm text-gray-700 group-hover:text-gray-900">🖱️ Kursor Besar</span>
+                <div class="relative inline-flex items-center cursor-pointer">
+                 <input type="checkbox" v-model="bigCursor" class="sr-only peer">
+                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-500"></div>
+              </div>
             </label>
 
             <!-- Large Line Height -->
-            <label class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-              <input type="checkbox" v-model="largeLineHeight"
-                class="w-5 h-5 rounded border-gray-300 text-yellow-500 focus:ring-yellow-500" />
-              <span class="text-sm text-gray-700">↕️ Jarak Baris Besar</span>
+            <label class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group">
+              <span class="text-sm text-gray-700 group-hover:text-gray-900">↕️ Jarak Baris</span>
+                <div class="relative inline-flex items-center cursor-pointer">
+                 <input type="checkbox" v-model="largeLineHeight" class="sr-only peer">
+                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-500"></div>
+              </div>
             </label>
 
             <!-- Large Letter Spacing -->
-            <label class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
-              <input type="checkbox" v-model="largeLetterSpacing"
-                class="w-5 h-5 rounded border-gray-300 text-yellow-500 focus:ring-yellow-500" />
-              <span class="text-sm text-gray-700">↔️ Jarak Huruf Besar</span>
+            <label class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group">
+               <span class="text-sm text-gray-700 group-hover:text-gray-900">↔️ Jarak Huruf</span>
+               <div class="relative inline-flex items-center cursor-pointer">
+                 <input type="checkbox" v-model="largeLetterSpacing" class="sr-only peer">
+                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-yellow-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-500"></div>
+              </div>
             </label>
           </div>
         </div>
 
-        <!-- Reset Button -->
-        <button @click="resetAll"
-          class="w-full py-3 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition-all duration-200 flex items-center justify-center gap-2">
+      </div>
+
+      <!-- Footer Reset Info -->
+      <div class="p-4 bg-gray-50 border-t border-gray-200 shrink-0">
+         <button @click="resetAll"
+          class="w-full py-3 px-4 rounded-xl bg-white border border-gray-200 hover:bg-red-50 hover:border-red-200 hover:text-red-600 text-gray-600 font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-sm">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
