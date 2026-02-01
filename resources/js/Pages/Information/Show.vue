@@ -4,6 +4,7 @@ import { route } from 'ziggy-js';
 import { Link } from '@inertiajs/vue3'; // Head removed
 import SeoHead from '@/Components/SeoHead.vue';
 import { computed } from 'vue';
+import HelpWidget from '@/Components/HelpWidget.vue';
 
 const props = defineProps({
   post: Object,
@@ -23,33 +24,35 @@ const keywords = computed(() => {
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->
-    <div class="bg-white border-b border-gray-100 py-8">
+    <div class="border-b py-8" style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav class="flex text-sm text-gray-500 mb-4">
-          <Link href="/" class="hover:text-yellow-600">Beranda</Link>
-          <span class="mx-2">/</span>
-          <Link href="/informasi-hukum" class="hover:text-yellow-600">Informasi Hukum</Link>
-          <span class="mx-2">/</span>
-          <span class="text-gray-800 font-medium truncate max-w-xs">{{ post.title }}</span>
+        <nav class="flex text-sm mb-4" style="color: var(--color-text-muted);">
+          <Link href="/" class="hover:text-[var(--color-accent-hover)]">Beranda</Link>
+          <span class="mx-2" style="color: var(--color-border-dark);">/</span>
+          <Link href="/informasi-hukum" class="hover:text-[var(--color-accent-hover)]">Informasi Hukum</Link>
+          <span class="mx-2" style="color: var(--color-border-dark);">/</span>
+          <span class="font-medium truncate max-w-xs" style="color: var(--color-text-primary);">{{ post.title }}</span>
         </nav>
-        <h1 class="text-3xl font-extrabold text-[#0F213A]">Detail {{ post.category.name }}</h1>
+        <h1 class="text-3xl font-extrabold" style="color: var(--color-primary);">Detail {{ post.category.name }}</h1>
       </div>
     </div>
-    <div class="bg-gray-50 py-12">
+    <div class="py-12" style="background-color: var(--color-bg-secondary);">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col lg:flex-row gap-8">
           <!-- Main Content -->
           <div class="lg:w-2/3">
-            <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <article class="rounded-2xl shadow-sm border overflow-hidden"
+              style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
               <!-- Featured Image -->
-              <div v-if="post.image" class="w-full h-64 md:h-96 relative bg-gray-100">
+              <div v-if="post.image" class="w-full h-64 md:h-96 relative"
+                style="background-color: var(--color-bg-secondary);">
                 <img :src="route('posts.pathimage', post.id) || 'https://via.placeholder.com/600x400?text=No+Image'"
                   :alt="post.title" class="w-full h-full object-cover">
               </div>
 
               <div class="p-6 md:p-10">
                 <!-- Meta -->
-                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6">
+                <div class="flex flex-wrap items-center gap-4 text-sm mb-6" style="color: var(--color-text-muted);">
                   <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">
                     {{ post.category ? post.category.name : 'Umum' }}
                   </span>
@@ -80,19 +83,22 @@ const keywords = computed(() => {
                 </div>
 
                 <!-- Title -->
-                <h1 class="text-2xl md:text-4xl font-bold text-[#0F213A] mb-8 leading-tight">
+                <h1 class="text-2xl md:text-4xl font-bold mb-8 leading-tight" style="color: var(--color-text-brand);">
                   {{ post.title }}
                 </h1>
 
                 <!-- Content -->
-                <div class="prose prose-lg prose-yellow max-w-none text-gray-700" v-html="post.content"></div>
+                <div class="prose prose-lg prose-yellow max-w-none" style="color: var(--color-text-primary);"
+                  v-html="post.content"></div>
 
                 <!-- Tags -->
-                <div v-if="post.tags && post.tags.length > 0" class="mt-10 pt-6 border-t border-gray-100">
-                  <h3 class="text-sm font-bold text-gray-900 mb-3">Tags:</h3>
+                <div v-if="post.tags && post.tags.length > 0" class="mt-10 pt-6 border-t"
+                  style="border-color: var(--color-border-light);">
+                  <h3 class="text-sm font-bold mb-3" style="color: var(--color-text-primary);">Tags:</h3>
                   <div class="flex flex-wrap gap-2">
                     <Link v-for="tag in post.tags" :key="tag.id" :href="route('information.index', { tag: tag.slug })"
-                      class="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-yellow-50 hover:text-yellow-700 transition cursor-default">
+                      class="px-3 py-1 rounded-lg text-sm hover:text-yellow-700 transition cursor-default"
+                      style="background-color: var(--color-bg-secondary); color: var(--color-text-secondary);">
                       #{{ tag.name }}
                     </Link>
                   </div>
@@ -104,15 +110,17 @@ const keywords = computed(() => {
           <!-- Sidebar -->
           <div class="lg:w-1/3 space-y-8">
             <!-- Related Posts -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div class="p-6 rounded-2xl shadow-sm border"
+              style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
               <div class="flex items-center justify-between mb-6">
-                <h3 class="font-bold text-[#0F213A] text-lg">Informasi Terkait</h3>
+                <h3 class="font-bold text-lg" style="color: var(--color-text-brand);">Informasi Terkait</h3>
               </div>
 
               <div v-if="relatedPosts.length > 0" class="space-y-6">
                 <Link v-for="related in relatedPosts" :key="related.slug"
                   :href="route('information.show', related.slug)" class="flex gap-4 group">
-                  <div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-gray-100 relative">
+                  <div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden relative"
+                    style="background-color: var(--color-bg-secondary);">
                     <img v-if="related.image"
                       :src="route('posts.pathimage', related.id) || 'https://via.placeholder.com/600x400?text=No+Image'"
                       :alt="related.title"
@@ -127,10 +135,11 @@ const keywords = computed(() => {
                   </div>
                   <div>
                     <h4
-                      class="text-sm font-bold text-[#0F213A] line-clamp-2 leading-relaxed group-hover:text-yellow-600 transition mb-1">
+                      class="text-sm font-bold line-clamp-2 leading-relaxed hover:text-[var(--color-accent-hover)] transition mb-1"
+                      style="color: var(--color-primary);">
                       {{ related.title }}
                     </h4>
-                    <span class="text-xs text-gray-500">{{ related.date }}</span>
+                    <span class="text-xs" style="color: var(--color-text-muted);">{{ related.date }}</span>
                   </div>
                 </Link>
               </div>
@@ -139,15 +148,7 @@ const keywords = computed(() => {
               </div>
             </div>
 
-            <div class="bg-[#0F213A] text-white p-8 rounded-2xl text-center">
-              <h3 class="font-bold text-xl mb-2">Butuh Bantuan?</h3>
-              <p class="text-gray-400 text-sm mb-6">Hubungi kami jika anda membutuhkan bantuan tekait layanan informasi
-                hukum.</p>
-              <Link :href="route('contact.index')"
-                class="inline-block bg-yellow-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-yellow-400 transition w-full">
-                Kontak Kami
-              </Link>
-            </div>
+            <HelpWidget />
           </div>
         </div>
       </div>

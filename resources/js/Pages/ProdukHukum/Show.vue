@@ -1,9 +1,9 @@
 <script setup>
-import { Link, useForm, usePage } from '@inertiajs/vue3'; // Head removed
+import { Link, usePage, useForm } from '@inertiajs/vue3'; // Head removed
 import { route } from 'ziggy-js';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { ref, computed } from 'vue';
-import SeoHead from '@/Components/SeoHead.vue';
+import HelpWidget from '@/Components/HelpWidget.vue';
 
 const props = defineProps({
     legalProduct: Object,
@@ -69,18 +69,21 @@ const isEmptyHtml = (html) => {
 
     <GuestLayout>
 
-        <div class="bg-white border-b border-gray-100 py-8">
+        <div class="border-b py-8"
+            style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <nav class="flex text-sm text-gray-500 mb-4">
-                    <Link href="/" class="hover:text-yellow-600 transition">Beranda</Link>
-                    <span class="mx-2">/</span>
-                    <Link href="/produk-hukum" class="hover:text-yellow-600 transition">Produk Hukum</Link>
-                    <span class="mx-2">/</span>
-                    <span class="text-gray-400 truncate max-w-[200px]">{{ legalProduct.type?.name || 'Dokumen' }}</span>
-                    <span class="mx-2">/</span>
-                    <span class="text-[#0F213A] font-medium">Detail</span>
+                <nav class="flex text-sm mb-4" style="color: var(--color-text-muted);">
+                    <Link href="/" class="hover:text-[var(--color-accent-hover)] transition">Beranda</Link>
+                    <span class="mx-2" style="color: var(--color-border-dark);">/</span>
+                    <Link href="/produk-hukum" class="hover:text-[var(--color-accent-hover)] transition">Produk Hukum
+                    </Link>
+                    <span class="mx-2" style="color: var(--color-border-dark);">/</span>
+                    <span class="truncate max-w-[200px]" style="color: var(--color-text-description);">{{
+                        legalProduct.type?.name || 'Dokumen' }}</span>
+                    <span class="mx-2" style="color: var(--color-border-dark);">/</span>
+                    <span class="font-medium" style="color: var(--color-text-primary);">Detail</span>
                 </nav>
-                <h1 class="text-3xl font-extrabold text-[#0F213A]">Detail</h1>
+                <h1 class="text-3xl font-extrabold" style="color: var(--color-primary);">Detail</h1>
             </div>
         </div>
 
@@ -91,9 +94,11 @@ const isEmptyHtml = (html) => {
                 <div class="lg:col-span-2 space-y-8">
 
                     <!-- Header Card -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 relative overflow-hidden">
+                    <div class="rounded-xl shadow-sm border p-8 relative overflow-hidden"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
                         <!-- Top Corner Decoration -->
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-gray-50 rounded-bl-full -mr-16 -mt-16 z-0">
+                        <div class="absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-16 -mt-16 z-0"
+                            style="background-color: var(--color-bg-secondary);">
                         </div>
 
                         <div class="relative z-10">
@@ -136,33 +141,35 @@ const isEmptyHtml = (html) => {
                             </div>
 
                             <!-- Title -->
-                            <h1 class="text-2xl md:text-3xl font-extrabold text-[#0F213A] leading-tight mb-4 uppercase">
+                            <h1 class="text-2xl md:text-3xl font-extrabold leading-tight mb-4 uppercase"
+                                style="color: var(--color-primary);">
                                 {{ legalProduct.title }}
                             </h1>
 
                             <!-- Description / Abstract -->
                             <div v-if="!isEmptyHtml(legalProduct.abstract)"
                                 class="border-l-4 border-yellow-400 pl-4 mb-8">
-                                <span
-                                    class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">ABSTRAK</span>
-                                <div class="text-gray-600 text-lg leading-relaxed prose max-w-none"
-                                    v-html="legalProduct.abstract">
+                                <span class="text-xs font-bold uppercase tracking-wider mb-2 block"
+                                    style="color: var(--color-text-muted);">ABSTRAK</span>
+                                <div class="text-lg leading-relaxed prose max-w-none"
+                                    style="color: var(--color-text-secondary);" v-html="legalProduct.abstract">
                                 </div>
                             </div>
                             <div v-if="!isEmptyHtml(legalProduct.description)"
                                 class="border-l-4 border-yellow-400 pl-4 mb-8">
-                                <span
-                                    class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">DESKRIPSI</span>
-                                <div class="text-gray-600 text-lg leading-relaxed prose max-w-none"
-                                    v-html="legalProduct.description">
+                                <span class="text-xs font-bold uppercase tracking-wider mb-2 block"
+                                    style="color: var(--color-text-muted);">DESKRIPSI</span>
+                                <div class="text-lg leading-relaxed prose max-w-none"
+                                    style="color: var(--color-text-secondary);" v-html="legalProduct.description">
                                 </div>
                             </div>
 
 
 
                             <!-- Metadata Grid -->
-                            <div class="border-t border-gray-100 pt-6">
-                                <h3 class="text-lg font-bold text-[#0F213A] mb-4">Detail Informasi</h3>
+                            <div class="border-t pt-6" style="border-color: var(--color-border-light);">
+                                <h3 class="text-lg font-bold mb-4" style="color: var(--color-primary);">Detail Informasi
+                                </h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
                                     <div v-if="legalProduct.number">
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">NOMOR
@@ -291,12 +298,14 @@ const isEmptyHtml = (html) => {
 
                                 <!-- Subjects -->
                                 <div v-if="legalProduct.subjects && legalProduct.subjects.length > 0"
-                                    class="mt-6 pt-6 border-t border-gray-100">
-                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">SUBJEK</p>
+                                    class="mt-6 pt-6 border-t" style="border-color: var(--color-border-light);">
+                                    <p class="text-xs font-bold uppercase tracking-wider mb-3"
+                                        style="color: var(--color-text-muted);">SUBJEK</p>
                                     <div class="flex flex-wrap gap-2">
                                         <Link v-for="subject in legalProduct.subjects" :key="subject.id"
                                             :href="route('produk-hukum.index', { subject: [subject.name] })"
-                                            class="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs font-medium border border-gray-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition cursor-pointer">
+                                            class="px-3 py-1 rounded text-xs font-medium border hover:text-blue-600 hover:border-blue-200 transition cursor-pointer"
+                                            style="background-color: var(--color-bg-secondary); color: var(--color-text-secondary); border-color: var(--color-border);">
                                             {{ subject.name }}
                                         </Link>
                                     </div>
@@ -306,11 +315,11 @@ const isEmptyHtml = (html) => {
                     </div>
 
                     <!-- PDF Viewer Section -->
-                    <div v-if="legalProduct.file_path"
-                        class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div v-if="legalProduct.file_path" class="rounded-xl shadow-sm border overflow-hidden"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
                         <!-- Action Bar -->
-                        <div
-                            class="p-4 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center bg-gray-50/50 gap-4">
+                        <div class="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4"
+                            style="background-color: var(--color-bg-secondary); border-color: var(--color-border-light);">
                             <div class="flex items-center gap-3">
                                 <div class="bg-red-100 p-2 rounded text-red-600">
                                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -319,14 +328,17 @@ const isEmptyHtml = (html) => {
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-bold text-[#0F213A] truncate max-w-[200px] sm:max-w-xs">
+                                    <p class="text-sm font-bold truncate max-w-[200px] sm:max-w-xs"
+                                        style="color: var(--color-primary);">
                                         Lampiran</p>
-                                    <p class="text-xs text-gray-500">{{ legalProduct.number }}</p>
+                                    <p class="text-xs" style="color: var(--color-text-muted);">{{ legalProduct.number }}
+                                    </p>
                                 </div>
                             </div>
                             <div class="flex gap-3 w-full sm:w-auto">
                                 <button @click="openPreview" v-if="legalProduct.file_path"
-                                    class="flex-1 sm:flex-none border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition">
+                                    class="flex-1 sm:flex-none border px-4 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition"
+                                    style="background-color: var(--color-bg-card); color: var(--color-text-secondary); border-color: var(--color-border);">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -337,7 +349,8 @@ const isEmptyHtml = (html) => {
                                 </button>
                                 <a :href="route('produk-hukum.download', legalProduct.slug)" target="_blank"
                                     v-if="legalProduct.file_path"
-                                    class="flex-1 sm:flex-none bg-[#FFC700] hover:bg-yellow-400 text-[#0F213A] px-6 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition shadow-sm">
+                                    class="flex-1 sm:flex-none bg-yellow-500 hover:bg-yellow-400 px-6 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition shadow-sm"
+                                    style="color: var(--color-text-primary);">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -365,9 +378,9 @@ const isEmptyHtml = (html) => {
                 <div class="space-y-6">
 
                     <!-- Cover Widget (New) -->
-                    <div v-if="legalProduct.cover_image"
-                        class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 overflow-hidden">
-                        <h3 class="font-bold text-[#0F213A] mb-4 flex items-center gap-2">
+                    <div v-if="legalProduct.cover_image" class="rounded-xl shadow-sm border p-6 overflow-hidden"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+                        <h3 class="font-bold mb-4 flex items-center gap-2" style="color: var(--color-primary);">
                             <svg class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -394,9 +407,10 @@ const isEmptyHtml = (html) => {
 
                     <!-- Document History Widget (Moved) -->
                     <div v-if="(legalProduct.replaced_documents && legalProduct.replaced_documents.length > 0) || (legalProduct.replaced_by && legalProduct.replaced_by.length > 0)"
-                        class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h3 class="font-bold text-[#0F213A] mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        class="rounded-xl shadow-sm border p-6"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+                        <h3 class="font-bold mb-4 flex items-center gap-2" style="color: var(--color-primary);">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -449,8 +463,9 @@ const isEmptyHtml = (html) => {
 
                     <!-- Data Dukung Widget -->
                     <div v-if="legalProduct.supporting_links && legalProduct.supporting_links.length > 0"
-                        class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h3 class="font-bold text-[#0F213A] mb-4 flex items-center gap-2">
+                        class="rounded-xl shadow-sm border p-6"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+                        <h3 class="font-bold mb-4 flex items-center gap-2" style="color: var(--color-primary);">
                             <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -476,8 +491,9 @@ const isEmptyHtml = (html) => {
                     </div>
 
                     <!-- Related Documents Widget -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h3 class="font-bold text-[#0F213A] mb-4 flex items-center gap-2">
+                    <div class="rounded-xl shadow-sm border p-6"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+                        <h3 class="font-bold mb-4 flex items-center gap-2" style="color: var(--color-primary);">
                             <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -517,9 +533,9 @@ const isEmptyHtml = (html) => {
                     </div>
 
                     <!-- Links Widget (Added) -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
-                        v-if="links && links.length > 0">
-                        <h3 class="font-bold text-[#0F213A] mb-4 flex items-center gap-2">
+                    <div class="rounded-xl shadow-sm border p-6" v-if="links && links.length > 0"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+                        <h3 class="font-bold mb-4 flex items-center gap-2" style="color: var(--color-primary);">
                             <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -552,8 +568,10 @@ const isEmptyHtml = (html) => {
                     </div>
 
                     <!-- Feedback Widget -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                        <h4 class="text-sm font-extrabold text-[#0F213A] mb-2 flex justify-between items-center">
+                    <div class="rounded-xl shadow-sm border p-6"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+                        <h4 class="text-sm font-extrabold mb-2 flex justify-between items-center"
+                            style="color: var(--color-primary);">
                             Apakah dokumen ini membantu?
                         </h4>
                         <p class="text-xs text-gray-400 mb-4">Bantu kami meningkatkan kualitas layanan JDIH.</p>
@@ -572,10 +590,13 @@ const isEmptyHtml = (html) => {
                             </button>
                         </div>
 
-                        <div class="flex items-center justify-between border-t border-gray-100 pt-4">
-                            <span class="text-[10px] font-bold text-gray-400 uppercase">RATING PENGGUNA</span>
-                            <span class="text-sm font-extrabold text-[#0F213A]">{{ ratingStats?.average || 0
-                            }}/5.0</span>
+                        <div class="flex items-center justify-between border-t pt-4"
+                            style="border-color: var(--color-border-light);">
+                            <span class="text-[10px] font-bold uppercase" style="color: var(--color-text-muted);">RATING
+                                PENGGUNA</span>
+                            <span class="text-sm font-extrabold" style="color: var(--color-primary);">{{
+                                ratingStats?.average || 0
+                                }}/5.0</span>
                         </div>
                         <div class="flex gap-1 text-yellow-400 mt-1 text-sm">
                             <span v-for="i in 5" :key="i"
@@ -584,19 +605,10 @@ const isEmptyHtml = (html) => {
                         <p class="text-[10px] text-gray-400 mt-1">(Berdasarkan {{ ratingStats?.count || 0 }} ulasan)</p>
                     </div>
 
-                    <div class="bg-[#0F213A] text-white p-8 rounded-2xl text-center">
-                        <h3 class="font-bold text-xl mb-2">Butuh Bantuan?</h3>
-                        <p class="text-gray-400 text-sm mb-6">Hubungi kami jika anda membutuhkan bantuan tekait layanan
-                            informasi
-                            hukum.</p>
-                        <Link :href="route('contact.index')"
-                            class="inline-block bg-yellow-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-yellow-400 transition w-full">
-                            Kontak Kami
-                        </Link>
-                    </div>
+                    <HelpWidget />
 
                     <!-- Disclaimer -->
-                    <div class="bg-blue-50 rounded-xl p-6 border border-blue-100">
+                    <!-- <div class="rounded-xl p-6 border bg-blue-50 border-blue-100">
                         <div class="flex gap-3">
                             <div class="mt-1 text-blue-600 shrink-0">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -606,7 +618,7 @@ const isEmptyHtml = (html) => {
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="text-sm font-bold text-[#0F213A] mb-1">Disclaimer</h4>
+                                <h4 class="text-sm font-bold mb-1" style="color: var(--color-primary);">Disclaimer</h4>
                                 <p class="text-xs text-gray-600 leading-relaxed">
                                     Dokumen digital ini adalah salinan untuk tujuan informasi. Jika terdapat perbedaan
                                     dengan dokumen fisik
@@ -614,7 +626,7 @@ const isEmptyHtml = (html) => {
                                 </p>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
 
             </div>
@@ -640,7 +652,6 @@ const isEmptyHtml = (html) => {
             </div>
         </div>
     </div>
-
     <!-- Rating Modal -->
     <div v-if="showRatingModal"
         class="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">

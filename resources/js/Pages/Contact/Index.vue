@@ -42,18 +42,18 @@ const successMessage = ref(usePage().props.flash.success);
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->
-    <div class="bg-white border-b border-gray-100 py-8">
+    <div class="border-b py-8" style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav class="flex text-sm text-gray-500 mb-4">
-          <Link href="/" class="hover:text-yellow-600 transition">Beranda</Link>
-          <span class="mx-2 text-gray-300">/</span>
-          <span class="text-[#0F213A] font-medium">Kontak Kami</span>
+        <nav class="flex text-sm mb-4" style="color: var(--color-text-muted);">
+          <Link href="/" class="hover:text-[var(--color-accent-hover)] transition">Beranda</Link>
+          <span class="mx-2" style="color: var(--color-border-dark);">/</span>
+          <span class="font-medium" style="color: var(--color-text-primary);">Kontak Kami</span>
         </nav>
-        <h1 class="text-3xl font-extrabold text-[#0F213A]">Kontak Kami</h1>
+        <h1 class="text-3xl font-extrabold" style="color: var(--color-primary);">Kontak Kami</h1>
       </div>
     </div>
 
-    <div class="bg-gray-50 py-12">
+    <div class="py-12" style="background-color: var(--color-bg-secondary);">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col lg:flex-row gap-8">
           <!-- Main Content -->
@@ -69,9 +69,10 @@ const successMessage = ref(usePage().props.flash.success);
             </div>
 
             <!-- Form Kontak -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <h2 class="text-2xl font-bold text-[#0F213A] mb-6">Formulir Kontak</h2>
-              <p class="text-gray-600 mb-8">
+            <div class="rounded-2xl shadow-sm border p-8"
+              style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+              <h2 class="text-2xl font-bold mb-6" style="color: var(--color-primary);">Formulir Kontak</h2>
+              <p class="mb-8" style="color: var(--color-text-secondary);">
                 Silakan isi formulir di bawah ini untuk menghubungi kami. Kami akan segera merespon pesan
                 anda.
               </p>
@@ -103,7 +104,7 @@ const successMessage = ref(usePage().props.flash.success);
                   <input type="text" id="name" v-model="form.name" placeholder="Nama Lengkap / Nama Instansi"
                     class="w-full appearance-none rounded-lg border px-4 py-2.5 text-sm transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-1" />
                   <div v-if="form.errors.name" class="text-red-500 text-sm mt-1">{{ form.errors.name
-                    }}</div>
+                  }}</div>
                 </div>
 
                 <!-- Alamat -->
@@ -131,13 +132,15 @@ const successMessage = ref(usePage().props.flash.success);
 
                   <!-- Upload Identitas -->
                   <div>
-                    <label for="current_identity_file" class="block text-sm font-bold text-gray-700 mb-2">
+                    <label for="current_identity_file" class="block text-sm font-bold mb-2"
+                      style="color: var(--color-text-primary);">
                       Upload Identitas <span class="text-red-500">*</span>
                     </label>
                     <input type="file" id="current_identity_file" @change="handleFileChange" accept="image/*,.pdf"
                       ref="fileInput"
-                      class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100" />
-                    <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG, PDF. Maks 2MB.</p>
+                      class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100"
+                      style="color: var(--color-text-description);" />
+                    <p class="text-xs mt-1" style="color: var(--color-text-muted);">Format: JPG, PNG, PDF. Maks 2MB.</p>
                     <div v-if="form.errors.identity_file" class="text-red-500 text-sm mt-1">{{
                       form.errors.identity_file }}</div>
                   </div>
@@ -169,7 +172,8 @@ const successMessage = ref(usePage().props.flash.success);
 
                 <div class="pt-4">
                   <button type="submit" :disabled="form.processing"
-                    class="w-full bg-[#0F213A] text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-800 transition shadow-lg hover:shadow-xl disabled:opacity-50 flex justify-center items-center gap-2">
+                    class="w-full text-white py-4 rounded-xl font-bold text-lg hover:opacity-90 transition shadow-lg hover:shadow-xl disabled:opacity-50 flex justify-center items-center gap-2"
+                    style="background-color: var(--color-primary);">
                     <svg v-if="form.processing" class="animate-spin h-5 w-5 text-white"
                       xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -188,7 +192,7 @@ const successMessage = ref(usePage().props.flash.success);
           <!-- Sidebar -->
           <div class="lg:w-1/3 space-y-8">
             <!-- Informasi Kontak Widget -->
-            <div class="bg-[#0F213A] text-white p-8 rounded-2xl shadow-lg">
+            <div class="p-8 bg-linear-to-br from-[#0F213A] to-[#1a3b66] text-white rounded-2xl shadow-lg">
               <h3 class="font-bold text-xl mb-6 flex items-center gap-2">
                 <svg class="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -202,22 +206,22 @@ const successMessage = ref(usePage().props.flash.success);
               <div class="space-y-6">
                 <div>
                   <h4 class="font-bold text-yellow-400 mb-1 text-sm">Alamat:</h4>
-                  <p class="text-gray-300 text-sm leading-relaxed" v-html="generals.alamat?.description ?? `Fakultas Syariah dan Hukum, Lt.2
+                  <p class="text-sm leading-relaxed text-white/80" v-html="generals.alamat?.description ?? `Fakultas Syariah dan Hukum, Lt.2
 Jln A.H. Nasution No. 105, Cipadung, Cibiru, Kota Bandung, Jawa Barat 40614`"></p>
                 </div>
 
                 <div>
                   <h4 class="font-bold text-yellow-400 mb-1 text-sm">Kontak:</h4>
-                  <ul class="space-y-2 text-sm text-gray-300">
+                  <ul class="space-y-2 text-sm text-white/80">
                     <li class="flex items-center gap-2">
-                      <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg class="w-4 h-4 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                       </svg>
                       <span v-html="generals.telepon?.description ?? `022-7500000`"></span>
                     </li>
                     <li class="flex items-center gap-2">
-                      <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg class="w-4 h-4 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
@@ -256,8 +260,9 @@ Jln A.H. Nasution No. 105, Cipadung, Cibiru, Kota Bandung, Jawa Barat 40614`"></
             </div>
 
             <!-- Tautan Terkait Widget (Reusing logic) -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6" v-if="links && links.length > 0">
-              <h3 class="font-bold text-[#0F213A] mb-4 flex items-center gap-2">
+            <div class="rounded-xl shadow-sm border p-6" v-if="links && links.length > 0"
+              style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+              <h3 class="font-bold mb-4 flex items-center gap-2" style="color: var(--color-primary);">
                 <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />

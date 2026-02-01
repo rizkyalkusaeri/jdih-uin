@@ -1,0 +1,135 @@
+/**
+ * Theme Configuration for JDIH UIN
+ * Centralized CSS Custom Properties for Light/Dark Mode
+ */
+
+:root {
+    /* ====================================
+       LIGHT MODE (Default)
+       ==================================== */
+    
+    /* Primary Colors (Navy) */
+    --color-primary: #0F213A;
+    --color-primary-light: #1a3a5c;
+    --color-primary-dark: #0a1628;
+    
+    /* Accent Colors (Yellow/Gold) */
+    --color-accent: #EAB308;
+    --color-accent-hover: #CA8A04;
+    --color-accent-light: #FEF08A;
+    --color-accent-dark: #A16207;
+    
+    /* Background Colors */
+    --color-bg-primary: #FFFFFF;
+    --color-bg-secondary: #F9FAFB;
+    --color-bg-tertiary: #F3F4F6;
+    --color-bg-primary: #FFFFFF;
+    --color-bg-secondary: #F9FAFB;
+    --color-bg-tertiary: #F3F4F6;
+    --color-bg-card: #FFFFFF;
+    --color-bg-input: #F9FAFB; /* Gray-50 */
+    
+    /* Text Colors */
+    --color-text-primary: #111827;
+    --color-text-secondary: #4B5563;
+    --color-text-muted: #9CA3AF;
+    --color-text-inverse: #FFFFFF;
+    --color-text-brand: #0F213A; /* Navy in light mode */
+    
+    /* Border Colors */
+    --color-border: #E5E7EB;
+    --color-border-light: #F3F4F6;
+    --color-border: #E5E7EB;
+    --color-border-light: #F3F4F6;
+    --color-border-dark: #D1D5DB;
+    --color-border-input: #E5E7EB; /* Gray-200 */
+    
+    /* Status Colors */
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-error: #EF4444;
+    --color-info: #3B82F6;
+    
+    /* Shadow */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* ====================================
+   DARK MODE
+   Triggered by .theme-dark or .a11y-dark class on body
+   ==================================== */
+
+.theme-dark,
+.a11y-dark {
+    /* Primary Colors (Softer Navy) */
+    --color-primary: #1E3A5F;
+    --color-primary-light: #2d4a6f;
+    --color-primary-dark: #0F172A;
+    
+    /* Accent Colors (Brighter Yellow) */
+    --color-accent: #FBBF24;
+    --color-accent-hover: #F59E0B;
+    --color-accent-light: #451a03;
+    --color-accent-dark: #D97706;
+    
+    /* Background Colors (Slate tones) */
+    --color-bg-primary: #0F172A;
+    --color-bg-secondary: #1E293B;
+    --color-bg-tertiary: #334155;
+    --color-bg-tertiary: #334155;
+    --color-bg-card: #1E293B;
+    --color-bg-input: #334155; /* Slate-700 */
+    
+    /* Text Colors */
+    --color-text-primary: #F1F5F9;
+    --color-text-secondary: #CBD5E1;
+    --color-text-muted: #94A3B8; /* Lighter slate for better visibility on dark bg */
+    --color-text-inverse: #0F172A;
+    --color-text-brand: #F1F5F9; /* White in dark mode */
+    
+    /* Border Colors */
+    --color-border: #334155;
+    --color-border-light: #1E293B;
+    --color-border: #334155;
+    --color-border-light: #1E293B;
+    --color-border-dark: #475569;
+    --color-border-input: #475569; /* Slate-600 */
+    
+    /* Shadow (darker for dark mode) */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+}
+
+/* ====================================
+   UTILITY CLASSES
+   Use these for quick theme-aware styling
+   ==================================== */
+
+/* Backgrounds */
+.bg-theme-primary { background-color: var(--color-bg-primary); }
+.bg-theme-secondary { background-color: var(--color-bg-secondary); }
+.bg-theme-tertiary { background-color: var(--color-bg-tertiary); }
+.bg-theme-card { background-color: var(--color-bg-card); }
+.bg-theme-accent { background-color: var(--color-primary); }
+
+/* Text */
+.text-theme-primary { color: var(--color-text-primary); }
+.text-theme-secondary { color: var(--color-text-secondary); }
+.text-theme-muted { color: var(--color-text-muted); }
+.text-theme-accent { color: var(--color-accent); }
+
+/* Borders */
+.border-theme { border-color: var(--color-border); }
+.border-theme-light { border-color: var(--color-border-light); }
+
+/* Links */
+.link-theme {
+    color: var(--color-accent);
+    transition: color 0.2s;
+}
+.link-theme:hover {
+    color: var(--color-accent-hover);
+}

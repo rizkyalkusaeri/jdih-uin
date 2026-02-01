@@ -103,11 +103,12 @@ onUnmounted(() => {
 
   <GuestLayout>
     <!-- Header -->
-    <div class="bg-white border-b border-gray-100 py-8">
+    <div class="border-b py-8" style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Breadcrumb :items="breadcrumbItems" />
-        <h1 class="text-3xl font-extrabold text-[#0F213A]">Info Grafis</h1>
-        <p class="mt-2 text-gray-500">Galeri informasi hukum dalam bentuk grafis visual yang menarik.</p>
+        <h1 class="text-3xl font-extrabold" style="color: var(--color-primary);">Info Grafis</h1>
+        <p class="mt-2" style="color: var(--color-text-secondary);">Galeri informasi hukum dalam bentuk grafis visual
+          yang menarik.</p>
       </div>
     </div>
 
@@ -117,10 +118,11 @@ onUnmounted(() => {
       <!-- Grid -->
       <div v-if="infographics.data.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <div v-for="item in infographics.data" :key="item.id" @click="openLightbox(item)"
-          class="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col h-full transform hover:-translate-y-1">
+          class="group rounded-xl shadow-sm border overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col h-full transform hover:-translate-y-1"
+          style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
 
           <!-- Cover Image -->
-          <div class="aspect-[0.8] relative overflow-hidden bg-gray-100">
+          <div class="aspect-[0.8] relative overflow-hidden" style="background-color: var(--color-bg-secondary);">
             <img v-if="item.cover_image" :src="route('infographics.cover', item.id)" :alt="item.title"
               class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />
             <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
@@ -155,7 +157,8 @@ onUnmounted(() => {
 
           <!-- Content -->
           <div class="p-5 flex-1 flex justify-center">
-            <h3 class="font-bold text-xl text-center text-[#0F213A] group-hover:text-yellow-600 transition mb-2">
+            <h3 class="font-bold text-xl text-center transition mb-2 group-hover:text-yellow-600"
+              style="color: var(--color-primary);">
               {{ item.title }}
             </h3>
           </div>
@@ -176,16 +179,19 @@ onUnmounted(() => {
 
       <!-- Pagination -->
       <div class="mt-12 flex justify-center text-sm" v-if="infographics.links.length > 3">
-        <div class="flex flex-wrap justify-center gap-1.5 bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
+        <div class="flex flex-wrap justify-center gap-1.5 p-2 rounded-xl border shadow-sm"
+          style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
           <template v-for="(link, key) in infographics.links" :key="key">
             <Link v-if="link.url" :href="link.url"
               class="h-9 min-w-[36px] px-2 flex items-center justify-center rounded-lg transition text-xs font-bold"
               :class="[
                 link.active
-                  ? 'bg-[#0F213A] text-white shadow-md transform scale-105'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-[#0F213A]',
+                  ? 'text-white shadow-md transform scale-105'
+                  : 'hover:bg-gray-50',
                 !link.url && 'opacity-50 cursor-not-allowed'
-              ]" v-html="link.label" />
+              ]"
+              :style="link.active ? 'background-color: var(--color-primary);' : 'color: var(--color-text-secondary);'"
+              v-html="link.label" />
             <span v-else v-html="link.label"
               class="h-9 min-w-[36px] px-2 flex items-center justify-center text-gray-300"></span>
           </template>

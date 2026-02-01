@@ -33,31 +33,34 @@ const show = (msg, t) => {
     enter-to-class="translate-y-0 opacity-100 sm:translate-x-0" leave-active-class="transition ease-in duration-100"
     leave-from-class="opacity-100" leave-to-class="opacity-0">
     <div v-if="visible"
-      class="fixed top-4 right-4 z-[9999] max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden">
+      class="fixed top-4 right-4 z-[9999] max-w-sm w-full shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
+      style="background-color: var(--color-bg-card);">
       <div class="p-4">
         <div class="flex items-start">
           <div class="flex-shrink-0">
-            <svg v-if="type === 'success'" class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
+            <svg v-if="type === 'success'" class="h-6 w-6" style="color: var(--color-success);" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <svg v-else class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg v-else class="h-6 w-6" style="color: var(--color-error);" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <div class="ml-3 w-0 flex-1 pt-0.5">
-            <p class="text-sm font-medium text-gray-900">
+            <p class="text-sm font-medium" style="color: var(--color-text-primary);">
               {{ type === 'success' ? 'Berhasil!' : 'Error!' }}
             </p>
-            <p class="mt-1 text-sm text-gray-500">
+            <p class="mt-1 text-sm" style="color: var(--color-text-secondary);">
               {{ message }}
             </p>
           </div>
           <div class="ml-4 flex-shrink-0 flex">
             <button @click="visible = false"
-              class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              class="rounded-md inline-flex hover:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent)]"
+              style="background-color: transparent; color: var(--color-text-secondary);">
               <span class="sr-only">Close</span>
               <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd"

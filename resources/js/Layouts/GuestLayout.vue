@@ -3,6 +3,7 @@ import { Link, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Toast from '@/Components/Toast.vue';
 import SeoHead from '@/Components/SeoHead.vue';
+import AccessibilityMenu from '@/Components/AccessibilityMenu.vue';
 
 const showingNavigationDropdown = ref(false);
 const page = usePage();
@@ -11,10 +12,13 @@ const page = usePage();
 
 <template>
     <SeoHead />
-    <div class="min-h-screen bg-gray-50 font-sans text-gray-900">
+    <div class="min-h-screen font-sans"
+        style="background-color: var(--color-bg-secondary); color: var(--color-text-primary);">
         <Toast />
+        <AccessibilityMenu />
         <!-- Header -->
-        <header class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-50">
+        <header class="shadow-sm sticky top-0 z-50"
+            style="background-color: var(--color-bg-primary); border-bottom: 1px solid var(--color-border-light);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-20 items-center">
                     <!-- Logo -->
@@ -30,8 +34,10 @@ const page = usePage();
                         </Link>
                         <Link href="/">
                             <div class="block">
-                                <h1 class="text-sm md:text-xl font-bold text-[#0F213A] leading-tight">JDIH UIN SGD</h1>
-                                <p class="text-[10px] md:text-xs text-gray-500 leading-tight">Jaringan Dokumentasi &
+                                <h1 class="text-sm md:text-xl font-bold leading-tight"
+                                    style="color: var(--color-text-brand);">JDIH UIN SGD</h1>
+                                <p class="text-[10px] md:text-xs leading-tight" style="color: var(--color-text-muted);">
+                                    Jaringan Dokumentasi &
                                     Informasi Hukum</p>
                             </div>
                         </Link>
@@ -40,14 +46,13 @@ const page = usePage();
                     <!-- Desktop Menu -->
                     <div class="hidden md:flex space-x-8 items-center">
                         <Link href="/"
-                            :class="[page.component === 'Home' ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500', 'transition']">
+                            :class="[route().current('home') ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500', 'transition']">
                             Beranda
                         </Link>
                         <!-- Produk Hukum Dropdown -->
                         <div class="relative group">
-                            <button
-                                class="flex items-center gap-1 text-gray-600 font-semibold hover:text-yellow-500 transition focus:outline-none"
-                                :class="{ 'text-yellow-500 font-bold': page.component.startsWith('ProdukHukum') }">
+                            <button class="flex items-center gap-1 transition focus:outline-none"
+                                :class="[page.component.startsWith('ProdukHukum') ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500']">
                                 Produk Hukum
                                 <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -57,8 +62,8 @@ const page = usePage();
                             </button>
 
                             <!-- Dropdown Menu -->
-                            <div
-                                class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50">
+                            <div class="absolute left-0 mt-2 w-56 rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50"
+                                style="background-color: var(--color-bg-card); border: 1px solid var(--color-border-light);">
                                 <Link href="/produk-hukum"
                                     class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700 border-b border-gray-50 mb-1"
                                     :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('produk-hukum.index') && !route().params.category }">
@@ -76,9 +81,8 @@ const page = usePage();
                         </div>
                         <!-- Berita, Event & Dokumentasi Dropdown -->
                         <div class="relative group">
-                            <button
-                                class="flex items-center gap-1 text-gray-600 font-semibold hover:text-yellow-500 transition focus:outline-none"
-                                :class="{ 'text-yellow-500 font-bold': route().current('information.*') || route().current('infographics.*') || route().current('glossary.*') || route().current('legal-dictionary.*') }">
+                            <button class="flex items-center gap-1 transition focus:outline-none"
+                                :class="[(route().current('information.*') || route().current('infographics.*') || route().current('glossary.*') || route().current('legal-dictionary.*')) ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500']">
                                 Informasi Hukum
                                 <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -88,8 +92,8 @@ const page = usePage();
                             </button>
 
                             <!-- Dropdown Menu -->
-                            <div
-                                class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50">
+                            <div class="absolute left-0 mt-2 w-56 rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50"
+                                style="background-color: var(--color-bg-card); border: 1px solid var(--color-border-light);">
                                 <Link href="/informasi-hukum"
                                     class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
                                     :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('information.*') }">
@@ -115,13 +119,16 @@ const page = usePage();
                                     :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('statistics.*') }">
                                     Statistik & Data
                                 </Link>
+                                <a href="https://opac.uinsgd.ac.id/?search=Hukum" target="_blank"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700">
+                                    Koleksi Buku
+                                </a>
                             </div>
                         </div>
                         <!-- Tentang Dropdown -->
                         <div class="relative group">
-                            <button
-                                class="flex items-center gap-1 text-gray-600 font-semibold hover:text-yellow-500 transition focus:outline-none"
-                                :class="{ 'text-yellow-500 font-bold': route().current('about.*') }">
+                            <button class="flex items-center gap-1 transition focus:outline-none"
+                                :class="[route().current('about.*') ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500']">
                                 Tentang
                                 <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -131,8 +138,8 @@ const page = usePage();
                             </button>
 
                             <!-- Dropdown Menu -->
-                            <div
-                                class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50">
+                            <div class="absolute left-0 mt-2 w-48 rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50"
+                                style="background-color: var(--color-bg-card); border: 1px solid var(--color-border-light);">
                                 <template v-for="pageItem in $page.props.pages" :key="pageItem.slug">
                                     <Link :href="`/tentang/${pageItem.slug}`"
                                         class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
@@ -178,7 +185,7 @@ const page = usePage();
             <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }" class="md:hidden">
                 <div class="pt-2 pb-3 space-y-1">
                     <Link href="/"
-                        :class="[page.component === 'Home' ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium focus:outline-none transition duration-150 ease-in-out']">
+                        :class="[route().current('home') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium focus:outline-none transition duration-150 ease-in-out']">
                         Beranda
                     </Link>
                     <!-- Produk Hukum Group -->
@@ -249,7 +256,7 @@ const page = usePage();
         </main>
 
         <!-- Footer -->
-        <footer class="bg-[#0F213A] text-white pt-16 pb-8">
+        <footer class="pt-16 pb-8" style="background-color: var(--color-primary); color: var(--color-text-inverse);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                     <!-- Brand -->

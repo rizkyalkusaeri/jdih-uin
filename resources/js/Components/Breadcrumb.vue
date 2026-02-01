@@ -12,18 +12,18 @@ defineProps({
 
 <template>
   <nav class="flex overflow-x-auto whitespace-nowrap py-1 mb-4 no-scrollbar" aria-label="Breadcrumb">
-    <ol class="inline-flex items-center text-sm text-gray-500">
+    <ol class="inline-flex items-center text-sm" style="color: var(--color-text-muted);">
       <template v-for="(item, index) in items" :key="index">
         <li class="inline-flex items-center">
           <template v-if="index > 0">
-            <span class="mx-2 text-gray-300">/</span>
+            <span class="mx-2" style="color: var(--color-border-dark);">/</span>
           </template>
 
           <Link v-if="item.url" :href="item.url"
-            class="inline-flex items-center font-medium hover:text-yellow-600 transition duration-150 ease-in-out">
+            class="inline-flex items-center font-medium transition duration-150 ease-in-out hover:text-[var(--color-accent-hover)]">
             {{ item.label }}
           </Link>
-          <span v-else class="text-[#0F213A] font-medium" aria-current="page">
+          <span v-else class="font-medium" aria-current="page" style="color: var(--color-text-brand);">
             {{ item.label }}
           </span>
         </li>

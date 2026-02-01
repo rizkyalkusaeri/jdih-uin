@@ -103,17 +103,17 @@ const resetFilters = () => {
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->
-    <div class="bg-white border-b border-gray-100 py-8">
+    <div class="border-b py-8" style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav class="flex text-sm text-gray-500 mb-4">
-          <Link href="/" class="hover:text-yellow-600 transition">Beranda</Link>
-          <span class="mx-2 text-gray-300">/</span>
-          <span class="text-gray-500">Informasi Hukum</span>
-          <span class="mx-2 text-gray-300">/</span>
-          <span class="text-[#0F213A] font-medium">Glosarium</span>
+        <nav class="flex text-sm mb-4" style="color: var(--color-text-muted);">
+          <Link href="/" class="hover:text-[var(--color-accent-hover)] transition">Beranda</Link>
+          <span class="mx-2" style="color: var(--color-border-dark);">/</span>
+          <span style="color: var(--color-text-description);">Informasi Hukum</span>
+          <span class="mx-2" style="color: var(--color-border-dark);">/</span>
+          <span class="font-medium" style="color: var(--color-text-primary);">Glosarium</span>
         </nav>
-        <h1 class="text-3xl font-extrabold text-[#0F213A]">Glosarium</h1>
-        <p class="text-gray-500 mt-2">Daftar istilah dan definisi hukum.</p>
+        <h1 class="text-3xl font-extrabold" style="color: var(--color-primary);">Glosarium</h1>
+        <p class="mt-2" style="color: var(--color-text-secondary);">Daftar istilah dan definisi hukum.</p>
       </div>
     </div>
 
@@ -121,7 +121,8 @@ const resetFilters = () => {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
       <!-- Search & Filter -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+      <div class="rounded-xl shadow-sm border p-6 mb-8"
+        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
         <!-- Search -->
         <div class="relative mb-6">
           <span class="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -131,7 +132,8 @@ const resetFilters = () => {
             </svg>
           </span>
           <input type="text" v-model="search" placeholder="Cari istilah..."
-            class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 transition" />
+            class="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-yellow-500 focus:border-yellow-500 transition"
+            style="background-color: var(--color-bg-input); border-color: var(--color-border-input); color: var(--color-text-primary);" />
         </div>
 
         <!-- Alphabet Filter -->
@@ -140,9 +142,10 @@ const resetFilters = () => {
             class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition duration-200 border"
             :class="[
               selectedChar === char
-                ? 'bg-[#0F213A] text-white border-[#0F213A]'
-                : 'bg-white text-gray-600 border-gray-200 hover:bg-yellow-50 hover:text-yellow-600 hover:border-yellow-200'
-            ]">
+                ? 'text-white border-transparent'
+                : 'hover:text-yellow-600'
+            ]"
+            :style="selectedChar === char ? 'background-color: var(--color-primary);' : 'background-color: var(--color-bg-secondary); border-color: var(--color-border-input); color: var(--color-text-secondary);'">
             {{ char }}
           </button>
         </div>
@@ -156,11 +159,14 @@ const resetFilters = () => {
       <!-- Glossary List -->
       <div v-if="items.length > 0" class="flex flex-col gap-4">
         <div v-for="item in items" :key="item.id"
-          class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition duration-300 group">
-          <h3 class="text-lg font-bold text-[#0F213A] mb-2 group-hover:text-yellow-600 transition">
+          class="rounded-xl shadow-sm border p-6 hover:shadow-md transition duration-300 group"
+          style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+          <h3 class="text-lg font-bold mb-2 transition group-hover:text-yellow-600"
+            style="color: var(--color-primary);">
             {{ item.title }}
           </h3>
-          <div class="text-gray-600 text-sm leading-relaxed" v-html="item.description"></div>
+          <div class="text-sm leading-relaxed" style="color: var(--color-text-secondary);" v-html="item.description">
+          </div>
         </div>
       </div>
 
@@ -179,14 +185,15 @@ const resetFilters = () => {
       </div>
 
       <!-- Empty State -->
-      <div v-if="!loading && items.length === 0"
-        class="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-100">
-        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div v-if="!loading && items.length === 0" class="text-center py-16 rounded-xl shadow-sm border"
+        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+        <svg class="w-16 h-16 mx-auto mb-4" style="color: var(--color-text-muted);" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
         </svg>
-        <h3 class="text-lg font-medium text-gray-900">Tidak ada istilah ditemukan</h3>
-        <p class="text-gray-500 mt-1">Coba kata kunci lain atau pilih abjad lain.</p>
+        <h3 class="text-lg font-medium" style="color: var(--color-text-primary);">Tidak ada istilah ditemukan</h3>
+        <p class="mt-1" style="color: var(--color-text-secondary);">Coba kata kunci lain atau pilih abjad lain.</p>
         <button @click="resetFilters" class="mt-4 text-yellow-600 hover:text-yellow-700 text-sm font-medium">
           Reset Filter
         </button>

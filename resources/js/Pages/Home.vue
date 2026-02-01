@@ -2,7 +2,7 @@
 import { Head, Link, router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import SeoHead from '@/Components/SeoHead.vue';
 
 
@@ -92,6 +92,16 @@ const getTypeColor = (typeName) => {
     return colors[typeName] || 'bg-gray-100 text-gray-600';
 };
 
+// Theme Detection
+const isDarkMode = ref(false);
+
+const checkTheme = () => {
+    isDarkMode.value = document.body.classList.contains('a11y-dark');
+};
+
+const chartTextColor = computed(() => isDarkMode.value ? '#CBD5E1' : '#374151'); // Slate-300 vs Gray-700
+const chartGridColor = computed(() => isDarkMode.value ? '#334155' : '#E5E7EB'); // Slate-700 vs Gray-200
+
 // Charts Data
 const barChartData = computed(() => ({
     labels: props.topTypes.map(t => t.name),
@@ -104,7 +114,7 @@ const barChartData = computed(() => ({
     ]
 }))
 
-const barChartOptions = {
+const barChartOptions = computed(() => ({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -113,31 +123,54 @@ const barChartOptions = {
     scales: {
         y: {
             beginAtZero: true,
-            ticks: { precision: 0 }
+            ticks: {
+                precision: 0,
+                color: chartTextColor.value
+            },
+            grid: {
+                color: chartGridColor.value
+            }
         },
         x: {
-            ticks: { font: { size: 10 } } // Smaller font for long names
+            ticks: {
+                font: { size: 10 },
+                color: chartTextColor.value
+            },
+            grid: {
+                display: false
+            }
         }
     }
-}
+}))
 
 const pieChartData = computed(() => ({
     labels: ['Tahun Ini', 'Bulan Ini', 'Hari Ini'],
     datasets: [
         {
             backgroundColor: ['#f59e0b', '#10b981', '#3b82f6'], // yellow, green, blue
+            borderColor: isDarkMode.value ? '#1E293B' : '#FFFFFF',
             data: [props.visitorStats.year, props.visitorStats.month, props.visitorStats.today]
         }
     ]
 }))
 
-const pieChartOptions = {
+const pieChartOptions = computed(() => ({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-        legend: { position: 'bottom' }
+        legend: {
+            position: 'bottom',
+            labels: {
+                color: chartTextColor.value
+            }
+        }
     }
-}
+}))
+
+onMounted(() => {
+    checkTheme();
+    window.addEventListener('theme-change', checkTheme);
+});
 </script>
 
 <template>
@@ -146,7 +179,7 @@ const pieChartOptions = {
 
     <GuestLayout>
         <!-- Hero Section -->
-        <div class="relative bg-[#0F213A] overflow-hidden">
+        <div class="relative overflow-hidden" style="background-color: var(--color-primary);">
             <!-- Background Decoration -->
             <!-- Background Image & Gradient -->
             <div class="absolute inset-0">
@@ -159,7 +192,7 @@ const pieChartOptions = {
                 <h1
                     class="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight fade-in-up drop-shadow-md">
                     Pusat Data Hukum & Regulasi <br class="hidden md:block" />
-                    <span class="text-[#FFC700] mt-2 inline-block">UIN Sunan Gunung Djati</span>
+                    <span class="mt-2 inline-block" style="color: var(--color-accent);">UIN Sunan Gunung Djati</span>
                 </h1>
                 <p
                     class="text-gray-100 text-lg md:text-xl max-w-4xl mb-12 fade-in-up delay-100 leading-relaxed drop-shadow-sm font-medium">
@@ -169,14 +202,17 @@ const pieChartOptions = {
                 </p>
 
                 <!-- Search Bar -->
-                <div class="w-full max-w-3xl bg-white rounded-lg p-2 flex gap-2 shadow-2xl fade-in-up delay-200">
-                    <div class="hidden md:flex items-center pl-3 pr-2 border-r border-gray-200 min-w-[160px] relative">
+                <div class="w-full max-w-3xl rounded-lg p-2 flex gap-2 shadow-2xl fade-in-up delay-200"
+                    style="background-color: var(--color-bg-card);">
+                    <div class="hidden md:flex items-center pl-3 pr-2 border-r min-w-[160px] relative"
+                        style="border-color: var(--color-border);">
                         <select v-model="searchType"
-                            class="w-full bg-transparent border-none transition-all duration-200 ease-in-out focus:ring-0 focus:outline-0 text-gray-700 text-sm font-medium appearance-none cursor-pointer pr-8">
+                            class="w-full bg-transparent py-2 px-2 border-none rounded-lg transition-all duration-200 ease-in-out focus:ring-0 focus:outline-0 text-gray-700 text-sm font-medium appearance-none cursor-pointer pr-8">
                             <option>Semua Jenis</option>
-                            <option v-for="type in types" :key="type.id" :value="type.name">{{ type.name }}</option>
+                            <option class="text-gray-700" v-for="type in types" :key="type.id" :value="type.name">{{
+                                type.name }}</option>
                         </select>
-                        <div class="absolute right-2 pointer-events-none">
+                        <div class="absolute right-2 pointer-events-none px-4">
                             <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 9l-7 7-7-7" />
@@ -190,10 +226,12 @@ const pieChartOptions = {
                         </svg>
                         <input type="text" v-model="searchQuery" @keyup.enter="handleSearch"
                             placeholder="Masukkan kata kunci atau nomor dokumen..."
-                            class="w-full border-none ml-2 focus:ring-0 focus:outline-0 text-gray-600 placeholder-gray-400" />
+                            class="w-full border-none py-2 px-2 rounded-lg ml-2 focus:ring-0 focus:outline-0 placeholder-gray-400"
+                            style="background-color: transparent; color: var(--color-text-primary);" />
                     </div>
                     <button @click="handleSearch"
-                        class="bg-[#FFC700] hover:bg-yellow-400 text-[#0F213A] font-bold px-8 py-3 rounded-md transition shadow-sm flex items-center justify-center">
+                        class="hover:bg-yellow-400 font-bold px-8 py-2 rounded-md transition shadow-sm flex items-center justify-center"
+                        style="background-color: var(--color-accent); color: var(--color-text-inverse);">
                         CARI
                     </button>
                 </div>
@@ -202,25 +240,27 @@ const pieChartOptions = {
 
         <!-- Stats Section -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
-            <div class="bg-white rounded-xl shadow-lg grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100">
+            <div class="rounded-xl shadow-lg grid grid-cols-2 md:grid-cols-4 divide-x divide-[var(--color-border-light)]"
+                style="background-color: var(--color-bg-card);">
                 <div v-for="(stat, index) in statsDisplay" :key="index"
                     class="p-6 flex flex-col items-center text-center">
-                    <div class="text-[#0F213A] mb-3">
+                    <div class="mb-3" style="color: var(--color-primary);">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :d="stat.icon" />
                         </svg>
                     </div>
-                    <div class="text-3xl font-extrabold text-[#0F213A]">{{ stat.value }}</div>
-                    <div class="text-gray-500 text-sm mt-1">{{ stat.label }}</div>
+                    <div class="text-3xl font-extrabold" style="color: var(--color-primary);">{{ stat.value }}</div>
+                    <div class="text-sm mt-1" style="color: var(--color-text-muted);">{{ stat.label }}</div>
                 </div>
             </div>
         </div>
 
         <!-- Documents Section (Alternating: Gray) -->
-        <div class="bg-gray-50 py-20 border-t border-gray-100">
+        <div class="py-20 border-t"
+            style="background-color: var(--color-bg-secondary); border-color: var(--color-border-light);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-8">
-                    <div class="flex space-x-6 border-b border-gray-200">
+                    <div class="flex space-x-6 border-b" style="border-color: var(--color-border);">
                         <button @click="activeTab = 'terbaru'"
                             :class="['pb-4 font-bold text-lg border-b-2 transition', activeTab === 'terbaru' ? 'border-yellow-500 text-yellow-500' : 'border-transparent text-gray-400 hover:text-gray-600']">
                             Terbaru
@@ -230,7 +270,8 @@ const pieChartOptions = {
                             Terpopuler
                         </button>
                     </div>
-                    <Link href="/produk-hukum" class="text-sm font-bold text-gray-500 hover:text-[#0F213A]">
+                    <Link href="/produk-hukum" class="text-sm font-bold hover:text-[var(--color-primary)]"
+                        style="color: var(--color-text-muted);">
                         Lihat Semua <span class="ml-1">&rarr;</span>
                     </Link>
                 </div>
@@ -244,11 +285,12 @@ const pieChartOptions = {
                     </div>
 
                     <Link v-for="doc in displayedProducts" :key="doc.id" :href="route('produk-hukum.show', doc.slug)"
-                        class="flex flex-col bg-white rounded-xl border border-gray-100 hover:shadow-xl hover:border-yellow-400 transition-all duration-300 group cursor-pointer relative overflow-hidden">
+                        class="flex flex-col rounded-xl border hover:shadow-xl hover:border-yellow-400 transition-all duration-300 group cursor-pointer relative overflow-hidden"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
 
                         <!-- Decorative Top Border -->
                         <div
-                            class="h-1 w-full bg-linear-to-r from-[#0F213A] to-[#1E3A5F] group-hover:from-yellow-400 group-hover:to-yellow-500 transition-all duration-500">
+                            class="h-1 w-full bg-linear-to-r from-[var(--color-primary)] to-[var(--color-primary-light)] group-hover:from-yellow-400 group-hover:to-yellow-500 transition-all duration-500">
                         </div>
 
                         <div class="p-6 flex flex-col h-full">
@@ -272,8 +314,8 @@ const pieChartOptions = {
                             </div>
 
                             <!-- Title -->
-                            <h3 class="text-[#0F213A] text-lg font-bold leading-snug mb-2 group-hover:text-blue-700 transition-colors line-clamp-2"
-                                :title="doc.title">
+                            <h3 class="text-lg font-bold leading-snug mb-2 group-hover:text-blue-700 transition-colors line-clamp-2"
+                                style="color: var(--color-primary);" :title="doc.title">
                                 {{ doc.title }}
                             </h3>
 
@@ -314,7 +356,8 @@ const pieChartOptions = {
                             </div>
 
                             <!-- Footer Action -->
-                            <div class="mt-4 pt-4 border-t border-gray-50 flex justify-end">
+                            <div class="mt-4 pt-4 border-t flex justify-end"
+                                style="border-color: var(--color-border-light);">
                                 <span
                                     class="text-xs font-bold text-gray-400 group-hover:text-yellow-600 flex items-center gap-1 transition-colors">
                                     Selengkapnya
@@ -331,13 +374,15 @@ const pieChartOptions = {
             </div>
         </div>
         <!-- Data Visualization Section (Alternating: White) -->
-        <div class="bg-white py-20 border-t border-gray-100">
+        <div class="py-20 border-t"
+            style="background-color: var(--color-bg-primary); border-color: var(--color-border-light);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="mb-8 flex justify-between items-end">
                     <div>
                         <span class="text-yellow-500 font-bold tracking-wider text-xs uppercase mb-1 block">Transparansi
                             Data</span>
-                        <h2 class="text-3xl font-extrabold text-[#0F213A]">Statistik & Matriks Data</h2>
+                        <h2 class="text-3xl font-extrabold" style="color: var(--color-primary);">Statistik & Matriks
+                            Data</h2>
                         <div class="h-1.5 w-24 bg-yellow-500 rounded-full mt-1"></div>
                     </div>
                     <Link :href="route('statistics.index')"
@@ -354,7 +399,7 @@ const pieChartOptions = {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
                             </svg>
-                            5 Jenis Produk Hukum Terpopuler
+                            <div style="color: var(--color-text-secondary);"> 5 Jenis Produk Hukum Terpopuler</div>
                         </h3>
                         <div class="flex-1 min-h-[300px] relative">
                             <Bar :data="barChartData" :options="barChartOptions" />
@@ -368,7 +413,7 @@ const pieChartOptions = {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            Statistik Pengunjung
+                            <div style="color: var(--color-text-secondary);">Statistik Pengunjung</div>
                         </h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
@@ -380,25 +425,33 @@ const pieChartOptions = {
                             <!-- Counters -->
                             <div class="flex flex-col justify-center space-y-4">
                                 <div class="p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-                                    <div class="text-xs text-gray-500 font-bold uppercase">Total Pengunjung</div>
-                                    <div class="text-xl font-extrabold text-blue-900">{{ (visitorStats?.total ||
-                                        0).toLocaleString() }}</div>
+                                    <div class="text-xs font-bold uppercase" style="color: var(--color-text-inverse);">
+                                        Total Pengunjung</div>
+                                    <div class="text-xl font-extrabold" style="color: var(--color-text-inverse);">{{
+                                        (visitorStats?.total ||
+                                            0).toLocaleString() }}</div>
                                 </div>
                                 <div class="grid grid-cols-2 gap-2">
                                     <div class="p-2 bg-gray-50 rounded border border-gray-100">
-                                        <div class="text-[10px] text-gray-500">Tahun Ini</div>
-                                        <div class="font-bold text-gray-800">{{ (visitorStats?.year ||
-                                            0).toLocaleString() }}</div>
+                                        <div class="text-[10px]" style="color: var(--color-text-primary);">Tahun Ini
+                                        </div>
+                                        <div class="font-bold" style="color: var(--color-text-primary);">{{
+                                            (visitorStats?.year ||
+                                                0).toLocaleString() }}</div>
                                     </div>
                                     <div class="p-2 bg-gray-50 rounded border border-gray-100">
-                                        <div class="text-[10px] text-gray-500">Bulan Ini</div>
-                                        <div class="font-bold text-gray-800">{{ (visitorStats?.month ||
-                                            0).toLocaleString() }}</div>
+                                        <div class="text-[10px]" style="color: var(--color-text-primary);">Bulan Ini
+                                        </div>
+                                        <div class="font-bold" style="color: var(--color-text-primary);">{{
+                                            (visitorStats?.month ||
+                                                0).toLocaleString() }}</div>
                                     </div>
                                     <div class="p-2 bg-gray-50 rounded border border-gray-100">
-                                        <div class="text-[10px] text-gray-500">Hari Ini</div>
-                                        <div class="font-bold text-gray-800">{{ (visitorStats?.today ||
-                                            0).toLocaleString() }}</div>
+                                        <div class="text-[10px]" style="color: var(--color-text-primary);">Hari Ini
+                                        </div>
+                                        <div class="font-bold" style="color: var(--color-text-primary);">{{
+                                            (visitorStats?.today ||
+                                                0).toLocaleString() }}</div>
                                     </div>
                                     <div class="p-2 bg-green-50 rounded border border-green-100">
                                         <div class="text-[10px] text-green-600 font-bold flex items-center gap-1">
@@ -418,26 +471,30 @@ const pieChartOptions = {
         </div>
 
         <!-- Jurnal Hukum Section (Alternating: Gray) -->
-        <div v-if="journals && journals.length > 0" class="bg-gray-50 py-20 border-t border-gray-100">
+        <div v-if="journals && journals.length > 0" class="py-20 border-t"
+            style="background-color: var(--color-bg-secondary); border-color: var(--color-border-light);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-end mb-10">
                     <div>
-                        <h2 class="text-3xl font-extrabold text-[#0F213A]">Jurnal Hukum</h2>
+                        <h2 class="text-3xl font-extrabold" style="color: var(--color-primary);">Jurnal Hukum</h2>
                         <div class="h-1.5 w-24 bg-yellow-500 rounded-full mt-1"></div>
                     </div>
                     <Link :href="route('produk-hukum.index', { type: ['Jurnal Hukum'] })"
-                        class="text-sm font-bold text-gray-500 hover:text-[#0F213A] flex items-center gap-1 transition-colors">
+                        class="text-sm font-bold flex items-center gap-1 transition-colors hover:text-[var(--color-primary)]"
+                        style="color: var(--color-text-muted);">
                         Lihat Semua <span class="ml-1">&rarr;</span>
                     </Link>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     <a v-for="journal in journals" :key="journal.id" :href="journal.link" target="_blank"
-                        class="group bg-white rounded-xl shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col overflow-hidden relative">
+                        class="group rounded-xl shadow-sm hover:shadow-2xl transition-all duration-300 border flex flex-col overflow-hidden relative"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
 
                         <!-- Accreditation Badge -->
                         <div v-if="journal.accreditation"
-                            class="absolute top-3 right-3 z-10 bg-yellow-400 text-[#0F213A] text-[10px] font-extrabold px-2 py-1 rounded shadow-md uppercase tracking-wide">
+                            class="absolute top-3 right-3 z-10 bg-yellow-400 text-[10px] font-extrabold px-2 py-1 rounded shadow-md uppercase tracking-wide"
+                            style="color: var(--color-text-inverse);">
                             {{ journal.accreditation }}
                         </div>
 
@@ -459,19 +516,21 @@ const pieChartOptions = {
                         </div>
 
                         <div class="p-5 flex-1 flex flex-col">
-                            <h3 class="text-lg font-bold text-[#0F213A] leading-snug mb-2 group-hover:text-yellow-600 transition-colors line-clamp-2"
-                                :title="journal.title">
+                            <h3 class="text-lg font-bold leading-snug mb-2 group-hover:text-yellow-600 transition-colors line-clamp-2"
+                                style="color: var(--color-primary);" :title="journal.title">
                                 {{ journal.title }}
                             </h3>
                             <!-- Description (Rich text stripped) -->
-                            <p class="text-xs text-gray-500 line-clamp-3 mb-4 leading-relaxed">
+                            <p class="text-xs line-clamp-3 mb-4 leading-relaxed"
+                                style="color: var(--color-text-secondary);">
                                 {{ journal.description }}
                             </p>
 
-                            <div class="mt-auto pt-4 border-t border-gray-50">
-                                <span
-                                    class="text-xs font-bold text-[#0F213A] flex items-center gap-1 group-hover:gap-2 transition-all">
-                                    Baca Selengkapnya <span class="bg-gray-100 rounded-full p-1">&rarr;</span>
+                            <div class="mt-auto pt-4 border-t" style="border-color: var(--color-border-light);">
+                                <span class="text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all"
+                                    style="color: var(--color-primary);">
+                                    Baca Selengkapnya <span class="rounded-full p-1"
+                                        style="background-color: var(--color-bg-secondary);">&rarr;</span>
                                 </span>
                             </div>
                         </div>
@@ -481,16 +540,18 @@ const pieChartOptions = {
         </div>
 
         <!-- News Section (Alternating: White) -->
-        <div v-if="news.length > 0" class="bg-white py-20 border-t border-gray-100">
+        <div v-if="news.length > 0" class="py-20 border-t"
+            style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-10">
                     <div>
-                        <h2 class="text-2xl md:text-3xl font-extrabold text-[#0F213A]">Informasi Hukum</h2>
+                        <h2 class="text-2xl md:text-3xl font-extrabold" style="color: var(--color-primary);">Informasi
+                            Hukum</h2>
                         <div class="h-1.5 w-24 bg-yellow-500 rounded-full mt-1"></div>
                     </div>
                     <!-- Link to News Index if exists, otherwise # -->
-                    <Link :href="route('information.index')"
-                        class="text-sm font-bold text-gray-500  hover:text-[#0F213A]">
+                    <Link :href="route('information.index')" class="text-sm font-bold hover:text-[var(--color-primary)]"
+                        style="color: var(--color-text-muted);">
                         Lihat
                         Semua
                         <span class="ml-1">&rarr;</span>
@@ -500,33 +561,36 @@ const pieChartOptions = {
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 cursor-pointer">
                     <Link v-for="(item, idx) in news" :key="idx" :href="route('information.show', item.slug)"
-                        class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition group border border-gray-100 h-full flex flex-col">
+                        class="rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition group border h-full flex flex-col"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
                         <div class="h-48 overflow-hidden relative">
                             <!-- Use placeholder if no image -->
                             <img :src="route('posts.pathimage', item.id) || 'https://via.placeholder.com/600x400?text=No+Image'"
                                 :alt="item.title"
                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                            <div
-                                class="absolute top-0 right-0 bg-yellow-400 text-[#0F213A] text-xs font-bold px-3 py-1 m-4 rounded">
+                            <div class="absolute top-0 right-0 bg-yellow-400 text-xs font-bold px-3 py-1 m-4 rounded"
+                                style="color: var(--color-text-inverse);">
                                 {{ item.category }}</div>
                         </div>
                         <div class="p-6 flex-1 flex flex-col">
-                            <div class="text-gray-400 text-xs mb-3 flex items-center gap-2">
+                            <div class="text-xs mb-3 flex items-center gap-2" style="color: var(--color-text-muted);">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                                 {{ item.date }}
                             </div>
-                            <h3
-                                class="text-lg font-bold text-[#0F213A] mb-3 leading-snug group-hover:text-yellow-600 transition">
+                            <h3 class="text-lg font-bold mb-3 leading-snug group-hover:text-yellow-600 transition"
+                                style="color: var(--color-primary);">
                                 {{ item.title }}</h3>
-                            <p class="text-gray-500 text-sm line-clamp-3 mb-6">{{ item.desc }}</p>
+                            <p class="text-sm line-clamp-3 mb-6" style="color: var(--color-text-secondary);">{{
+                                item.desc }}</p>
                             <div class="mt-auto">
                                 <!-- Link to Post Detail -->
-                                <span
-                                    class="text-[#0F213A] text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all">Baca
-                                    Selengkapnya <span class="bg-gray-100 rounded-full p-1">&rarr;</span></span>
+                                <span class="text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all"
+                                    style="color: var(--color-primary);">Baca
+                                    Selengkapnya <span class="rounded-full p-1"
+                                        style="background-color: var(--color-bg-secondary);">&rarr;</span></span>
                             </div>
                         </div>
                     </Link>

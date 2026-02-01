@@ -152,15 +152,16 @@ const yearChartOptions = {
 
   <GuestLayout>
     <!-- Header -->
-    <div class="bg-white border-b border-gray-100 py-8">
+    <div class="border-b py-8" style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav class="flex text-sm text-gray-500 mb-4">
-          <Link href="/" class="hover:text-yellow-600 transition">Beranda</Link>
-          <span class="mx-2 text-gray-300">/</span>
-          <span class="text-[#0F213A] font-medium">Statistik & Data</span>
+        <nav class="flex text-sm mb-4" style="color: var(--color-text-muted);">
+          <Link href="/" class="hover:text-[var(--color-accent-hover)] transition">Beranda</Link>
+          <span class="mx-2" style="color: var(--color-border-dark);">/</span>
+          <span class="font-medium" style="color: var(--color-text-primary);">Statistik & Data</span>
         </nav>
-        <h1 class="text-3xl font-extrabold text-[#0F213A]">Statistik & Data</h1>
-        <p class="mt-2 text-gray-500">Visualisasi data produk hukum dan statistik pengunjung JDIH.</p>
+        <h1 class="text-3xl font-extrabold" style="color: var(--color-primary);">Statistik & Data</h1>
+        <p class="mt-2" style="color: var(--color-text-secondary);">Visualisasi data produk hukum dan statistik
+          pengunjung JDIH.</p>
       </div>
     </div>
 
@@ -213,7 +214,7 @@ const yearChartOptions = {
 
       <!-- 2. Visitor Stats (Existing) -->
       <div>
-        <h3 class="text-lg font-bold text-[#0F213A] mb-4 flex items-center gap-2">
+        <h3 class="text-lg font-bold mb-4 flex items-center gap-2" style="color: var(--color-primary);">
           <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -222,8 +223,8 @@ const yearChartOptions = {
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Total -->
-          <div
-            class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-blue-200 transition">
+          <div class="p-6 rounded-xl border shadow-sm flex items-center gap-4 hover:border-blue-200 transition"
+            style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
             <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -232,13 +233,15 @@ const yearChartOptions = {
               </svg>
             </div>
             <div>
-              <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Total Pengunjung</p>
-              <p class="text-2xl font-bold text-[#0F213A]">{{ formatNumber(visitorStats.total) }}</p>
+              <p class="text-sm font-medium uppercase tracking-wide" style="color: var(--color-text-muted);">Total
+                Pengunjung</p>
+              <p class="text-2xl font-bold" style="color: var(--color-primary);">{{ formatNumber(visitorStats.total) }}
+              </p>
             </div>
           </div>
           <!-- Today -->
-          <div
-            class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-green-200 transition">
+          <div class="p-6 rounded-xl border shadow-sm flex items-center gap-4 hover:border-green-200 transition"
+            style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
             <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -246,13 +249,15 @@ const yearChartOptions = {
               </svg>
             </div>
             <div>
-              <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Hari Ini</p>
-              <p class="text-2xl font-bold text-[#0F213A]">{{ formatNumber(visitorStats.today) }}</p>
+              <p class="text-sm font-medium uppercase tracking-wide" style="color: var(--color-text-muted);">Hari Ini
+              </p>
+              <p class="text-2xl font-bold" style="color: var(--color-primary);">{{ formatNumber(visitorStats.today) }}
+              </p>
             </div>
           </div>
           <!-- This Month -->
-          <div
-            class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-amber-200 transition">
+          <div class="p-6 rounded-xl border shadow-sm flex items-center gap-4 hover:border-amber-200 transition"
+            style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
             <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -260,13 +265,15 @@ const yearChartOptions = {
               </svg>
             </div>
             <div>
-              <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Bulan Ini</p>
-              <p class="text-2xl font-bold text-[#0F213A]">{{ formatNumber(visitorStats.month) }}</p>
+              <p class="text-sm font-medium uppercase tracking-wide" style="color: var(--color-text-muted);">Bulan Ini
+              </p>
+              <p class="text-2xl font-bold" style="color: var(--color-primary);">{{ formatNumber(visitorStats.month) }}
+              </p>
             </div>
           </div>
           <!-- Online -->
-          <div
-            class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4 hover:border-purple-200 transition">
+          <div class="p-6 rounded-xl border shadow-sm flex items-center gap-4 hover:border-purple-200 transition"
+            style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
             <div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-600">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -275,8 +282,9 @@ const yearChartOptions = {
               </svg>
             </div>
             <div>
-              <p class="text-sm text-gray-500 font-medium uppercase tracking-wide">Sedang Online</p>
-              <p class="text-2xl font-bold text-[#0F213A]">{{ visitorStats.online }}</p>
+              <p class="text-sm font-medium uppercase tracking-wide" style="color: var(--color-text-muted);">Sedang
+                Online</p>
+              <p class="text-2xl font-bold" style="color: var(--color-primary);">{{ visitorStats.online }}</p>
             </div>
           </div>
         </div>
@@ -286,24 +294,27 @@ const yearChartOptions = {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         <!-- Left: Validity Status (Pie) -->
-        <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-          <h3 class="text-lg font-bold text-[#0F213A] mb-6">Status Keberlakuan PUU</h3>
+        <div class="p-6 rounded-xl border shadow-sm"
+          style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+          <h3 class="text-lg font-bold mb-6" style="color: var(--color-primary);">Status Keberlakuan PUU</h3>
           <div class="h-[250px] relative">
             <Doughnut :data="statusChartData" :options="statusChartOptions" />
           </div>
         </div>
 
         <!-- Middle: Types (Pie) -->
-        <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-          <h3 class="text-lg font-bold text-[#0F213A] mb-6">Jumlah PUU Berdasarkan Jenis</h3>
+        <div class="p-6 rounded-xl border shadow-sm"
+          style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+          <h3 class="text-lg font-bold mb-6" style="color: var(--color-primary);">Jumlah PUU Berdasarkan Jenis</h3>
           <div class="h-[250px] relative">
             <Doughnut :data="typeChartData" :options="typeChartOptions" />
           </div>
         </div>
 
         <!-- Right: Year Trend (Bar) -->
-        <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-          <h3 class="text-lg font-bold text-[#0F213A] mb-6">Dokumen Hukum per Tahun</h3>
+        <div class="p-6 rounded-xl border shadow-sm"
+          style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+          <h3 class="text-lg font-bold mb-6" style="color: var(--color-primary);">Dokumen Hukum per Tahun</h3>
           <div class="h-[250px] relative">
             <Bar :data="yearChartData" :options="yearChartOptions" />
           </div>
@@ -311,15 +322,18 @@ const yearChartOptions = {
       </div>
 
       <!-- 3. Top Products Table -->
-      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
-          <h3 class="text-lg font-bold text-[#0F213A]">Dokumen Hukum Terpopuler</h3>
-          <Link href="/produk-hukum" class="text-sm text-[#0F213A] hover:text-yellow-600 font-medium">Lihat Semua &rarr;
+      <div class="rounded-xl border shadow-sm overflow-hidden"
+        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+        <div class="p-6 border-b flex items-center justify-between" style="border-color: var(--color-border-light);">
+          <h3 class="text-lg font-bold" style="color: var(--color-primary);">Dokumen Hukum Terpopuler</h3>
+          <Link href="/produk-hukum" class="text-sm hover:text-yellow-600 font-medium"
+            style="color: var(--color-primary);">Lihat Semua &rarr;
           </Link>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-sm text-left">
-            <thead class="bg-gray-50 text-gray-500 uppercase font-medium">
+            <thead class="uppercase font-medium"
+              style="background-color: var(--color-bg-secondary); color: var(--color-text-muted);">
               <tr>
                 <th class="px-6 py-4">Judul Dokumen</th>
                 <th class="px-6 py-4 whitespace-nowrap">Nomor</th>
@@ -328,9 +342,9 @@ const yearChartOptions = {
                 <th class="px-6 py-4 text-center">Dilihat</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-[var(--color-border-light)]">
               <tr v-for="(item, index) in topProducts" :key="index" class="hover:bg-gray-50 transition">
-                <td class="px-6 py-4 font-medium text-[#0F213A]">
+                <td class="px-6 py-4 font-medium" style="color: var(--color-primary);">
                   <Link :href="route('produk-hukum.show', item.slug)" class="hover:text-blue-700 hover:underline">
                     {{ item.title }}
                   </Link>

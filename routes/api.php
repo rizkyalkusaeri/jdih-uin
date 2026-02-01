@@ -11,4 +11,8 @@ Route::prefix('api')->group(function () {
   // Glossary API
   Route::get('/glossary', [\App\Http\Controllers\Public\GlossaryController::class, 'api'])
     ->name('api.glossary');
+
+  // Sync API
+  Route::get('/sync', \App\Http\Controllers\Api\SyncController::class)
+    ->name('api.sync');
 });

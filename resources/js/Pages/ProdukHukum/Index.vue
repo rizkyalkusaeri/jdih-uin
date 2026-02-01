@@ -110,14 +110,15 @@ const formatDate = (dateString) => {
 
     <GuestLayout>
         <!-- Breadcrumb & Header -->
-        <div class="bg-white border-b border-gray-100 py-8">
+        <div class="border-b py-8"
+            style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <nav class="flex text-sm text-gray-500 mb-4">
-                    <Link href="/" class="hover:text-yellow-600 transition">Beranda</Link>
-                    <span class="mx-2 text-gray-300">/</span>
-                    <span class="text-[#0F213A] font-medium">Pencarian Produk Hukum</span>
+                <nav class="flex text-sm mb-4" style="color: var(--color-text-muted);">
+                    <Link href="/" class="hover:text-[var(--color-accent-hover)] transition">Beranda</Link>
+                    <span class="mx-2" style="color: var(--color-border-dark);">/</span>
+                    <span class="font-medium" style="color: var(--color-text-primary);">Pencarian Produk Hukum</span>
                 </nav>
-                <h1 class="text-3xl font-extrabold text-[#0F213A]">Pencarian Produk Hukum</h1>
+                <h1 class="text-3xl font-extrabold" style="color: var(--color-primary);">Pencarian Produk Hukum</h1>
             </div>
         </div>
 
@@ -126,9 +127,11 @@ const formatDate = (dateString) => {
 
                 <!-- Sidebar Filter -->
                 <div class="w-full lg:w-1/4 shrink-0 space-y-6" :class="{ 'hidden lg:block': !showMobileFilters }">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                            <h3 class="font-bold text-[#0F213A] flex items-center gap-2">
+                    <div class="rounded-xl shadow-sm border overflow-hidden"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+                        <div class="p-5 border-b flex justify-between items-center"
+                            style="background-color: var(--color-bg-secondary); border-color: var(--color-border-light);">
+                            <h3 class="font-bold flex items-center gap-2" style="color: var(--color-primary);">
                                 <svg class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -142,15 +145,17 @@ const formatDate = (dateString) => {
                         </div>
 
                         <!-- Tahun -->
-                        <div class="p-5 border-b border-gray-100">
-                            <h4 class="font-bold text-sm text-[#0F213A] mb-3">Tahun</h4>
+                        <div class="p-5 border-b" style="border-color: var(--color-border-light);">
+                            <h4 class="font-bold text-sm mb-3" style="color: var(--color-primary);">Tahun</h4>
                             <input type="number" v-model="filtersState.year" placeholder="Contoh: 2024"
-                                class="w-full text-sm border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 placeholder:text-gray-300 transition" />
+                                class="w-full  pl-3 pr-3 py-1 text-sm rounded-md focus:ring-yellow-500 focus:border-yellow-500 placeholder:text-gray-400 transition"
+                                style="background-color: var(--color-bg-secondary); border-color: var(--color-border); color: var(--color-text-primary);" />
                         </div>
 
                         <!-- Jenis Produk Hukum -->
-                        <div class="p-5 border-b border-gray-100">
-                            <h4 class="font-bold text-sm text-[#0F213A] mb-3">Jenis Produk Hukum</h4>
+                        <div class="p-5 border-b" style="border-color: var(--color-border-light);">
+                            <h4 class="font-bold text-sm mb-3" style="color: var(--color-primary);">Jenis Produk Hukum
+                            </h4>
 
                             <!-- Search Type -->
                             <div class="mb-3 relative">
@@ -160,7 +165,8 @@ const formatDate = (dateString) => {
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                                 <input type="text" v-model="searchType" placeholder="Cari jenis..."
-                                    class="w-full pl-9 pr-3 py-2 text-xs border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50" />
+                                    class="w-full pl-9 pr-3 py-2 text-xs rounded-md focus:ring-yellow-500 focus:border-yellow-500"
+                                    style="background-color: var(--color-bg-secondary); border-color: var(--color-border); color: var(--color-text-primary);" />
                             </div>
 
                             <div class="space-y-2">
@@ -170,8 +176,9 @@ const formatDate = (dateString) => {
                                         <input type="checkbox" v-model="filtersState.type" :value="type.name"
                                             class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
                                         <span
-                                            class="text-gray-600 text-sm group-hover:text-[#0F213A] transition truncate max-w-[150px]"
-                                            :title="type.name">{{ type.name }}</span>
+                                            class="text-sm group-hover:text-[var(--color-primary)] transition truncate max-w-[150px]"
+                                            style="color: var(--color-text-secondary);" :title="type.name">{{ type.name
+                                            }}</span>
                                     </label>
                                     <span
                                         class="bg-gray-100 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-full group-hover:bg-yellow-100 group-hover:text-yellow-700 transition">
@@ -194,8 +201,8 @@ const formatDate = (dateString) => {
 
 
                         <!-- Kategori (New) -->
-                        <div class="p-5 border-b border-gray-100">
-                            <h4 class="font-bold text-sm text-[#0F213A] mb-3">Kategori</h4>
+                        <div class="p-5 border-b" style="border-color: var(--color-border-light);">
+                            <h4 class="font-bold text-sm mb-3" style="color: var(--color-primary);">Kategori</h4>
 
                             <!-- Search Category -->
                             <div class="mb-3 relative">
@@ -205,7 +212,7 @@ const formatDate = (dateString) => {
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                                 <input type="text" v-model="searchCategory" placeholder="Cari kategori..."
-                                    class="w-full pl-9 pr-3 py-2 text-xs border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50" />
+                                    class="w-full pl-9 pr-3 py-2 text-xs border-gray-200 rounded-md focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50" />
                             </div>
 
                             <div class="space-y-2">
@@ -249,7 +256,7 @@ const formatDate = (dateString) => {
                                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                                 <input type="text" v-model="searchSubject" placeholder="Cari subjek..."
-                                    class="w-full pl-9 pr-3 py-2 text-xs border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50" />
+                                    class="w-full pl-9 pr-3 py-2 text-xs border-gray-200 rounded-md focus:ring-yellow-500 focus:border-yellow-500 bg-gray-50" />
                             </div>
 
                             <div class="space-y-2">
@@ -306,16 +313,18 @@ const formatDate = (dateString) => {
                 <!-- Main Content -->
                 <div class="flex-1">
                     <!-- Top Bar -->
-                    <div
-                        class="bg-white rounded-lg border border-gray-100 p-4 mb-6 flex flex-col sm:flex-row justify-between items-center shadow-sm">
-                        <div class="text-gray-600 font-medium mb-3 sm:mb-0">
-                            Menampilkan <span class="font-bold text-[#0F213A]">{{ props.legalProducts.total }}</span>
+                    <div class="rounded-lg border p-4 mb-6 flex flex-col sm:flex-row justify-between items-center shadow-sm"
+                        style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+                        <div class="font-medium mb-3 sm:mb-0" style="color: var(--color-text-secondary);">
+                            Menampilkan <span class="font-bold" style="color: var(--color-primary);">{{
+                                props.legalProducts.total }}</span>
                             Hasil Pencarian
                         </div>
                         <div class="flex items-center gap-3">
                             <span class="text-gray-400 text-sm">Urutkan:</span>
                             <select v-model="filtersState.sort"
-                                class="border-gray-200 rounded-md text-sm text-[#0F213A] focus:border-yellow-500 focus:ring-yellow-500/50 cursor-pointer">
+                                class="rounded-md pl-3 pr-3 py-1 text-sm focus:border-yellow-500 focus:ring-yellow-500/50 cursor-pointer"
+                                style="background-color: var(--color-bg-secondary); border-color: var(--color-border); color: var(--color-text-primary);">
                                 <option>Terbaru</option>
                                 <option>Terpopuler</option>
                             </select>
@@ -334,11 +343,12 @@ const formatDate = (dateString) => {
                             </span>
                             <input type="text" v-model="filtersState.search"
                                 placeholder="Cari berdasarkan judul atau nomor peraturan..."
-                                class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500" />
+                                class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
+                                style="background-color: var(--color-bg-card); border-color: var(--color-border); color: var(--color-text-primary);" />
                         </div>
                         <button @click="showMobileFilters = !showMobileFilters"
-                            class="lg:hidden px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:text-[#0F213A] hover:border-[#0F213A] transition flex items-center gap-2 shadow-sm"
-                            :class="{ 'bg-gray-50 text-[#0F213A] border-[#0F213A]': showMobileFilters }">
+                            class="lg:hidden px-4 py-2 border rounded-lg transition flex items-center gap-2 shadow-sm mobile-filter-btn"
+                            :class="{ 'active-filter': showMobileFilters }">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -351,7 +361,8 @@ const formatDate = (dateString) => {
                     <!-- List -->
                     <div class="space-y-4">
                         <div v-for="item in props.legalProducts.data" :key="item.id"
-                            class="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition group relative overflow-hidden">
+                            class="rounded-xl p-6 border shadow-sm hover:shadow-md transition group relative overflow-hidden"
+                            style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
                             <!-- Clickable Overlay -->
                             <Link :href="route('produk-hukum.show', item.slug)" class="absolute inset-0 z-10"></Link>
 
@@ -401,8 +412,9 @@ const formatDate = (dateString) => {
                                     </div>
 
                                     <h3
-                                        class="text-lg font-bold text-[#0F213A] leading-snug mb-3 group-hover:text-yellow-600 transition pointer-events-auto">
-                                        <Link :href="route('produk-hukum.show', item.slug)">{{ item.title }}</Link>
+                                        class="text-lg font-bold leading-snug mb-3 group-hover:text-yellow-600 transition pointer-events-auto">
+                                        <Link :href="route('produk-hukum.show', item.slug)"
+                                            style="color: var(--color-primary);">{{ item.title }}</Link>
                                     </h3>
 
                                     <div class="flex flex-wrap gap-y-2 gap-x-6 text-xs text-gray-500 font-medium">
@@ -431,7 +443,8 @@ const formatDate = (dateString) => {
 
                                     <div class="mt-4 flex justify-end pointer-events-auto">
                                         <Link :href="route('produk-hukum.show', item.slug)"
-                                            class="text-sm font-bold text-[#0F213A] border border-gray-200 px-4 py-2 rounded-lg hover:border-[#0F213A] hover:bg-[#0F213A] hover:text-white transition flex items-center gap-2">
+                                            class="text-sm font-bold border px-4 py-2 rounded-lg hover:text-white transition flex items-center gap-2"
+                                            style="color: var(--color-primary); border-color: var(--color-border);">
                                             Lihat Detail
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -458,7 +471,8 @@ const formatDate = (dateString) => {
                                         !link.url && 'opacity-50 cursor-not-allowed'
                                     ]" v-html="link.label" />
                                 <span v-else v-html="link.label"
-                                    class="h-9 min-w-[36px] px-2 flex items-center justify-center text-gray-300"></span>
+                                    class="h-9 min-w-[36px] px-2 flex items-center justify-center"
+                                    style="color: var(--color-border);"></span>
                             </template>
                         </div>
                     </div>

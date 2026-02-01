@@ -13,9 +13,10 @@ const displayAwards = computed(() => [...props.awards, ...props.awards, ...props
 </script>
 
 <template>
-  <div v-if="awards.length > 0" class="w-full bg-[#0F213A] py-12 overflow-hidden relative">
+  <div v-if="awards.length > 0" class="w-full py-12 overflow-hidden relative"
+    style="background-color: var(--color-primary);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 text-center">
-      <h2 class="text-2xl font-bold text-white mb-2">Penghargaan</h2>
+      <h2 class="text-2xl font-bold mb-2" style="color: var(--color-text-inverse);">Penghargaan</h2>
       <div class="h-1 w-16 bg-yellow-500 rounded-full mx-auto"></div>
     </div>
 
@@ -23,10 +24,10 @@ const displayAwards = computed(() => [...props.awards, ...props.awards, ...props
     <div class="relative w-full overflow-hidden group/track">
       <!-- Gradient Overlays for smooth fade effect at edges -->
       <div
-        class="absolute left-0 top-0 bottom-0 w-20 bg-linear-to-r from-[#0F213A] to-transparent z-10 pointer-events-none">
+        class="absolute left-0 top-0 bottom-0 w-20 bg-linear-to-r from-[var(--color-primary)] to-transparent z-10 pointer-events-none">
       </div>
       <div
-        class="absolute right-0 top-0 bottom-0 w-20 bg-linear-to-l from-[#0F213A] to-transparent z-10 pointer-events-none">
+        class="absolute right-0 top-0 bottom-0 w-20 bg-linear-to-l from-[var(--color-primary)] to-transparent z-10 pointer-events-none">
       </div>
 
       <!-- Scroll Track -->
@@ -42,12 +43,12 @@ const displayAwards = computed(() => [...props.awards, ...props.awards, ...props
           <!-- Title Toggle (Visible on Hover/Click) -->
           <div
             class="absolute -bottom-14 opacity-0 group-hover/item:opacity-100 transition-all duration-300 translate-y-2 group-hover/item:translate-y-0 text-center w-48 z-20 pointer-events-none">
-            <div
-              class="bg-white text-[#0F213A] text-xs font-bold py-2 px-3 rounded-lg shadow-xl mx-auto inline-block relative border border-gray-100">
+            <div class="text-xs font-bold py-2 px-3 rounded-lg shadow-xl mx-auto inline-block relative border"
+              style="background-color: var(--color-bg-card); color: var(--color-text-primary); border-color: var(--color-border-light);">
               {{ award.title }}
               <!-- Arrow -->
-              <div
-                class="absolute -top-1.5 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white rotate-45 border-t border-l border-gray-100">
+              <div class="absolute -top-1.5 left-1/2 transform -translate-x-1/2 w-3 h-3 rotate-45 border-t border-l"
+                style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
               </div>
             </div>
           </div>

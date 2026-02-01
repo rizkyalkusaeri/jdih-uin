@@ -1,0 +1,401 @@
+/**
+ * Accessibility Styles for JDIH UIN
+ * These classes are applied to document.body by AccessibilityMenu.vue
+ */
+
+/* ===========================================
+   FONT SIZE ADJUSTMENTS
+   =========================================== */
+
+.a11y-font-lg {
+    font-size: 115% !important;
+}
+
+.a11y-font-lg * {
+    font-size: inherit;
+}
+
+.a11y-font-xl {
+    font-size: 130% !important;
+}
+
+.a11y-font-xl * {
+    font-size: inherit;
+}
+
+.a11y-font-xxl {
+    font-size: 150% !important;
+}
+
+.a11y-font-xxl * {
+    font-size: inherit;
+}
+
+/* ===========================================
+   DISPLAY MODES
+   =========================================== */
+
+/* 1. High Contrast Mode
+   Strict Black & White, No Gradients, No Shadows, High Visibility Borders
+-------------------------------------------------------------------------- */
+.a11y-high-contrast {
+    background-color: #000 !important;
+    background-image: none !important;
+    color: #fff !important;
+}
+
+.a11y-high-contrast *,
+.a11y-high-contrast *::before,
+.a11y-high-contrast *::after {
+    background-color: #000 !important;
+    background-image: none !important; /* Disable all gradients */
+    color: #fff !important;
+    border-color: #fff !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+/* Links in High Contrast */
+.a11y-high-contrast a,
+.a11y-high-contrast a:hover,
+.a11y-high-contrast a:visited {
+    color: #ffff00 !important; /* Yellow for maximum contrast against black */
+    text-decoration: underline !important;
+}
+
+/* Buttons and Inputs in High Contrast */
+.a11y-high-contrast button,
+.a11y-high-contrast input,
+.a11y-high-contrast select,
+.a11y-high-contrast textarea,
+.a11y-high-contrast [role="button"] {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+}
+
+/* Specific component overrides for High Contrast */
+.a11y-high-contrast .card,
+.a11y-high-contrast .shadow-lg,
+.a11y-high-contrast .bg-white,
+.a11y-high-contrast .bg-gray-50,
+.a11y-high-contrast nav {
+    border: 1px solid #fff !important;
+}
+
+.a11y-high-contrast img {
+    filter: grayscale(100%) contrast(1.5);
+}
+
+/* 2. Dark Mode
+   Uses Theme CSS Variables for consistency
+-------------------------------------------------------------------------- */
+.a11y-dark {
+    background-color: var(--color-bg-primary) !important;
+    color: var(--color-text-primary) !important;
+}
+
+.a11y-dark * {
+    border-color: var(--color-border) !important;
+}
+
+/* Structural Elements */
+.a11y-dark header,
+.a11y-dark nav,
+.a11y-dark footer,
+.a11y-dark aside {
+    background-color: var(--color-primary) !important;
+    color: var(--color-text-primary) !important;
+}
+
+/* Background Overrides */
+.a11y-dark .bg-white,
+.a11y-dark .bg-gray-50,
+.a11y-dark .bg-gray-100,
+.a11y-dark .bg-gray-200 {
+    background-color: var(--color-bg-secondary) !important;
+    color: var(--color-text-primary) !important;
+}
+
+.a11y-dark .bg-gray-800,
+.a11y-dark .bg-gray-900 {
+    background-color: var(--color-bg-tertiary) !important;
+}
+
+/* Fix bright backgrounds in dropdowns and active states */
+.a11y-dark .bg-yellow-50,
+.a11y-dark .hover\:bg-yellow-50:hover {
+    background-color: var(--color-bg-tertiary) !important;
+    color: var(--color-accent) !important;
+}
+
+/* Fix Data Dukung (Green) Hover in Dark Mode */
+.a11y-dark .hover\:bg-green-50:hover {
+    background-color: rgba(16, 185, 129, 0.2) !important; /* Green tint */
+    border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+.a11y-dark .group:hover .group-hover\:text-green-700 {
+    color: #4ade80 !important; /* Bright Green */
+}
+
+/* Fix Tautan Terkait (Blue) Hover in Dark Mode */
+.a11y-dark .hover\:bg-blue-50:hover {
+    background-color: rgba(59, 130, 246, 0.2) !important; /* Blue tint */
+    border-color: rgba(59, 130, 246, 0.4) !important;
+}
+
+.a11y-dark .group:hover .group-hover\:text-blue-700 {
+    color: #60a5fa !important; /* Bright Blue */
+}
+
+/* Card Overrides */
+.a11y-dark .card,
+.a11y-dark .bg-card {
+    background-color: var(--color-bg-card) !important;
+    border-color: var(--color-border-dark) !important;
+}
+
+/* Text Overrides - Mapping Tailwind grays to styling vars */
+.a11y-dark .text-gray-900,
+.a11y-dark .text-gray-800,
+.a11y-dark .text-gray-700,
+.a11y-dark .text-black {
+    color: var(--color-text-primary) !important;
+}
+
+.a11y-dark .text-gray-600,
+.a11y-dark .text-gray-500 {
+    color: var(--color-text-secondary) !important;
+}
+
+.a11y-dark .text-gray-400 {
+    color: var(--color-text-muted) !important;
+}
+
+/* Section Title Overrides for Dark Mode */
+/* Elements that use var(--color-primary) for text need to be white in dark mode */
+.a11y-dark [style*="color: var(--color-primary)"] {
+    color: var(--color-text-brand) !important;
+}
+
+/* Hero Section Search Bar in Dark Mode - match background */
+.a11y-dark [style*="background-color: var(--color-bg-card)"] {
+    background-color: var(--color-bg-secondary) !important;
+    border: 1px solid var(--color-border) !important;
+}
+
+/* Links */
+/* Links - Exclude header links to preserve navbar states */
+.a11y-dark a:not(#accessibility-menu a):not(.bg-yellow-500):not(.bg-yellow-400):not(header a) {
+    color: var(--color-accent) !important;
+}
+
+.a11y-dark a:not(#accessibility-menu a):hover:not(.bg-yellow-500):not(.bg-yellow-400):not(header a) {
+    color: var(--color-accent-hover) !important;
+}
+
+/* Force white text on yellow buttons in dark mode (User Request) */
+.a11y-dark .bg-yellow-500,
+.a11y-dark .bg-yellow-400,
+.a11y-dark .bg-yellow-500 a,
+.a11y-dark .bg-yellow-400 a {
+    color: #FFFFFF !important;
+}
+
+/* Fix Prose (Typography) in Dark Mode */
+.a11y-dark .prose h1,
+.a11y-dark .prose h2,
+.a11y-dark .prose h3,
+.a11y-dark .prose h4,
+.a11y-dark .prose h5,
+.a11y-dark .prose h6,
+.a11y-dark .prose strong,
+.a11y-dark .prose b {
+    color: var(--color-text-brand) !important;
+}
+
+/* Inputs */
+.a11y-dark input,
+.a11y-dark select,
+.a11y-dark textarea {
+    background-color: var(--color-bg-tertiary) !important;
+    color: var(--color-text-primary) !important;
+    border-color: var(--color-border-dark) !important;
+}
+
+/* Inputs, Selects, Textareas override */
+.a11y-dark input,
+.a11y-dark select,
+.a11y-dark textarea {
+    background-color: var(--color-bg-input) !important;
+    color: var(--color-text-primary) !important;
+    border-color: var(--color-border-input) !important;
+}
+
+/* Form Labels & Placeholders */
+.a11y-dark label {
+    color: var(--color-text-primary) !important;
+}
+
+.a11y-dark ::placeholder {
+    color: var(--color-text-muted) !important;
+    opacity: 1 !important;
+}
+
+/* 3. Grayscale Mode
+-------------------------------------------------------------------------- */
+/* Apply grayscale to all content EXCEPT the accessibility menu elements */
+.a11y-grayscale *:not(#accessibility-trigger):not(#accessibility-menu):not(#accessibility-menu *) {
+    filter: grayscale(100%);
+}
+
+/* Ensure accessibility trigger and menu are NOT affected by grayscale */
+.a11y-grayscale #accessibility-trigger,
+.a11y-grayscale #accessibility-menu,
+.a11y-grayscale #accessibility-menu * {
+    filter: none !important;
+}
+
+/* ===========================================
+   OTHER TOOLS
+   =========================================== */
+
+/* Highlight Links */
+.a11y-highlight-links a:not([class*="a11y"]) {
+    background-color: #fef08a !important;
+    color: #000 !important;
+    padding: 2px 4px !important;
+    border-radius: 2px !important;
+    text-decoration: underline !important;
+    box-shadow: 0 0 0 2px #000;
+}
+
+/* Dyslexic Font */
+@font-face {
+    font-family: "OpenDyslexic";
+    src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "OpenDyslexic";
+    src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+.a11y-dyslexic-font,
+.a11y-dyslexic-font * {
+    font-family: "OpenDyslexic", "Comic Sans MS", "Arial", sans-serif !important;
+}
+
+/* Validations for other flags */
+.a11y-pause-animation * {
+    animation: none !important;
+    transition: none !important;
+}
+
+.a11y-large-line-height,
+.a11y-large-line-height * {
+    line-height: 2 !important;
+}
+
+.a11y-large-letter-spacing,
+.a11y-large-letter-spacing * {
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.16em !important;
+}
+
+/* Big Cursor */
+.a11y-big-cursor,
+.a11y-big-cursor * {
+    /* Simple big black cursor svg */
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' stroke='%23fff' stroke-width='2' d='M7 2L17 22L12.5 17L21 16L19 10L11 13L7 2Z'/%3E%3C/svg%3E") 0 0, auto !important;
+}
+
+.a11y-big-cursor a,
+.a11y-big-cursor button {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' stroke='%23fff' stroke-width='2' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H8l4-4 4 4h-3v4h-2z'/%3E%3C/svg%3E") 12 12, pointer !important;
+}
+
+/* ===========================================
+   ACCESSIBILITY MENU OVERRIDES
+   Ensure the menu itself remains usable regardless of mode
+   =========================================== */
+
+/* NORMAL MODE - Make sure trigger is always visible */
+#accessibility-trigger {
+    background: linear-gradient(135deg, #EAB308 0%, #CA8A04 100%) !important;
+    color: #0F213A !important; /* Dark navy for contrast against yellow */
+    border: 2px solid #CA8A04 !important;
+    box-shadow: 0 4px 15px rgba(234, 179, 8, 0.4) !important;
+}
+
+#accessibility-trigger:hover {
+    background: linear-gradient(135deg, #FBBF24 0%, #EAB308 100%) !important;
+    transform: scale(1.1);
+}
+
+/* Reset filters for menu elements */
+#accessibility-trigger,
+#accessibility-menu,
+#accessibility-menu * {
+    filter: none !important;
+}
+
+/* High Contrast Specifics for Menu */
+.a11y-high-contrast #accessibility-menu {
+    border: 2px solid #fff !important;
+    background-color: #000 !important;
+}
+
+.a11y-high-contrast #accessibility-trigger {
+    border: 2px solid #fff !important;
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+.a11y-high-contrast #accessibility-menu button {
+    border: 1px solid #fff !important;
+}
+
+/* In HC mode, we need to distinguish active buttons differently since we can't use color alone */
+.a11y-high-contrast #accessibility-menu button.bg-yellow-500 {
+    background-color: #fff !important;
+    color: #000 !important;
+    font-weight: bold !important;
+    border: 2px solid #fff !important;
+}
+
+/* Dark Mode Specifics for Menu */
+/* Ensure menu doesn't get double-darkened */
+.a11y-dark #accessibility-menu {
+    background-color: var(--color-bg-secondary) !important;
+    border: 1px solid var(--color-border) !important;
+}
+
+.a11y-dark #accessibility-menu div {
+    background-color: transparent !important; /* Reset inheritances */
+}
+
+.a11y-dark #accessibility-menu h2,
+.a11y-dark #accessibility-menu h3,
+.a11y-dark #accessibility-menu span,
+.a11y-dark #accessibility-menu label {
+    color: var(--color-text-primary) !important;
+}
+
+.a11y-dark #accessibility-menu button.bg-gray-100 {
+    background-color: var(--color-bg-tertiary) !important;
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border) !important;
+}
+
+.a11y-dark #accessibility-menu button.bg-yellow-500 {
+    background-color: var(--color-accent) !important;
+    color: #000 !important;
+}

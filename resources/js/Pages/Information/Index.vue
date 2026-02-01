@@ -79,14 +79,14 @@ const resetFilters = () => {
 
   <GuestLayout>
     <!-- Breadcrumb & Header -->
-    <div class="bg-white border-b border-gray-100 py-8">
+    <div class="border-b py-8" style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav class="flex text-sm text-gray-500 mb-4">
-          <Link href="/" class="hover:text-yellow-600 transition">Beranda</Link>
-          <span class="mx-2 text-gray-300">/</span>
-          <span class="text-[#0F213A] font-medium">Informasi Hukum</span>
+        <nav class="flex text-sm mb-4" style="color: var(--color-text-muted);">
+          <Link href="/" class="hover:text-[var(--color-accent-hover)] transition">Beranda</Link>
+          <span class="mx-2" style="color: var(--color-border-dark);">/</span>
+          <span class="font-medium" style="color: var(--color-text-primary);">Informasi Hukum</span>
         </nav>
-        <h1 class="text-3xl font-extrabold text-[#0F213A]">Informasi Hukum</h1>
+        <h1 class="text-3xl font-extrabold" style="color: var(--color-primary);">Informasi Hukum</h1>
       </div>
     </div>
 
@@ -96,9 +96,11 @@ const resetFilters = () => {
 
         <!-- Sidebar Filters -->
         <div class="w-full lg:w-1/4 shrink-0 space-y-6" :class="{ 'hidden lg:block': !showMobileFilters }">
-          <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h3 class="font-bold text-[#0F213A] flex items-center gap-2">
+          <div class="rounded-xl shadow-sm border overflow-hidden"
+            style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+            <div class="p-5 border-b flex justify-between items-center"
+              style="background-color: var(--color-bg-secondary); border-color: var(--color-border-light);">
+              <h3 class="font-bold flex items-center gap-2" style="color: var(--color-primary);">
                 <svg class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -111,8 +113,8 @@ const resetFilters = () => {
             </div>
 
             <!-- Categories -->
-            <div class="p-5 border-b border-gray-100">
-              <h4 class="font-bold text-sm text-[#0F213A] mb-3">Kategori</h4>
+            <div class="p-5 border-b" style="border-color: var(--color-border-light);">
+              <h4 class="font-bold text-sm mb-3" style="color: var(--color-primary);">Kategori</h4>
 
               <!-- Search Category -->
               <div class="mb-3 relative">
@@ -130,12 +132,14 @@ const resetFilters = () => {
                   class="flex items-center justify-between group">
                   <label class="flex items-center gap-3 cursor-pointer flex-1">
                     <input type="checkbox" v-model="selectedCategories" :value="category.slug"
-                      class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
-                    <span class="text-gray-600 text-sm group-hover:text-[#0F213A] transition truncate max-w-[150px]"
-                      :title="category.name">{{ category.name }}</span>
+                      class="rounded text-yellow-500 focus:ring-yellow-500/50"
+                      style="border-color: var(--color-border-input);" />
+                    <span class="text-sm transition truncate max-w-[150px] group-hover:text-[var(--color-primary)]"
+                      style="color: var(--color-text-secondary);" :title="category.name">{{ category.name }}</span>
                   </label>
                   <span
-                    class="bg-gray-100 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-full group-hover:bg-yellow-100 group-hover:text-yellow-700 transition">
+                    class="text-[10px] font-bold px-2 py-0.5 rounded-full group-hover:bg-yellow-100 group-hover:text-yellow-700 transition"
+                    style="background-color: var(--color-bg-secondary); color: var(--color-text-muted);">
                     {{ category.posts_count || 0 }}
                   </span>
                 </div>
@@ -152,8 +156,8 @@ const resetFilters = () => {
             </div>
 
             <!-- Tags -->
-            <div class="p-5 border-b border-gray-100">
-              <h4 class="font-bold text-sm text-[#0F213A] mb-3">Tag</h4>
+            <div class="p-5 border-b" style="border-color: var(--color-border-light);">
+              <h4 class="font-bold text-sm mb-3" style="color: var(--color-primary);">Tag</h4>
 
               <!-- Search Tag -->
               <div class="mb-3 relative">
@@ -170,12 +174,14 @@ const resetFilters = () => {
                 <div v-for="tag in filteredTags" :key="tag.id" class="flex items-center justify-between group">
                   <label class="flex items-center gap-3 cursor-pointer flex-1">
                     <input type="checkbox" v-model="selectedTags" :value="tag.slug"
-                      class="rounded border-gray-300 text-yellow-500 focus:ring-yellow-500/50" />
-                    <span class="text-gray-600 text-sm group-hover:text-[#0F213A] transition truncate max-w-[150px]"
-                      :title="tag.name">{{ tag.name }}</span>
+                      class="rounded text-yellow-500 focus:ring-yellow-500/50"
+                      style="border-color: var(--color-border-input);" />
+                    <span class="text-sm transition truncate max-w-[150px] group-hover:text-[var(--color-primary)]"
+                      style="color: var(--color-text-secondary);" :title="tag.name">{{ tag.name }}</span>
                   </label>
                   <span
-                    class="bg-gray-100 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-full group-hover:bg-yellow-100 group-hover:text-yellow-700 transition">
+                    class="text-[10px] font-bold px-2 py-0.5 rounded-full group-hover:bg-yellow-100 group-hover:text-yellow-700 transition"
+                    style="background-color: var(--color-bg-secondary); color: var(--color-text-muted);">
                     {{ tag.posts_count || 0 }}
                   </span>
                 </div>
@@ -196,16 +202,17 @@ const resetFilters = () => {
         <!-- Main Content -->
         <div class="flex-1 w-full md:w-3/4">
           <!-- Top Bar -->
-          <div
-            class="bg-white rounded-lg border border-gray-100 p-4 mb-6 flex flex-col sm:flex-row justify-between items-center shadow-sm">
-            <div class="text-gray-600 font-medium mb-3 sm:mb-0">
-              Menampilkan <span class="font-bold text-[#0F213A]">{{ posts.total }}</span>
+          <div class="rounded-lg border p-4 mb-6 flex flex-col sm:flex-row justify-between items-center shadow-sm"
+            style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+            <div class="font-medium mb-3 sm:mb-0" style="color: var(--color-text-secondary);">
+              Menampilkan <span class="font-bold" style="color: var(--color-primary);">{{ posts.total }}</span>
               Hasil Pencarian
             </div>
             <div class="flex items-center gap-3">
-              <span class="text-gray-400 text-sm">Urutkan:</span>
+              <span class="text-sm" style="color: var(--color-text-muted);">Urutkan:</span>
               <select v-model="sort"
-                class="border-gray-200 rounded-md text-sm text-[#0F213A] focus:border-yellow-500 focus:ring-yellow-500/50 cursor-pointer">
+                class="rounded-md pl-3 pr-3 py-1 text-sm focus:border-yellow-500 focus:ring-yellow-500/50 cursor-pointer"
+                style="background-color: var(--color-bg-input); border-color: var(--color-border-input); color: var(--color-text-primary);">
                 <option value="newest">Terbaru</option>
                 <option value="popular">Terpopuler</option>
               </select>
@@ -222,7 +229,8 @@ const resetFilters = () => {
                 </svg>
               </span>
               <input type="text" v-model="search" placeholder="Cari berita atau artikel..."
-                class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500" />
+                class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
+                style="background-color: var(--color-bg-input); border-color: var(--color-border-input); color: var(--color-text-primary);" />
             </div>
             <button @click="showMobileFilters = !showMobileFilters"
               class="lg:hidden px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:text-[#0F213A] hover:border-[#0F213A] transition flex items-center gap-2 shadow-sm"
@@ -239,8 +247,9 @@ const resetFilters = () => {
           <!-- Posts Grid -->
           <div v-if="posts.data.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Link v-for="post in posts.data" :key="post.id" :href="route('information.show', post.slug)"
-              class="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
-              <div class="aspect-video relative overflow-hidden bg-gray-100">
+              class="group rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition"
+              style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+              <div class="aspect-video relative overflow-hidden" style="background-color: var(--color-bg-secondary);">
                 <img v-if="post.image"
                   :src="route('posts.pathimage', post.id) || 'https://via.placeholder.com/600x400?text=No+Image'"
                   :alt="post.title" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
@@ -257,7 +266,7 @@ const resetFilters = () => {
                 </div>
               </div>
               <div class="p-6">
-                <div class="flex items-center text-xs text-gray-500 mb-3 gap-3">
+                <div class="flex items-center text-xs mb-3 gap-3" style="color: var(--color-text-muted);">
                   <span class="flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -276,10 +285,11 @@ const resetFilters = () => {
                     {{ post.views_count }} Views
                   </span>
                 </div>
-                <h2 class="text-xl font-bold text-[#0F213A] mb-3 line-clamp-2 group-hover:text-yellow-600 transition">
+                <h2 class="text-xl font-bold mb-3 line-clamp-2 hover:text-yellow-600 transition"
+                  style="color: var(--color-primary);">
                   {{ post.title }}
                 </h2>
-                <p class="text-gray-600 text-sm line-clamp-3 mb-4">
+                <p class="text-sm line-clamp-3 mb-4" style="color: var(--color-text-secondary);">
                   {{ post.desc }}
                 </p>
                 <span
@@ -295,29 +305,34 @@ const resetFilters = () => {
           </div>
 
           <!-- Empty State -->
-          <div v-else class="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-100">
-            <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div v-else class="text-center py-12 rounded-xl shadow-sm border"
+            style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
+            <svg class="w-16 h-16 mx-auto mb-4" style="color: var(--color-text-muted);" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
             </svg>
-            <h3 class="text-lg font-medium text-gray-900">Belum ada informasi</h3>
-            <p class="text-gray-500 mt-1">Coba sesuaikan filter pencarian anda.</p>
+            <h3 class="text-lg font-medium" style="color: var(--color-text-primary);">Belum ada informasi</h3>
+            <p class="mt-1" style="color: var(--color-text-secondary);">Coba sesuaikan filter pencarian anda.</p>
             <button @click="resetFilters" class="mt-4 text-yellow-600 hover:text-yellow-700 text-sm font-medium">Reset
               Filter</button>
           </div>
 
           <!-- Pagination -->
           <div class="mt-10 flex justify-center text-sm" v-if="posts.links.length > 3">
-            <div class="flex flex-wrap justify-center gap-1.5 bg-white p-2 rounded-xl border border-gray-100 shadow-sm">
+            <div class="flex flex-wrap justify-center gap-1.5 p-2 rounded-xl border shadow-sm"
+              style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
               <template v-for="(link, key) in posts.links" :key="key">
                 <Link v-if="link.url" :href="link.url"
                   class="h-9 min-w-[36px] px-2 flex items-center justify-center rounded-lg transition text-xs font-bold"
                   :class="[
                     link.active
-                      ? 'bg-[#0F213A] text-white shadow-md transform scale-105'
-                      : 'text-gray-500 hover:bg-gray-50 hover:text-[#0F213A]',
+                      ? 'text-white shadow-md transform scale-105'
+                      : 'hover:bg-gray-50',
                     !link.url && 'opacity-50 cursor-not-allowed'
-                  ]" v-html="link.label" />
+                  ]"
+                  :style="link.active ? 'background-color: var(--color-primary);' : 'color: var(--color-text-secondary);'"
+                  v-html="link.label" />
                 <span v-else v-html="link.label"
                   class="h-9 min-w-[36px] px-2 flex items-center justify-center text-gray-300"></span>
               </template>
