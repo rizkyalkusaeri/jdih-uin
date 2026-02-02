@@ -60,4 +60,23 @@ class SubmissionController extends Controller
 
     return redirect()->back()->with('success', 'Pengajuan berhasil disimpan. Kode Tracking Anda: ' . $code);
   }
+
+  public function track(\Illuminate\Http\Request $request)
+  {
+    $submission = null;
+    $searchPerformed = false;
+
+    if ($request->has('tracking_code') && $request->tracking_code) {
+      $searchPerformed = true;
+      $submission = Submission::with('type')
+        ->where('tracking_code', $request->tracking_code)
+        ->first();
+    }
+
+    return Inertia::render('Submission/Track', [
+      'submission' => $submission,
+      'filters' => $request->only('tracking_code'),
+      'searchPerformed' => $searchPerformed,
+    ]);
+  }
 }

@@ -83,6 +83,11 @@ const page = usePage();
                                     :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('submission.create') }">
                                     Buat Pengajuan
                                 </Link>
+                                <Link href="/pengajuan/tracking"
+                                    class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700"
+                                    :class="{ 'font-bold text-yellow-600 bg-yellow-50': route().current('submission.track') }">
+                                    Lacak Pengajuan
+                                </Link>
                             </div>
                         </div>
                         <!-- Berita, Event & Dokumentasi Dropdown -->
@@ -214,6 +219,10 @@ const page = usePage();
                         <Link href="/pengajuan"
                             :class="[route().current('submission.create') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
                             Buat Pengajuan
+                        </Link>
+                        <Link href="/pengajuan/tracking"
+                            :class="[route().current('submission.track') ? 'border-yellow-400 text-[#0F213A] bg-yellow-50' : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300', 'block w-full ps-8 pe-4 py-2 border-l-4 text-sm font-medium focus:outline-none transition duration-150 ease-in-out']">
+                            Lacak Pengajuan
                         </Link>
                     </div>
                     <!-- Berita, Event & Dokumentasi Group -->

@@ -81,5 +81,8 @@ Route::get('/statistik', [\App\Http\Controllers\Public\StatisticsController::cla
 Route::get('/pengajuan', [\App\Http\Controllers\Public\SubmissionController::class, 'create'])
     ->name('submission.create');
 
+Route::get('/pengajuan/tracking', [\App\Http\Controllers\Public\SubmissionController::class, 'track'])
+    ->name('submission.track');
+
 Route::post('/pengajuan', [\App\Http\Controllers\Public\SubmissionController::class, 'store'])
     ->name('submission.store');
