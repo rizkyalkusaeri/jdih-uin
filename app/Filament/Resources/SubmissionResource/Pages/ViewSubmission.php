@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SubmissionResource\Pages;
 
+use App\Filament\Resources\LegalProductResource;
 use App\Filament\Resources\SubmissionResource;
 use App\Models\Submission;
 use App\Models\SubmissionStatusHistory;
@@ -18,11 +19,34 @@ class ViewSubmission extends ViewRecord
 
     protected function getHeaderActions(): array
     {
+        $hasLegalProduct = $this->record->legalProduct()->exists();
+
         return [
+            // Action: View Published Legal Product
+            Action::make('viewLegalProduct')
+                ->label('Lihat Produk Hukum')
+                ->icon('heroicon-o-document-text')
+                ->color('success')
+                ->url(fn() => LegalProductResource::getUrl('edit', ['record' => $this->record->legalProduct]))
+                ->visible(fn() => $hasLegalProduct),
+
+            // Action: Publish as Legal Product
+            Action::make('publishLegalProduct')
+                ->label('Terbitkan Produk Hukum')
+                ->icon('heroicon-o-check-badge')
+                ->color('primary')
+                ->requiresConfirmation()
+                ->modalHeading('Terbitkan Produk Hukum')
+                ->modalDescription('Anda akan diarahkan ke form Produk Hukum dengan data yang sudah diisi dari pengajuan ini. Status pengajuan tidak dapat diubah lagi setelah produk hukum diterbitkan.')
+                ->action(fn() => redirect(LegalProductResource::getUrl('create', ['submission_id' => $this->record->id])))
+                ->visible(fn() => $this->record->status === Submission::STATUS_COMPLETED && !$hasLegalProduct),
+
+            // Action: Update Status (Locked if Legal Product exists)
             Action::make('updateStatus')
                 ->label('Update Status')
                 ->icon('heroicon-o-arrow-path')
                 ->color('primary')
+                ->disabled(fn() => $hasLegalProduct)
                 ->form([
                     Select::make('status')
                         ->label('Status Baru')

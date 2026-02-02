@@ -23,7 +23,7 @@ class LegalProductSyncResource extends JsonResource
             "noPeraturan" => $this->number ?? '-',
             "judul" => $this->title ?? '-',
             "noPanggil" => "-", // Not available
-            "singkatanJenis" => "-", // Not available in Type model
+            "singkatanJenis" => $this->type?->singkatan ?? '-',
             "tempatTerbit" => $this->place?->name ?? '-',
             "penerbit" => $this->publisher?->name ?? '-',
             "deskripsiFisik" => $this->page_description ?? '-',
@@ -33,7 +33,7 @@ class LegalProductSyncResource extends JsonResource
             "status" => $this->status ?? 'Berlaku',
             "bahasa" => $this->language ?? 'Indonesia',
             "bidangHukum" => $this->legalField?->name ?? '-',
-            "teuBadan" => "UIN Sunan Gunung Djati Bandung",
+            "teuBadan" => $this->publisher?->name ?? '-',
             "nomorIndukBuku" => "-",
             "fileDownload" => $this->file_path ? basename($this->file_path) : '-',
             "urlDownload" => $this->file_path ? asset('storage/' . $this->file_path) : '-',

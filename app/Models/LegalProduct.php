@@ -25,6 +25,7 @@ class LegalProduct extends Model
     }
 
     protected $fillable = [
+        'submission_id',
         'abstract',
         'title',
         'number',
@@ -68,6 +69,11 @@ class LegalProduct extends Model
         'validity_end' => 'date',
         'year' => 'integer',
     ];
+
+    public function submission(): BelongsTo
+    {
+        return $this->belongsTo(Submission::class);
+    }
 
     public function category(): BelongsTo
     {

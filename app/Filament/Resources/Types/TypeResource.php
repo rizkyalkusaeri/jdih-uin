@@ -56,6 +56,9 @@ class TypeResource extends Resource
                     ->maxLength(255)
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn(string $state, Set $set) => $set('slug', Str::slug($state))),
+                TextInput::make('singkatan')
+                    ->label('Singkatan')
+                    ->maxLength(255),
                 TextInput::make('slug')
                     ->required()
                     ->maxLength(255)

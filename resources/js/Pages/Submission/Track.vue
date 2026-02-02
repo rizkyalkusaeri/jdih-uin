@@ -3,6 +3,8 @@ import { Head, useForm, Link } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { route } from 'ziggy-js';
 
+import { computed } from 'vue';
+
 const props = defineProps({
     submission: Object,
     filters: Object,
@@ -17,6 +19,7 @@ const submit = () => {
     form.get(route('submission.track'), {
         preserveState: true,
         preserveScroll: true,
+        only: ['submission', 'searchPerformed', 'filters'],
     });
 };
 
@@ -26,14 +29,58 @@ const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('id-ID', options);
 };
 
-// Static Progress Steps
-const steps = [
-    { label: 'Pengajuan Diterima', status: 'completed' },
-    { label: 'Verifikasi Admin', status: 'current' },
-    { label: 'Harmonisasi Legal', status: 'upcoming' },
-    { label: 'Tanda Tangan', status: 'upcoming' },
-    { label: 'Terbit & Selesai', status: 'upcoming' },
+const statusOrder = [
+    'pending',
+    'admin_verification',
+    'legal_harmonization',
+    'signing',
+    'completed'
 ];
+
+const getStatusLabel = (statusKey) => {
+    const options = {
+        'pending': 'Pengajuan Diterima',
+        'admin_verification': 'Verifikasi Admin',
+        'legal_harmonization': 'Harmonisasi Legal',
+        'signing': 'Tanda Tangan',
+        'completed': 'Terbit & Selesai',
+        'rejected': 'Ditolak'
+    };
+    return options[statusKey] || statusKey;
+};
+
+const progressSteps = computed(() => {
+    if (!props.submission) return [];
+
+    const currentStatus = props.submission.status;
+    const currentIndex = statusOrder.indexOf(currentStatus);
+    const isRejected = currentStatus === 'rejected';
+
+    return [
+        { label: 'Pengajuan Diterima', value: 'pending' },
+        { label: 'Verifikasi Admin', value: 'admin_verification' },
+        { label: 'Harmonisasi Legal', value: 'legal_harmonization' },
+        { label: 'Tanda Tangan', value: 'signing' },
+        { label: 'Terbit & Selesai', value: 'completed' },
+    ].map((step, index) => {
+        let status = 'upcoming';
+
+        if (isRejected) {
+            status = 'rejected'; // You might want to handle this specifically
+        } else if (currentIndex === -1) {
+            status = 'upcoming';
+        } else if (index < currentIndex) {
+            status = 'completed';
+        } else if (index === currentIndex) {
+            status = 'current';
+        }
+
+        return {
+            ...step,
+            status
+        };
+    });
+});
 
 </script>
 
@@ -71,7 +118,7 @@ const steps = [
                     <div class="px-6 pb-8">
                         <form @submit.prevent="submit" class="max-w-2xl">
                             <div class="flex flex-col sm:flex-row gap-4">
-                                <div class="flex-grow">
+                                <div class="grow">
                                     <input v-model="form.tracking_code" type="text"
                                         placeholder="Contoh: REG-20240101-ABCD"
                                         class="w-full rounded-lg border-none shadow-md py-3 px-4 leading-tight focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -199,48 +246,62 @@ const steps = [
                                 </div>
                             </div>
 
-                            <!-- Progress Timeline -->
-                            <div class="px-6 pb-6">
-                                <h4 class="text-lg font-bold mb-6" style="color: var(--color-text-primary);">Progress
-                                    Pengajuan</h4>
+                            <!-- History Timeline -->
+                            <div v-if="submission.status_histories && submission.status_histories.length > 0"
+                                class="px-6 pb-6 border-t pt-6" style="border-color: var(--color-border-light);">
+                                <h4 class="text-lg font-bold mb-6" style="color: var(--color-text-primary);">Riwayat
+                                    Status</h4>
+                                <div class="relative pl-4 ml-2 border-l-2 space-y-8"
+                                    style="border-color: var(--color-border);">
+                                    <div v-for="history in submission.status_histories" :key="history.id"
+                                        class="relative pl-6">
 
-                                <div class="relative">
-                                    <!-- Line (Desktop) -->
-                                    <div class="absolute left-0 top-5 w-full h-1 hidden md:block"
-                                        style="background-color: var(--color-border);"></div>
+                                        <!-- Dot -->
+                                        <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full border-2 bg-white"
+                                            style="border-color: var(--color-primary);">
+                                            <div class="w-2 h-2 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                                                style="background-color: var(--color-primary);"></div>
+                                        </div>
 
-                                    <div
-                                        class="flex flex-col md:flex-row justify-between items-start md:items-center relative z-10 space-y-6 md:space-y-0">
-                                        <div v-for="(step, index) in steps" :key="index"
-                                            class="flex flex-col items-center w-full md:w-auto text-center group">
-                                            <!-- Circle -->
-                                            <div class="w-10 h-10 rounded-full flex items-center justify-center border-4 transition-colors duration-200 mb-2"
-                                                :style="{
-                                                    backgroundColor: index === 0 ? 'var(--color-primary)' : 'var(--color-bg-card)',
-                                                    borderColor: index === 0 ? 'var(--color-accent-light)' : 'var(--color-border)',
-                                                    color: index === 0 ? 'white' : 'var(--color-text-muted)'
-                                                }">
-                                                <svg v-if="index === 0" class="w-5 h-5" fill="none"
-                                                    stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                </svg>
-                                                <span v-else class="text-sm font-bold">{{ index + 1 }}</span>
+                                        <!-- Content -->
+                                        <div>
+                                            <p class="font-bold text-base" style="color: var(--color-text-primary);">
+                                                {{ getStatusLabel(history.to_status) }}
+                                            </p>
+                                            <p class="text-xs mt-1 mb-2" style="color: var(--color-text-muted);">
+                                                {{ formatDate(history.created_at) }}
+                                                <span v-if="history.user" class="mx-1">•</span>
+                                                <span v-if="history.user">Oleh: {{ history.user.name }}</span>
+                                            </p>
+
+                                            <div v-if="history.notes"
+                                                class="text-sm p-3 rounded-lg border inline-block max-w-full"
+                                                style="background-color: var(--color-bg-tertiary); border-color: var(--color-border-light); color: var(--color-text-secondary);">
+                                                {{ history.notes }}
                                             </div>
-                                            <!-- Label -->
-                                            <span class="text-xs md:text-sm font-medium transition-colors duration-200"
-                                                :style="{ color: index === 0 ? 'var(--color-primary)' : 'var(--color-text-secondary)' }">
-                                                {{ step.label }}
-                                            </span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Actions -->
-                            <div class="p-6 border-t flex justify-end"
+                            <div class="p-6 border-t flex flex-wrap justify-end gap-3"
                                 style="background-color: var(--color-bg-tertiary); border-color: var(--color-border-light);">
-                                <button type="button"
+
+                                <!-- Link to Published Legal Product -->
+                                <Link v-if="submission.status === 'completed' && submission.legal_product"
+                                    :href="'/produk-hukum/' + submission.legal_product.slug"
+                                    class="inline-flex items-center px-6 py-3 rounded-lg font-bold text-sm shadow-lg hover:shadow-xl hover:opacity-90 transition text-white"
+                                    style="background-color: var(--color-success);">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                    Lihat Produk Hukum
+                                </Link>
+
+                                <!-- <button type="button"
                                     class="inline-flex items-center px-6 py-3 rounded-lg font-bold text-sm shadow-lg hover:shadow-xl hover:opacity-90 transition text-white"
                                     style="background-color: var(--color-primary);">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,7 +309,7 @@ const steps = [
                                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                                     </svg>
                                     Download Bukti Tanda Terima
-                                </button>
+                                </button> -->
                             </div>
 
                         </div>

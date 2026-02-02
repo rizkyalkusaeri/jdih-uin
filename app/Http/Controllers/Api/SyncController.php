@@ -36,11 +36,7 @@ class SyncController extends Controller
             $legalProducts = $query->get();
             $data = \App\Http\Resources\LegalProductSyncResource::collection($legalProducts);
 
-            $response = response()->json([
-                'status' => 'success',
-                'message' => 'Data retrieved successfully',
-                'data' => $data,
-            ]);
+            $response = response()->json($data);
 
             // Logging
             $duration = (microtime(true) - $startTime) * 1000;

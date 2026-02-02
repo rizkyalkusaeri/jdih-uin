@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\LegalProductResource\Pages;
 
 use App\Filament\Resources\LegalProductResource;
+use App\Models\Submission;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -11,9 +12,31 @@ class CreateLegalProduct extends CreateRecord
 {
     protected static string $resource = LegalProductResource::class;
 
+    public ?int $submissionId = null;
+
     public function mount(): void
     {
         parent::mount();
+
+        // Check for submission_id query parameter and pre-fill form
+        $this->submissionId = request()->query('submission_id');
+
+        if ($this->submissionId) {
+            $submission = Submission::with('type.category')->find($this->submissionId);
+
+            if ($submission && $submission->status === Submission::STATUS_COMPLETED) {
+                $type = $submission->type;
+                $fieldConfig = $type?->category?->field_config ?? [];
+
+                $this->form->fill([
+                    'type_id' => $submission->type_id,
+                    'category_id' => $type?->category_id,
+                    'title' => $submission->title,
+                    'slug' => Str::slug($submission->title),
+                    'field_config' => $fieldConfig,
+                ]);
+            }
+        }
     }
 
     protected function getHeaderActions(): array
@@ -140,6 +163,11 @@ class CreateLegalProduct extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = Auth::user()->id;
+
+        // Attach submission if coming from submission flow
+        if ($this->submissionId) {
+            $data['submission_id'] = $this->submissionId;
+        }
 
         return $data;
     }

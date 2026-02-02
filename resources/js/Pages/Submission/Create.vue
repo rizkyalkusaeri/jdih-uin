@@ -74,6 +74,7 @@ const submit = () => {
         onSuccess: () => {
             currentStep.value = 1;
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            form.reset();
         },
         onError: (errors) => {
             console.error(errors);

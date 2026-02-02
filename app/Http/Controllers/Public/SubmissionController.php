@@ -68,7 +68,7 @@ class SubmissionController extends Controller
 
     if ($request->has('tracking_code') && $request->tracking_code) {
       $searchPerformed = true;
-      $submission = Submission::with('type')
+      $submission = Submission::with(['type', 'statusHistories.user', 'legalProduct'])
         ->where('tracking_code', $request->tracking_code)
         ->first();
     }

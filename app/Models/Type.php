@@ -21,6 +21,7 @@ class Type extends Model
 
     protected $fillable = [
         'name',
+        'singkatan',
         'description',
         'slug',
         'status',

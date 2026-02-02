@@ -52,7 +52,7 @@ const page = usePage();
                         <!-- Produk Hukum Dropdown -->
                         <div class="relative group">
                             <button class="flex items-center gap-1 transition focus:outline-none"
-                                :class="[page.component.startsWith('ProdukHukum') ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500']">
+                                :class="[(route().current('produk-hukum.*') || route().current('submission.*')) ? 'text-yellow-500 font-bold' : 'text-gray-600 font-semibold hover:text-yellow-500']">
                                 Produk Hukum
                                 <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">

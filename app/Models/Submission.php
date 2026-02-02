@@ -43,6 +43,11 @@ class Submission extends Model
         return $this->hasMany(SubmissionStatusHistory::class)->orderBy('created_at', 'desc');
     }
 
+    public function legalProduct()
+    {
+        return $this->hasOne(LegalProduct::class);
+    }
+
     public static function getStatusOptions(): array
     {
         return [
