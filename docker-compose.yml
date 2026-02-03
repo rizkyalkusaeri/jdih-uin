@@ -1,0 +1,54 @@
+services:
+  # Backend Laravel
+  app:
+    build: .
+    image: laravel-app
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel-network
+
+  # SSR Server (Inertia)
+  ssr:
+    image: laravel-app
+    restart: unless-stopped
+    command: php artisan inertia:start-ssr
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel-network
+    depends_on:
+      - app
+
+  # Web Server Nginx
+  webserver:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d
+    networks:
+      - laravel-network
+
+  # Database
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - laravel-network
+
+networks:
+  laravel-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
