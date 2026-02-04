@@ -1,7 +1,11 @@
 {
+  "\u0000C:/Users/Rizky/Documents/jdih/jdih-uin/node_modules/lodash/lodash.js?commonjs-es-import": [],
+  "\u0000C:/Users/Rizky/Documents/jdih/jdih-uin/node_modules/lodash/lodash.js?commonjs-module": [],
+  "\u0000commonjsHelpers.js": [],
   "\u0000plugin-vue:export-helper": [],
+  "node_modules/lodash/lodash.js": [],
   "resources/js/Components/AccessibilityMenu.vue": [],
-  "resources/js/Components/AccessibilityMenu.vue?vue&type=style&index=0&scoped=6bcf3ac4&lang.css": [],
+  "resources/js/Components/AccessibilityMenu.vue?vue&type=style&index=0&scoped=a868f913&lang.css": [],
   "resources/js/Components/AwardsCarousel.vue": [],
   "resources/js/Components/AwardsCarousel.vue?vue&type=style&index=0&scoped=0ca72c62&lang.css": [],
   "resources/js/Components/Breadcrumb.vue": [],
@@ -11,7 +15,7 @@
   "resources/js/Components/Toast.vue": [],
   "resources/js/Layouts/GuestLayout.vue": [],
   "resources/js/Pages/About/FAQ.vue": [],
-  "resources/js/Pages/About/FAQ.vue?vue&type=style&index=0&scoped=b076a445&lang.css": [],
+  "resources/js/Pages/About/FAQ.vue?vue&type=style&index=0&scoped=3f1f590b&lang.css": [],
   "resources/js/Pages/About/Index.vue": [],
   "resources/js/Pages/About/Prasyarat.vue": [],
   "resources/js/Pages/About/Privacy.vue": [],
@@ -20,7 +24,7 @@
   "resources/js/Pages/Contact/Index.vue": [],
   "resources/js/Pages/Glossary/Index.vue": [],
   "resources/js/Pages/Home.vue": [],
-  "resources/js/Pages/Home.vue?vue&type=style&index=0&scoped=32b0a1a6&lang.css": [],
+  "resources/js/Pages/Home.vue?vue&type=style&index=0&scoped=d9261fb9&lang.css": [],
   "resources/js/Pages/Infographics/Index.vue": [],
   "resources/js/Pages/Information/Index.vue": [],
   "resources/js/Pages/Information/Show.vue": [],
@@ -29,5 +33,7 @@
   "resources/js/Pages/ProdukHukum/Index.vue?vue&type=style&index=0&scoped=29a9a675&lang.css": [],
   "resources/js/Pages/ProdukHukum/Show.vue": [],
   "resources/js/Pages/Statistics/Index.vue": [],
+  "resources/js/Pages/Submission/Create.vue": [],
+  "resources/js/Pages/Submission/Track.vue": [],
   "resources/js/ssr.js": []
 }

@@ -25,6 +25,10 @@ export default defineConfig({
             "@": "/resources/js",
         },
     },
+    // TAMBAHKAN BAGIAN INI UNTUK SOLUSI LODASH
+    ssr: {
+        noExternal: ['lodash'],
+    },
     server: {
         watch: {
             ignored: ["**/storage/framework/views/**"],
