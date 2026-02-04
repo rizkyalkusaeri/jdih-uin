@@ -2,7 +2,7 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: [master] # Pastikan branch di GitHub Anda bernama 'master', bukan 'main'
+    branches: [master]
 
 jobs:
   deploy:
@@ -24,13 +24,12 @@ jobs:
             cd /var/www/jdih-uin
 
             echo "🔧 Mengambil alih permission agar Git bisa jalan..."
-            # FIX UTAMA: Ubah owner semua file ke user SSH saat ini ($USER)
-            # Supaya git tidak kena error 'Permission denied' saat unlink file
+            # Ubah owner ke user saat ini ($USER) agar git tidak error permission denied
             sudo chown -R $USER:$USER .
-
             git config --global --add safe.directory /var/www/jdih-uin
 
             echo "🚀 Mulai Deploy..."
+            # Maintenance mode (opsional, agar user tidak input data saat update)
             sudo php artisan down || true
 
             echo "⬇️ Menarik kode dari git..."
@@ -41,20 +40,21 @@ jobs:
             composer install --optimize-autoloader --no-dev
 
             echo "🗄️ Migrasi Database..."
-            php artisan migrate
+            # WAJIB pakai --force di production agar tidak minta konfirmasi Yes/No
+            php artisan migrate --force
 
             echo "🎨 Build Frontend..."
             php artisan ziggy:generate
             npm install
             npm run build
 
-            echo "🧹 Clearing Cache..."
+            echo "🧹 Optimizing Cache..."
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
             php artisan filament:optimize
-            php artisan route:clear 
+            # HAPUS route:clear di sini agar cache tidak hilang lagi
 
             echo "🔗 Linking Storage..."
             php artisan storage:link
@@ -62,20 +62,19 @@ jobs:
             echo "🗺️ Generating Sitemap..."
             php artisan sitemap:generate
 
-            echo "🔄 Restarting SSR..."
-            # Stopping the SSR process allows Supervisor to automatically restart it with the new code
-            php artisan inertia:stop-ssr || true 
+            echo "🔄 Restarting SSR (PM2)..."
+            # Restart PM2 agar file build JS terbaru termuat
+            # Kita gunakan '|| true' agar jika pm2 belum jalan, deploy tidak gagal
+            pm2 restart jdih-ssr || pm2 start php --name "jdih-ssr" -- artisan inertia:start-ssr
 
             echo "🔒 Mengembalikan Permission ke www-data..."
-            # Kembalikan permission storage ke www-data agar aplikasi jalan normal
-            sudo chown -R www-data:www-data storage
-            sudo chown -R www-data:www-data bootstrap/cache
-            sudo chmod -R 775 storage
-            sudo chmod -R 775 bootstrap/cache
+            # Kembalikan permission storage dan cache ke www-data (Nginx)
+            sudo chown -R www-data:www-data storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
 
-            # Reload PHP (Sesuaikan versi PHP Anda, misal 8.1, 8.2, dst)
             echo "🔄 Reloading PHP FPM..."
-            # sudo service php8.2-fpm reload 
+            # Sesuaikan versi PHP Anda (Tadi kita install 8.3)
+            sudo systemctl reload php8.3-fpm
 
             sudo php artisan up
-            echo "✅ Deploy Selesai!"
+            echo "✅ Deploy Selesai & Aplikasi Online!"
