@@ -21,14 +21,14 @@ jobs:
           port: 22
           script: |
             set -e
-            cd /var/www/html/jdih-uin
+            cd /var/www/jdih-uin
 
             echo "🔧 Mengambil alih permission agar Git bisa jalan..."
             # FIX UTAMA: Ubah owner semua file ke user SSH saat ini ($USER)
             # Supaya git tidak kena error 'Permission denied' saat unlink file
             sudo chown -R $USER:$USER .
 
-            git config --global --add safe.directory /var/www/html/jdih-uin
+            git config --global --add safe.directory /var/www/jdih-uin
 
             echo "🚀 Mulai Deploy..."
             sudo php artisan down || true
