@@ -117,20 +117,33 @@ class CreateLegalProduct extends CreateRecord
                             [$modelClass, $idKey] = $config;
                             if (!empty($fillData[$nameKey])) {
                                 $name = $fillData[$nameKey];
-                                $record = $modelClass::firstOrCreate(
-                                    ['name' => $name],
-                                    ['slug' => Str::slug($name)]
-                                );
+                                $slug = Str::slug($name);
+
+                                // Check by slug first to prevent duplicate slug error
+                                $record = $modelClass::where('slug', $slug)->first();
+
+                                if (!$record) {
+                                    $record = $modelClass::firstOrCreate(
+                                        ['name' => $name],
+                                        ['slug' => $slug]
+                                    );
+                                }
                                 $fillData[$idKey] = $record->id;
                             }
                         }
 
                         if (isset($fillData['publisher_id'])) {
-                            $publisher = \App\Models\Publisher::class::find($fillData['publisher_id']);
-                            $initiator = \App\Models\Initiator::firstOrCreate(
-                                ['name' => $publisher->name],
-                                ['slug' => Str::slug($publisher->name)]
-                            );
+                            $publisher = \App\Models\Publisher::find($fillData['publisher_id']);
+
+                            $slug = Str::slug($publisher->name);
+                            $initiator = \App\Models\Initiator::where('slug', $slug)->first();
+
+                            if (!$initiator) {
+                                $initiator = \App\Models\Initiator::firstOrCreate(
+                                    ['name' => $publisher->name],
+                                    ['slug' => $slug]
+                                );
+                            }
                             $fillData['initiator_id'] = $initiator->id;
                         }
 
@@ -206,32 +219,56 @@ class CreateLegalProduct extends CreateRecord
 
         // Signer Logic
         if (!empty($data['signer_name'])) {
-            $signer = \App\Models\Signer::firstOrCreate(
-                ['name' => $data['signer_name']],
-                ['slug' => Str::slug($data['signer_name'])]
-            );
+            $name = $data['signer_name'];
+            $slug = Str::slug($name);
+
+            $signer = \App\Models\Signer::where('slug', $slug)->first();
+
+            if (!$signer) {
+                $signer = \App\Models\Signer::firstOrCreate(
+                    ['name' => $name],
+                    ['slug' => $slug]
+                );
+            }
             $fillData['signer_id'] = $signer->id;
         }
 
 
-        $publisher = \App\Models\Publisher::firstOrCreate(
-            ['name' => 'UIN Sunan Gunung Djati Bandung'],
-            ['slug' => Str::slug('UIN Sunan Gunung Djati Bandung')]
-        );
+        $publisherName = 'UIN Sunan Gunung Djati Bandung';
+        $publisherSlug = Str::slug($publisherName);
+
+        $publisher = \App\Models\Publisher::where('slug', $publisherSlug)->first();
+        if (!$publisher) {
+            $publisher = \App\Models\Publisher::firstOrCreate(
+                ['name' => $publisherName],
+                ['slug' => $publisherSlug]
+            );
+        }
 
         $fillData['publisher_id'] = $publisher->id;
 
-        $place = \App\Models\Place::firstOrCreate(
-            ['name' => 'Bandung'],
-            ['slug' => Str::slug('Bandung')]
-        );
+        $placeName = 'Bandung';
+        $placeSlug = Str::slug($placeName);
+
+        $place = \App\Models\Place::where('slug', $placeSlug)->first();
+        if (!$place) {
+            $place = \App\Models\Place::firstOrCreate(
+                ['name' => $placeName],
+                ['slug' => $placeSlug]
+            );
+        }
 
         $fillData['place_id'] = $place->id;
 
-        $initiator = \App\Models\Initiator::firstOrCreate(
-            ['name' => $publisher->name],
-            ['slug' => Str::slug($publisher->name)]
-        );
+        $initiatorSlug = Str::slug($publisher->name);
+        $initiator = \App\Models\Initiator::where('slug', $initiatorSlug)->first();
+
+        if (!$initiator) {
+            $initiator = \App\Models\Initiator::firstOrCreate(
+                ['name' => $publisher->name],
+                ['slug' => $initiatorSlug]
+            );
+        }
 
         $fillData['initiator_id'] = $initiator->id;
 

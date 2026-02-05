@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\LegalProduct;
 use App\Models\Type; // Assuming Type model exists for filter data
 use Illuminate\Http\Request;
@@ -121,7 +122,7 @@ class LegalProductController extends Controller
         // Filter Data for Sidebar (Rich Data with Counts)
         $availableYears = LegalProduct::select('year')->distinct()->orderBy('year', 'desc')->pluck('year');
 
-        $availableTypes = \App\Models\Type::withCount(['legalProducts' => function ($q) {
+        $availableTypes = Type::withCount(['legalProducts' => function ($q) {
             $q->where('status', '!=', 'Draft');
         }])->orderBy('legal_products_count', 'desc')->get()->map(function ($type) {
             return [
@@ -131,7 +132,7 @@ class LegalProductController extends Controller
             ];
         });
 
-        $availableCategories = \App\Models\Category::where('type', 'legal')->withCount(['legalProducts' => function ($q) {
+        $availableCategories = Category::where('type', 'legal')->withCount(['legalProducts' => function ($q) {
             $q->where('status', '!=', 'Draft');
         }])->orderBy('legal_products_count', 'desc')->get()->map(function ($cat) {
             return [
@@ -270,27 +271,41 @@ class LegalProductController extends Controller
     {
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
-            'feedback' => 'nullable|string|max:500'
+            'email' => 'required|email|max:255',
+            'name' => 'nullable|string|max:255',
+            'q1' => 'required|boolean', // Setuju/Tidak Setuju
+            'q2' => 'required|boolean',
+            'q3' => 'required|boolean',
+            'q4' => 'required|boolean',
+            'q5' => 'required|boolean', // Merekomendasikan/Belum
+            'feedback' => 'required|string|max:1000'
         ]);
 
         $ip = $request->ip();
         // Check duplication (1 rating per IP per day for this product)
         $exists = \App\Models\Rating::where('legal_product_id', $id)
             ->where('ip_address', $ip)
-            ->whereDate('created_at', \Illuminate\Support\Carbon::today())
+            ->whereDate('created_at', Carbon::today())
             ->exists();
 
         if ($exists) {
-            return back()->withErrors(['message' => 'Anda sudah memberikan rating hari ini.']);
+            return back()->withErrors(['message' => 'Anda sudah mengisi survei untuk dokumen ini hari ini.']);
         }
 
         \App\Models\Rating::create([
             'legal_product_id' => $id,
             'ip_address' => $ip,
             'rating' => $request->rating,
+            'email' => $request->email,
+            'name' => $request->name,
+            'q1' => $request->q1,
+            'q2' => $request->q2,
+            'q3' => $request->q3,
+            'q4' => $request->q4,
+            'q5' => $request->q5,
             'feedback' => $request->feedback
         ]);
 
-        return back()->with('success', 'Terima kasih atas penilaian Anda!');
+        return back()->with('success', 'Terima kasih atas partisipasi survei Anda!');
     }
 }

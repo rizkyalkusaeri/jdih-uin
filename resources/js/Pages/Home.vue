@@ -424,10 +424,11 @@ onMounted(() => {
 
                             <!-- Counters -->
                             <div class="flex flex-col justify-center space-y-4">
-                                <div class="p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-                                    <div class="text-xs font-bold uppercase" style="color: var(--color-text-inverse);">
+                                <div class="p-3 shadow-sm rounded-lg border-l-4"
+                                    style="border-color: var(--color-secondary); background-color: var(--color-secondary);">
+                                    <div class="text-xs font-bold uppercase" style="color: var(--color-text-primary);">
                                         Total Pengunjung</div>
-                                    <div class="text-xl font-extrabold" style="color: var(--color-text-inverse);">{{
+                                    <div class="text-xl font-extrabold" style="color: var(--color-text-primary);">{{
                                         (visitorStats?.total ||
                                             0).toLocaleString() }}</div>
                                 </div>

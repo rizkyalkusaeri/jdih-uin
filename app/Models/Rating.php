@@ -14,6 +14,13 @@ class Rating extends Model
     'ip_address',
     'rating',
     'feedback',
+    'email',
+    'name',
+    'q1',
+    'q2',
+    'q3',
+    'q4',
+    'q5',
   ];
 
   public function legalProduct()

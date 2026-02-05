@@ -2,7 +2,7 @@
 import { Link, usePage, useForm } from '@inertiajs/vue3'; // Head removed
 import { route } from 'ziggy-js';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import { ref, computed } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import HelpWidget from '@/Components/HelpWidget.vue';
 
 const props = defineProps({
@@ -29,9 +29,40 @@ const showRatingModal = ref(false);
 const previewUrl = ref('');
 
 const ratingForm = useForm({
-    rating: 0,
+    rating: null, // Re-added rating
+    email: '',
+    name: '',
+    q1: null,
+    q2: null,
+    q3: null,
+    q4: null,
+    q5: null,
     feedback: ''
 });
+
+// Toast State
+const toast = reactive({
+    show: false,
+    message: '',
+    type: 'success' // success | error
+});
+
+const showToast = (message, type = 'success') => {
+    toast.message = message;
+    toast.type = type;
+    toast.show = true;
+    setTimeout(() => {
+        toast.show = false;
+    }, 3000);
+};
+
+// Helper to open modal with pre-selected rating (if we stick to star approach or just simple trigger)
+const openSurvey = (initialRating = null) => {
+    if (initialRating) {
+        ratingForm.rating = initialRating;
+    }
+    showRatingModal.value = true;
+};
 
 const openPreview = () => {
     // Determine preview URL (use route helper if possible or build string)
@@ -44,10 +75,21 @@ const openPreview = () => {
 };
 
 const submitRating = () => {
+    if (!ratingForm.email || ratingForm.q1 === null || ratingForm.q2 === null || ratingForm.q3 === null || ratingForm.q4 === null || ratingForm.q5 === null) {
+        showToast('Mohon lengkapi survei (email dan pertanyaan wajib diisi)', 'error');
+        return;
+    }
+
     ratingForm.post(route('produk-hukum.rate', props.legalProduct.id), {
+        preserveScroll: true,
         onSuccess: () => {
             showRatingModal.value = false;
             ratingForm.reset();
+            // showToast('Terima kasih atas masukan Anda!', 'success');
+        },
+        onError: (errors) => {
+            const msg = errors.message || 'Terjadi kesalahan saat mengirim survei.';
+            // showToast(msg, 'error');
         }
     });
 };
@@ -593,23 +635,24 @@ const isEmptyHtml = (html) => {
                         </div>
                     </div>
 
-                    <!-- Feedback Widget -->
+                    <!-- Feedback Widget (Restored Style with Survey Flow) -->
                     <div class="rounded-xl shadow-sm border p-6"
                         style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
                         <h4 class="text-sm font-extrabold mb-2 flex justify-between items-center"
                             style="color: var(--color-primary);">
                             Apakah dokumen ini membantu?
                         </h4>
-                        <p class="text-xs text-gray-400 mb-4">Bantu kami meningkatkan kualitas layanan JDIH.</p>
+                        <p class="text-xs text-gray-400 mb-4">Bantu kami meningkatkan kualitas layanan JDIH dengan
+                            mengisi survey singkat.</p>
 
                         <div class="flex gap-3 mb-6">
-                            <button @click="showRatingModal = true; ratingForm.rating = 5"
+                            <button @click="openSurvey(5)"
                                 class="flex-1 border border-gray-200 hover:border-green-400 hover:bg-green-50 rounded-lg p-2 flex flex-col items-center gap-1 transition group">
                                 <span class="text-xl group-hover:scale-110 transition">👍</span>
                                 <span class="text-[10px] font-bold text-gray-600 group-hover:text-green-600">Ya,
                                     Puas</span>
                             </button>
-                            <button @click="showRatingModal = true; ratingForm.rating = 1"
+                            <button @click="openSurvey(1)"
                                 class="flex-1 border border-gray-200 hover:border-red-400 hover:bg-red-50 rounded-lg p-2 flex flex-col items-center gap-1 transition group">
                                 <span class="text-xl group-hover:scale-110 transition">👎</span>
                                 <span class="text-[10px] font-bold text-gray-600 group-hover:text-red-600">Tidak</span>
@@ -678,34 +721,214 @@ const isEmptyHtml = (html) => {
             </div>
         </div>
     </div>
-    <!-- Rating Modal -->
+    <!-- Rating Modal (Updated to Survey Modal) -->
     <div v-if="showRatingModal"
-        class="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-md rounded-xl p-6 shadow-2xl relative">
-            <button @click="showRatingModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+        class="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl relative my-8 flex flex-col max-h-[90vh]">
 
-            <h3 class="text-lg font-bold text-[#0F213A] mb-4 text-center">Beri Penilaian</h3>
-
-            <!-- Star Rating Input -->
-            <div class="flex justify-center gap-2 mb-6">
-                <button v-for="star in 5" :key="star" type="button" @click="ratingForm.rating = star"
-                    class="text-3xl transition transform hover:scale-110 focus:outline-none"
-                    :class="star <= ratingForm.rating ? 'text-yellow-400' : 'text-gray-200'">
-                    ★
+            <!-- Header -->
+            <div
+                class="p-6 border-b border-gray-100 flex justify-between items-start sticky top-0 bg-white z-10 rounded-t-xl">
+                <div>
+                    <h3 class="text-xl font-bold uppercase text-[#0F213A] leading-tight">SURVEY KEPUASAN PENGUNJUNG</h3>
+                    <p class="text-xs text-gray-500 mt-1">Jaringan Dokumentasi dan Informasi Hukum (JDIH) UIN Sunan
+                        Gunung Djati Bandung</p>
+                </div>
+                <button @click="showRatingModal = false" class="text-gray-400 hover:text-gray-600 transition">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
 
-            <textarea v-model="ratingForm.feedback" placeholder="Masukan atau saran Anda (opsional)..."
-                class="w-full border border-gray-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 outline-none mb-4 h-24 resize-none"></textarea>
+            <!-- Scrollable Content -->
+            <div class="p-6 overflow-y-auto space-y-8">
 
-            <button @click="submitRating" :disabled="ratingForm.processing || ratingForm.rating === 0"
-                class="w-full bg-[#0F213A] hover:bg-blue-900 text-white font-bold py-3 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
-                {{ ratingForm.processing ? 'Mengirim...' : 'Kirim Penilaian' }}
-            </button>
+                <!-- Intro -->
+                <div class="bg-blue-50 p-4 rounded-lg text-sm text-blue-900 border border-blue-100">
+                    Kuesioner berisi beberapa pertanyaan yang menjadi indikator kepuasan pengunjung JDIH. Masukan Anda
+                    sangat berharga bagi peningkatan layanan kami.
+                </div>
+
+                <!-- Section: Rating Bintang -->
+                <div class="flex flex-col items-center justify-center py-4 border-b border-gray-100">
+                    <p class="text-sm font-bold text-gray-700 mb-2">Rating Anda</p>
+                    <div class="flex gap-2">
+                        <button v-for="star in 5" :key="star" type="button" @click="ratingForm.rating = star"
+                            class="text-4xl transition transform hover:scale-110 focus:outline-none"
+                            :class="star <= ratingForm.rating ? 'text-yellow-400' : 'text-gray-200'">
+                            ★
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section 1: Informasi Responden -->
+                <section>
+                    <h4 class="text-lg font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Informasi Responden
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-gray-700">Email <span
+                                    class="text-red-500">*</span></label>
+                            <input v-model="ratingForm.email" type="email" placeholder="contoh@email.com"
+                                class="w-full rounded-lg px-4 py-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <p class="text-xs text-gray-500">Wajib diisi</p>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-gray-700">Nama Lengkap <span
+                                    class="text-gray-400 font-normal">(Opsional)</span></label>
+                            <input v-model="ratingForm.name" type="text" placeholder="Nama Anda"
+                                class="w-full rounded-lg px-4 py-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Pertanyaan Survey -->
+                <section class="space-y-6">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Pertanyaan Survey
+                    </h4>
+
+                    <!-- Q1 -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <p class="font-medium text-gray-800 mb-3">1. Apakah laman JDIH UIN Sunan Gunung Djati Bandung
+                            mudah digunakan dalam mencari informasi hukum? <span class="text-red-500">*</span></p>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" :value="true" v-model="ratingForm.q1"
+                                    class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="text-sm text-gray-700">Setuju</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" :value="false" v-model="ratingForm.q1"
+                                    class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="text-sm text-gray-700">Tidak Setuju</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <p class="font-medium text-gray-800 mb-3">2. Apakah dokumen hukum pada JDIH UIN Sunan Gunung
+                            Djati Bandung cukup lengkap? <span class="text-red-500">*</span></p>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" :value="true" v-model="ratingForm.q2"
+                                    class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="text-sm text-gray-700">Setuju</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" :value="false" v-model="ratingForm.q2"
+                                    class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="text-sm text-gray-700">Tidak Setuju</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <p class="font-medium text-gray-800 mb-3">3. Apakah informasi detail dokumen hukum JDIH UIN
+                            Sunan Gunung Djati Bandung mudah dipahami? <span class="text-red-500">*</span></p>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" :value="true" v-model="ratingForm.q3"
+                                    class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="text-sm text-gray-700">Setuju</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" :value="false" v-model="ratingForm.q3"
+                                    class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="text-sm text-gray-700">Tidak Setuju</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <p class="font-medium text-gray-800 mb-3">4. Apakah tampilan laman JDIH UIN Sunan Gunung Djati
+                            Bandung menarik? <span class="text-red-500">*</span></p>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" :value="true" v-model="ratingForm.q4"
+                                    class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="text-sm text-gray-700">Setuju</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" :value="false" v-model="ratingForm.q4"
+                                    class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="text-sm text-gray-700">Tidak Setuju</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <p class="font-medium text-gray-800 mb-3">5. Apakah Anda akan merekomendasikan platform JDIH UIN
+                            Sunan Gunung Djati Bandung kepada orang lain untuk kebutuhan informasi hukum? <span
+                                class="text-red-500">*</span></p>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" :value="true" v-model="ratingForm.q5"
+                                    class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="text-sm text-gray-700">Merekomendasikan</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="radio" :value="false" v-model="ratingForm.q5"
+                                    class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="text-sm text-gray-700">Belum Merekomendasikan</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q6 / Saran -->
+                    <div>
+                        <p class="font-medium text-gray-800 mb-3">6. Apa saran Anda untuk meningkatkan layanan JDIH UIN
+                            Sunan Gunung Djati Bandung? <span class="text-gray-400 font-normal">(Opsional)</span></p>
+                        <textarea v-model="ratingForm.feedback" placeholder="Tulis masukan Anda disini..."
+                            class="w-full rounded-lg px-4 py-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 min-h-[100px]"></textarea>
+                    </div>
+
+                </section>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-6 border-t border-gray-100 sticky bottom-0 bg-white z-10 rounded-b-xl flex justify-end gap-3">
+                <button @click="showRatingModal = false"
+                    class="px-5 py-2.5 rounded-lg border font-bold text-sm text-gray-600 hover:bg-gray-50 transition border-gray-300">
+                    Batal
+                </button>
+                <button @click="submitRating" :disabled="ratingForm.processing"
+                    class="bg-[#0F213A] hover:bg-blue-900 text-white font-bold py-2.5 px-8 rounded-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 text-sm flex items-center gap-2">
+                    <svg v-if="ratingForm.processing" class="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    Kirim Survey
+                </button>
+            </div>
         </div>
     </div>
+    <!-- Toast Notification -->
+    <Transition enter-active-class="transition ease-out duration-300"
+        enter-from-class="transform opacity-0 translate-y-2" enter-to-class="transform opacity-100 translate-y-0"
+        leave-active-class="transition ease-in duration-200" leave-from-class="transform opacity-100 translate-y-0"
+        leave-to-class="transform opacity-0 translate-y-2">
+        <div v-if="toast.show"
+            class="fixed bottom-4 right-4 z-[200] px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 text-white"
+            :class="toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'">
+            <svg v-if="toast.type === 'success'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span class="font-medium text-sm">{{ toast.message }}</span>
+        </div>
+    </Transition>
 </template>

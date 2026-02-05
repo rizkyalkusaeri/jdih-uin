@@ -51,9 +51,18 @@ class FeedbackResource extends Resource
             ->columns([
                 TextColumn::make('legalProduct.title')
                     ->label('Produk Hukum')
-                    ->limit(40)
+                    ->limit(30)
+                    ->searchable()
+                    ->sortable()
+                    ->tooltip(fn($record) => $record->legalProduct?->title),
+                TextColumn::make('email')
+                    ->label('Email')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('name')
+                    ->label('Nama')
+                    ->placeholder('-')
+                    ->searchable(),
                 TextColumn::make('rating')
                     ->label('Rating')
                     ->formatStateUsing(fn(int $state): HtmlString => new HtmlString(
@@ -61,14 +70,27 @@ class FeedbackResource extends Resource
                             '<span class="text-gray-300">' . str_repeat('★', 5 - $state) . '</span>'
                     ))
                     ->sortable(),
+                TextColumn::make('survey_score')
+                    ->label('Survey Score')
+                    ->getStateUsing(function ($record) {
+                        // Calculate score: (q1+q2+q3+q4+q5) / 5 * 100
+                        $score = 0;
+                        if ($record->q1) $score++;
+                        if ($record->q2) $score++;
+                        if ($record->q3) $score++;
+                        if ($record->q4) $score++;
+                        if ($record->q5) $score++;
+                        $percentage = ($score / 5) * 100;
+                        return $score . '/5 (' . $percentage . '%)';
+                    })
+                    ->badge()
+                    ->color(fn($state) => str_contains($state, '100%') ? 'success' : (str_contains($state, '80%') || str_contains($state, '60%') ? 'warning' : 'danger'))
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('feedback')
-                    ->label('Komentar')
-                    ->limit(50)
+                    ->label('Saran')
+                    ->limit(30)
                     ->searchable()
                     ->placeholder('-'),
-                TextColumn::make('ip_address')
-                    ->label('IP')
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->label('Waktu')
                     ->dateTime('d M Y, H:i')
@@ -76,15 +98,6 @@ class FeedbackResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
-                SelectFilter::make('rating')
-                    ->label('Rating')
-                    ->options([
-                        '5' => '★★★★★ (5)',
-                        '4' => '★★★★☆ (4)',
-                        '3' => '★★★☆☆ (3)',
-                        '2' => '★★☆☆☆ (2)',
-                        '1' => '★☆☆☆☆ (1)',
-                    ]),
                 SelectFilter::make('legal_product_id')
                     ->label('Produk Hukum')
                     ->relationship('legalProduct', 'title')
@@ -124,35 +137,69 @@ class FeedbackResource extends Resource
     {
         return $schema
             ->schema([
-                Section::make('Informasi Feedback')
+                Section::make('Informasi Responden')
                     ->schema([
-                        TextEntry::make('legalProduct.title')
-                            ->label('Produk Hukum')
-                            ->columnSpanFull(),
-                        TextEntry::make('legalProduct.number')
-                            ->label('Nomor Dokumen'),
-                        TextEntry::make('legalProduct.type.name')
-                            ->label('Jenis'),
-                        TextEntry::make('rating')
-                            ->label('Rating')
-                            ->formatStateUsing(fn(int $state): HtmlString => new HtmlString(
-                                '<span class="text-yellow-500 text-lg">' . str_repeat('★', $state) . '</span>' .
-                                    '<span class="text-gray-300 text-lg">' . str_repeat('★', 5 - $state) . '</span>' .
-                                    '<span class="ml-2 text-gray-600">(' . $state . '/5)</span>'
-                            )),
-                        TextEntry::make('feedback')
-                            ->label('Komentar/Masukan')
-                            ->columnSpanFull()
-                            ->placeholder('Tidak ada komentar'),
-                    ])->columns(2),
-                Section::make('Metadata')
-                    ->schema([
+                        TextEntry::make('email')
+                            ->label('Email'),
+                        TextEntry::make('name')
+                            ->label('Nama Lengkap')
+                            ->placeholder('-'),
                         TextEntry::make('ip_address')
                             ->label('IP Address'),
                         TextEntry::make('created_at')
                             ->label('Waktu Submit')
                             ->dateTime('d M Y, H:i'),
                     ])->columns(2),
+
+                Section::make('Hasil Survey')
+                    ->schema([
+                        TextEntry::make('legalProduct.title')
+                            ->label('Produk Hukum Terkait')
+                            ->columnSpanFull(),
+
+                        TextEntry::make('rating')
+                            ->label('Rating Bintang')
+                            ->formatStateUsing(fn(int $state): HtmlString => new HtmlString(
+                                '<span class="text-yellow-500 text-lg">' . str_repeat('★', $state) . '</span>' .
+                                    '<span class="text-gray-300 text-lg">' . str_repeat('★', 5 - $state) . '</span>' .
+                                    '<span class="ml-2 text-gray-600">(' . $state . '/5)</span>'
+                            ))
+                            ->columnSpanFull(),
+
+                        TextEntry::make('q1')
+                            ->label('1. Mudah digunakan?')
+                            ->formatStateUsing(fn($state) => $state ? 'Setuju' : 'Tidak Setuju')
+                            ->badge()
+                            ->color(fn($state) => $state ? 'success' : 'danger'),
+                        TextEntry::make('q2')
+                            ->label('2. Dokumen lengkap?')
+                            ->formatStateUsing(fn($state) => $state ? 'Setuju' : 'Tidak Setuju')
+                            ->badge()
+                            ->color(fn($state) => $state ? 'success' : 'danger'),
+                        TextEntry::make('q3')
+                            ->label('3. Mudah dipahami?')
+                            ->formatStateUsing(fn($state) => $state ? 'Setuju' : 'Tidak Setuju')
+                            ->badge()
+                            ->color(fn($state) => $state ? 'success' : 'danger'),
+                        TextEntry::make('q4')
+                            ->label('4. Tampilan menarik?')
+                            ->formatStateUsing(fn($state) => $state ? 'Setuju' : 'Tidak Setuju')
+                            ->badge()
+                            ->color(fn($state) => $state ? 'success' : 'danger'),
+                        TextEntry::make('q5')
+                            ->label('5. Merekomendasikan?')
+                            ->formatStateUsing(fn($state) => $state ? 'Merekomendasikan' : 'Belum')
+                            ->badge()
+                            ->color(fn($state) => $state ? 'success' : 'danger'),
+                    ])->columns(2),
+
+                Section::make('Saran & Masukan')
+                    ->schema([
+                        TextEntry::make('feedback')
+                            ->label('Isi Saran')
+                            ->columnSpanFull()
+                            ->placeholder('Tidak ada saran'),
+                    ]),
             ]);
     }
 
