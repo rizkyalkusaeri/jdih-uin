@@ -12699,7 +12699,11 @@ const _sfc_main$3 = {
       feedback: ""
     });
     const openPreview = () => {
-      previewUrl.value = route("produk-hukum.preview", props.legalProduct.slug);
+      if (props.legalProduct.file_path) {
+        previewUrl.value = route("produk-hukum.preview", props.legalProduct.slug);
+      } else if (props.legalProduct.link) {
+        previewUrl.value = props.legalProduct.link;
+      }
       showPreviewModal.value = true;
     };
     const formatDate = (dateString) => {
@@ -12909,30 +12913,31 @@ const _sfc_main$3 = {
             } else {
               _push2(`<!---->`);
             }
-            _push2(`</div></div></div>`);
-            if (__props.legalProduct.file_path) {
-              _push2(`<div class="rounded-xl shadow-sm border overflow-hidden" style="${ssrRenderStyle({ "background-color": "var(--color-bg-card)", "border-color": "var(--color-border-light)" })}"${_scopeId}><div class="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4" style="${ssrRenderStyle({ "background-color": "var(--color-bg-secondary)", "border-color": "var(--color-border-light)" })}"${_scopeId}><div class="flex items-center gap-3"${_scopeId}><div class="bg-red-100 p-2 rounded text-red-600"${_scopeId}><svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"${_scopeId}><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"${_scopeId}></path></svg></div><div${_scopeId}><p class="text-sm font-bold truncate max-w-[200px] sm:max-w-xs" style="${ssrRenderStyle({ "color": "var(--color-primary)" })}"${_scopeId}> Lampiran</p><p class="text-xs" style="${ssrRenderStyle({ "color": "var(--color-text-muted)" })}"${_scopeId}>${ssrInterpolate(__props.legalProduct.number)}</p></div></div><div class="flex gap-3 w-full sm:w-auto"${_scopeId}>`);
-              if (__props.legalProduct.file_path) {
-                _push2(`<button class="flex-1 sm:flex-none border px-4 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition" style="${ssrRenderStyle({ "background-color": "var(--color-bg-card)", "color": "var(--color-text-secondary)", "border-color": "var(--color-border)" })}"${_scopeId}><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"${_scopeId}><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"${_scopeId}></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"${_scopeId}></path></svg> Pratinjau </button>`);
-              } else {
-                _push2(`<!---->`);
-              }
-              if (__props.legalProduct.file_path) {
-                _push2(`<a${ssrRenderAttr("href", unref(route)("produk-hukum.download", __props.legalProduct.slug))} target="_blank" class="flex-1 sm:flex-none bg-yellow-500 hover:bg-yellow-400 px-6 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition shadow-sm" style="${ssrRenderStyle({ "color": "var(--color-text-primary)" })}"${_scopeId}><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"${_scopeId}><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"${_scopeId}></path></svg> Download </a>`);
-              } else {
-                _push2(`<!---->`);
-              }
-              _push2(`</div></div><div class="bg-gray-100 w-full h-[600px] relative"${_scopeId}>`);
-              if (__props.legalProduct.file_path) {
-                _push2(`<iframe${ssrRenderAttr("src", unref(route)("produk-hukum.preview", __props.legalProduct.slug))} class="w-full h-full" frameborder="0"${_scopeId}></iframe>`);
-              } else {
-                _push2(`<div class="flex items-center justify-center h-full text-gray-400 font-medium"${_scopeId}> Tidak ada dokumen lampiran. </div>`);
-              }
-              _push2(`</div></div>`);
+            _push2(`</div></div></div><div class="rounded-xl shadow-sm border overflow-hidden" style="${ssrRenderStyle({ "background-color": "var(--color-bg-card)", "border-color": "var(--color-border-light)" })}"${_scopeId}><div class="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4" style="${ssrRenderStyle({ "background-color": "var(--color-bg-secondary)", "border-color": "var(--color-border-light)" })}"${_scopeId}><div class="flex items-center gap-3"${_scopeId}><div class="bg-red-100 p-2 rounded text-red-600"${_scopeId}><svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"${_scopeId}><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"${_scopeId}></path></svg></div><div${_scopeId}><p class="text-sm font-bold truncate max-w-[200px] sm:max-w-xs" style="${ssrRenderStyle({ "color": "var(--color-primary)" })}"${_scopeId}> Lampiran / Dokumen</p><p class="text-xs" style="${ssrRenderStyle({ "color": "var(--color-text-muted)" })}"${_scopeId}>${ssrInterpolate(__props.legalProduct.number)}</p></div></div><div class="flex gap-3 w-full sm:w-auto"${_scopeId}>`);
+            if (__props.legalProduct.file_path || __props.legalProduct.link) {
+              _push2(`<button class="flex-1 sm:flex-none border px-4 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition" style="${ssrRenderStyle({ "background-color": "var(--color-bg-card)", "color": "var(--color-text-secondary)", "border-color": "var(--color-border)" })}"${_scopeId}><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"${_scopeId}><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"${_scopeId}></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"${_scopeId}></path></svg> Pratinjau </button>`);
             } else {
               _push2(`<!---->`);
             }
-            _push2(`</div><div class="space-y-6"${_scopeId}>`);
+            if (__props.legalProduct.file_path) {
+              _push2(`<a${ssrRenderAttr("href", unref(route)("produk-hukum.download", __props.legalProduct.slug))} target="_blank" class="flex-1 sm:flex-none bg-yellow-500 hover:bg-yellow-400 px-6 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition shadow-sm" style="${ssrRenderStyle({ "color": "var(--color-text-primary)" })}"${_scopeId}><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"${_scopeId}><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"${_scopeId}></path></svg> Download </a>`);
+            } else {
+              _push2(`<!---->`);
+            }
+            if (!__props.legalProduct.file_path && __props.legalProduct.link) {
+              _push2(`<a${ssrRenderAttr("href", __props.legalProduct.link)} target="_blank" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition shadow-sm"${_scopeId}><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"${_scopeId}><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"${_scopeId}></path></svg> Buka Dokumen </a>`);
+            } else {
+              _push2(`<!---->`);
+            }
+            _push2(`</div></div><div class="bg-gray-100 w-full h-[600px] relative"${_scopeId}>`);
+            if (!__props.legalProduct.file_path && __props.legalProduct.link) {
+              _push2(`<iframe${ssrRenderAttr("src", __props.legalProduct.link)} class="w-full h-full" frameborder="0"${_scopeId}></iframe>`);
+            } else if (__props.legalProduct.file_path) {
+              _push2(`<iframe${ssrRenderAttr("src", unref(route)("produk-hukum.preview", __props.legalProduct.slug))} class="w-full h-full" frameborder="0"${_scopeId}></iframe>`);
+            } else {
+              _push2(`<div class="flex items-center justify-center h-full text-gray-400 font-medium"${_scopeId}> Tidak ada dokumen lampiran. </div>`);
+            }
+            _push2(`</div></div></div><div class="space-y-6"${_scopeId}>`);
             if (__props.legalProduct.cover_image) {
               _push2(`<div class="rounded-xl shadow-sm border p-6 overflow-hidden" style="${ssrRenderStyle({ "background-color": "var(--color-bg-card)", "border-color": "var(--color-border-light)" })}"${_scopeId}><h3 class="font-bold mb-4 flex items-center gap-2" style="${ssrRenderStyle({ "color": "var(--color-primary)" })}"${_scopeId}><svg class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"${_scopeId}><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"${_scopeId}></path></svg> Cover </h3><div class="rounded-lg overflow-hidden border border-gray-100 relative group"${_scopeId}>`);
               ssrRenderVNode(_push2, createVNode(resolveDynamicComponent(__props.legalProduct.link ? "a" : "div"), {
@@ -13398,8 +13403,7 @@ const _sfc_main$3 = {
                         ])
                       ])
                     ]),
-                    __props.legalProduct.file_path ? (openBlock(), createBlock("div", {
-                      key: 0,
+                    createVNode("div", {
                       class: "rounded-xl shadow-sm border overflow-hidden",
                       style: { "background-color": "var(--color-bg-card)", "border-color": "var(--color-border-light)" }
                     }, [
@@ -13427,7 +13431,7 @@ const _sfc_main$3 = {
                             createVNode("p", {
                               class: "text-sm font-bold truncate max-w-[200px] sm:max-w-xs",
                               style: { "color": "var(--color-primary)" }
-                            }, " Lampiran"),
+                            }, " Lampiran / Dokumen"),
                             createVNode("p", {
                               class: "text-xs",
                               style: { "color": "var(--color-text-muted)" }
@@ -13435,7 +13439,7 @@ const _sfc_main$3 = {
                           ])
                         ]),
                         createVNode("div", { class: "flex gap-3 w-full sm:w-auto" }, [
-                          __props.legalProduct.file_path ? (openBlock(), createBlock("button", {
+                          __props.legalProduct.file_path || __props.legalProduct.link ? (openBlock(), createBlock("button", {
                             key: 0,
                             onClick: openPreview,
                             class: "flex-1 sm:flex-none border px-4 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition",
@@ -13483,21 +13487,47 @@ const _sfc_main$3 = {
                               })
                             ])),
                             createTextVNode(" Download ")
+                          ], 8, ["href"])) : createCommentVNode("", true),
+                          !__props.legalProduct.file_path && __props.legalProduct.link ? (openBlock(), createBlock("a", {
+                            key: 2,
+                            href: __props.legalProduct.link,
+                            target: "_blank",
+                            class: "flex-1 sm:flex-none bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition shadow-sm"
+                          }, [
+                            (openBlock(), createBlock("svg", {
+                              class: "w-4 h-4",
+                              fill: "none",
+                              viewBox: "0 0 24 24",
+                              stroke: "currentColor"
+                            }, [
+                              createVNode("path", {
+                                "stroke-linecap": "round",
+                                "stroke-linejoin": "round",
+                                "stroke-width": "2",
+                                d: "M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                              })
+                            ])),
+                            createTextVNode(" Buka Dokumen ")
                           ], 8, ["href"])) : createCommentVNode("", true)
                         ])
                       ]),
                       createVNode("div", { class: "bg-gray-100 w-full h-[600px] relative" }, [
-                        __props.legalProduct.file_path ? (openBlock(), createBlock("iframe", {
+                        !__props.legalProduct.file_path && __props.legalProduct.link ? (openBlock(), createBlock("iframe", {
                           key: 0,
+                          src: __props.legalProduct.link,
+                          class: "w-full h-full",
+                          frameborder: "0"
+                        }, null, 8, ["src"])) : __props.legalProduct.file_path ? (openBlock(), createBlock("iframe", {
+                          key: 1,
                           src: unref(route)("produk-hukum.preview", __props.legalProduct.slug),
                           class: "w-full h-full",
                           frameborder: "0"
                         }, null, 8, ["src"])) : (openBlock(), createBlock("div", {
-                          key: 1,
+                          key: 2,
                           class: "flex items-center justify-center h-full text-gray-400 font-medium"
                         }, " Tidak ada dokumen lampiran. "))
                       ])
-                    ])) : createCommentVNode("", true)
+                    ])
                   ]),
                   createVNode("div", { class: "space-y-6" }, [
                     __props.legalProduct.cover_image ? (openBlock(), createBlock("div", {
@@ -16081,7 +16111,7 @@ const __vite_glob_0_17 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.de
   __proto__: null,
   default: _sfc_main
 }, Symbol.toStringTag, { value: "Module" }));
-const appName = "JDIH UIN SGD";
+const appName = "Laravel";
 createServer(
   (page) => createInertiaApp({
     page,

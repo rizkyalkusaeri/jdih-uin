@@ -414,7 +414,7 @@ class LegalProductResource extends Resource
                                     ->afterStateHydrated(function (\Filament\Forms\Components\Radio $component, $state, ?\Illuminate\Database\Eloquent\Model $record) {
                                         if ($record && filled($record->link)) {
                                             $component->state('url');
-                                        } else {
+                                        } elseif ($record && $record->exists) {
                                             $component->state('file');
                                         }
                                     }),

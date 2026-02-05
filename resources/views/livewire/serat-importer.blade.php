@@ -1,6 +1,7 @@
 <div class="space-y-6">
     {{-- Search Form --}}
-    <div class="p-6 bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 rounded-lg">
+    <div class="p-6 bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 rounded-lg"
+         wire:keydown.enter.prevent="searchDocuments">
         {{ $this->form }}
         
         <div class="mt-4 flex justify-end">
@@ -81,7 +82,7 @@
                         <div class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Pilih Jenis Produk Hukum</label>
                             <select wire:model="typeId" 
-                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white sm:text-sm">
+                                    class="block w-full rounded-lg border-gray-300 px-2 py-1 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white sm:text-sm">
                                 <option value="">-- Pilih Jenis --</option>
                                 @foreach($types as $id => $name)
                                     <option value="{{ $id }}">{{ $name }}</option>
