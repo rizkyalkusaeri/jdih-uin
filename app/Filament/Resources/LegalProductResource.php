@@ -402,15 +402,44 @@ class LegalProductResource extends Resource
                             ]),
                         Section::make('Lampiran')
                             ->schema([
+                                \Filament\Forms\Components\Radio::make('attachment_type')
+                                    ->label('Jenis Lampiran')
+                                    ->options([
+                                        'file' => 'Upload File (PDF)',
+                                        'url' => 'Link Eksternal / URL',
+                                    ])
+                                    ->default('file')
+                                    ->inline()
+                                    ->live()
+                                    ->afterStateHydrated(function (\Filament\Forms\Components\Radio $component, $state, ?\Illuminate\Database\Eloquent\Model $record) {
+                                        if ($record && filled($record->link)) {
+                                            $component->state('url');
+                                        } else {
+                                            $component->state('file');
+                                        }
+                                    }),
+
                                 FileUpload::make('file_path')
                                     ->label('File Lampiran')
+                                    ->live()
                                     ->disk('public')
                                     ->directory('legal-products')
                                     ->acceptedFileTypes(['application/pdf'])
+                                    ->maxSize(51200) // 50MB
                                     ->openable()
-                                    ->helperText('File lampiran harus berformat PDF')
-                                    ->required(fn(Get $get) => ($get('type_id') && \App\Models\Type::find($get('type_id'))?->name !== 'Jurnal Hukum') && ($get('field_config.file_path.required') ?? true)), // Not required for Jurnal Hukum if link is provided, can be adjusted
+                                    ->downloadable()
+                                    // Validation: Required only if type is file AND (field config says so OR default true)
+                                    ->required(fn(Get $get) => $get('attachment_type') === 'file' && ($get('type_id') && \App\Models\Type::find($get('type_id'))?->name !== 'Jurnal Hukum') && ($get('field_config.file_path.required') ?? true))
+                                    ->visible(fn(Get $get) => $get('attachment_type') === 'file')
+                                    ->columnSpanFull(),
 
+                                TextInput::make('link')
+                                    ->label('Link URL Dokumen')
+                                    ->helperText('Masukkan URL lengkap dokumen dari serat UIN SGD')
+                                    ->url()
+                                    ->required(fn(Get $get) => $get('attachment_type') === 'url')
+                                    ->visible(fn(Get $get) => $get('attachment_type') === 'url')
+                                    ->columnSpanFull(),
                                 // Jurnal / Buku Hukum Specifics
                                 FileUpload::make('cover_image')
                                     ->label('Cover')
@@ -418,11 +447,6 @@ class LegalProductResource extends Resource
                                     ->directory('legal-product-covers')
                                     ->image()
                                     ->visible(fn(Get $get) => $get('field_config.cover_image.visible') ?? false),
-
-                                TextInput::make('link')
-                                    ->label('Link Dokumen/Jurnal')
-                                    ->url()
-                                    ->visible(fn(Get $get) => $get('field_config.link.visible') ?? false),
                             ]),
                         Section::make('Data Dukung')
                             ->schema([

@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('sys-admin-panel')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->brandName('CMS JDIH UIN')
             ->brandLogo(asset('images/jdih.png'))
             ->favicon(asset('images/jdih.png'))

@@ -16081,7 +16081,7 @@ const __vite_glob_0_17 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.de
   __proto__: null,
   default: _sfc_main
 }, Symbol.toStringTag, { value: "Module" }));
-const appName = "Laravel";
+const appName = "JDIH UIN SGD";
 createServer(
   (page) => createInertiaApp({
     page,

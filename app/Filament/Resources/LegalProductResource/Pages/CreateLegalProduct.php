@@ -156,8 +156,93 @@ class CreateLegalProduct extends CreateRecord
                     'wire:loading.class' => 'opacity-50 cursor-wait',
                     'wire:loading.attr' => 'disabled',
                 ])
-                ->color('primary')
+                ->color('primary'),
+            \Filament\Actions\Action::make('import_serat')
+                ->label('Import Serat UIN')
+                ->icon('heroicon-o-cloud-arrow-down')
+                ->color('success')
+                ->modalHeading('Import Data API Serat')
+                ->modalContent(view('filament.pages.serat-import-modal'))
+                ->modalSubmitAction(false)
+                ->closeModalByClickingAway(false)
+                ->closeModalByEscaping(false)
+                ->modalWidth('7xl')
+                ->modalCancelAction(fn($action) => $action->label('Tutup')),
         ];
+    }
+
+    #[\Livewire\Attributes\On('fill-from-serat')]
+    public function fillFromSerat(array $data)
+    {
+        $typeId = $data['type_id'];
+
+        // Get Config
+        $type = \App\Models\Type::with('category')->find($typeId);
+        if (!$type) return;
+
+        $fieldConfig = $type->category->field_config ?? [];
+
+        // Prepare fill data
+        $fillData = [
+            'type_id' => $typeId,
+            'category_id' => $type->category_id,
+            'field_config' => $fieldConfig,
+            'title' => $data['title'],
+            'number' => $data['number'],
+            'determination_date' => $data['determination_date'],
+            'published_date' => $data['determination_date'],
+            'link' => $data['link'],
+            'source' => $data['source'],
+            // Link is used, file_path can be skipped if valid logic exists
+            'attachment_type' => 'url',
+            'file_path' => [],
+        ];
+
+        // Handle Status
+        $fillData['status'] = 'active';
+
+        // Auto Slug
+        $fillData['slug'] = Str::slug($data['title']);
+
+        // Signer Logic
+        if (!empty($data['signer_name'])) {
+            $signer = \App\Models\Signer::firstOrCreate(
+                ['name' => $data['signer_name']],
+                ['slug' => Str::slug($data['signer_name'])]
+            );
+            $fillData['signer_id'] = $signer->id;
+        }
+
+
+        $publisher = \App\Models\Publisher::firstOrCreate(
+            ['name' => 'UIN Sunan Gunung Djati Bandung'],
+            ['slug' => Str::slug('UIN Sunan Gunung Djati Bandung')]
+        );
+
+        $fillData['publisher_id'] = $publisher->id;
+
+        $place = \App\Models\Place::firstOrCreate(
+            ['name' => 'Bandung'],
+            ['slug' => Str::slug('Bandung')]
+        );
+
+        $fillData['place_id'] = $place->id;
+
+        $initiator = \App\Models\Initiator::firstOrCreate(
+            ['name' => $publisher->name],
+            ['slug' => Str::slug($publisher->name)]
+        );
+
+        $fillData['initiator_id'] = $initiator->id;
+
+        $this->form->fill($fillData);
+
+        \Filament\Notifications\Notification::make()
+            ->title('Form diisi dari Serat API')
+            ->success()
+            ->send();
+
+        $this->unmountAction();
     }
 
     protected function mutateFormDataBeforeCreate(array $data): array

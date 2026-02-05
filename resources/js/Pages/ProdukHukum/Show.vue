@@ -35,7 +35,11 @@ const ratingForm = useForm({
 
 const openPreview = () => {
     // Determine preview URL (use route helper if possible or build string)
-    previewUrl.value = route('produk-hukum.preview', props.legalProduct.slug);
+    if (props.legalProduct.file_path) {
+        previewUrl.value = route('produk-hukum.preview', props.legalProduct.slug);
+    } else if (props.legalProduct.link) {
+        previewUrl.value = props.legalProduct.link;
+    }
     showPreviewModal.value = true;
 };
 
@@ -242,7 +246,7 @@ const isEmptyHtml = (html) => {
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">BIDANG
                                             HUKUM</p>
                                         <p class="text-base font-bold text-[#0F213A]">{{ legalProduct.legalField?.name
-                                        }}</p>
+                                            }}</p>
                                     </div>
                                     <div v-if="legalProduct.location?.name">
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">LOKASI
@@ -259,7 +263,7 @@ const isEmptyHtml = (html) => {
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">URUSAN
                                             PEMERINTAHAN</p>
                                         <p class="text-base font-bold text-[#0F213A]">{{ legalProduct.government_affair
-                                        }}</p>
+                                            }}</p>
                                     </div>
                                     <div v-if="legalProduct.language">
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">BAHASA
@@ -275,7 +279,7 @@ const isEmptyHtml = (html) => {
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
                                             DESKRIPSI FISIK</p>
                                         <p class="text-base font-bold text-[#0F213A]">{{ legalProduct.page_description
-                                        }}</p>
+                                            }}</p>
                                     </div>
                                     <div v-if="legalProduct.source">
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">SUMBER
@@ -315,9 +319,10 @@ const isEmptyHtml = (html) => {
                     </div>
 
                     <!-- PDF Viewer Section -->
-                    <div v-if="legalProduct.file_path" class="rounded-xl shadow-sm border overflow-hidden"
+                    <div class="rounded-xl shadow-sm border overflow-hidden"
                         style="background-color: var(--color-bg-card); border-color: var(--color-border-light);">
-                        <!-- Action Bar -->
+
+                        <!-- Header / Action Bar -->
                         <div class="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4"
                             style="background-color: var(--color-bg-secondary); border-color: var(--color-border-light);">
                             <div class="flex items-center gap-3">
@@ -330,13 +335,14 @@ const isEmptyHtml = (html) => {
                                 <div>
                                     <p class="text-sm font-bold truncate max-w-[200px] sm:max-w-xs"
                                         style="color: var(--color-primary);">
-                                        Lampiran</p>
+                                        Lampiran / Dokumen</p>
                                     <p class="text-xs" style="color: var(--color-text-muted);">{{ legalProduct.number }}
                                     </p>
                                 </div>
                             </div>
                             <div class="flex gap-3 w-full sm:w-auto">
-                                <button @click="openPreview" v-if="legalProduct.file_path"
+                                <!-- Preview Button (Local File) -->
+                                <button @click="openPreview" v-if="legalProduct.file_path || legalProduct.link"
                                     class="flex-1 sm:flex-none border px-4 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition"
                                     style="background-color: var(--color-bg-card); color: var(--color-text-secondary); border-color: var(--color-border);">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -347,6 +353,8 @@ const isEmptyHtml = (html) => {
                                     </svg>
                                     Pratinjau
                                 </button>
+
+                                <!-- Download Button (Local File) -->
                                 <a :href="route('produk-hukum.download', legalProduct.slug)" target="_blank"
                                     v-if="legalProduct.file_path"
                                     class="flex-1 sm:flex-none bg-yellow-500 hover:bg-yellow-400 px-6 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition shadow-sm"
@@ -357,14 +365,32 @@ const isEmptyHtml = (html) => {
                                     </svg>
                                     Download
                                 </a>
+
+                                <!-- External Link Button -->
+                                <a :href="legalProduct.link" target="_blank"
+                                    v-if="!legalProduct.file_path && legalProduct.link"
+                                    class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition shadow-sm">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                    Buka Dokumen
+                                </a>
                             </div>
                         </div>
 
-                        <!-- PDF Iframe -->
+                        <!-- Viewer Area -->
                         <div class="bg-gray-100 w-full h-[600px] relative">
-                            <iframe v-if="legalProduct.file_path"
+                            <!-- Helper for Link Mode -->
+                            <iframe v-if="!legalProduct.file_path && legalProduct.link" :src="legalProduct.link"
+                                class="w-full h-full" frameborder="0"></iframe>
+
+                            <!-- Iframe for Local File -->
+                            <iframe v-else-if="legalProduct.file_path"
                                 :src="route('produk-hukum.preview', legalProduct.slug)" class="w-full h-full"
                                 frameborder="0"></iframe>
+
+                            <!-- Empty State -->
                             <div v-else class="flex items-center justify-center h-full text-gray-400 font-medium">
                                 Tidak ada dokumen lampiran.
                             </div>
@@ -596,7 +622,7 @@ const isEmptyHtml = (html) => {
                                 PENGGUNA</span>
                             <span class="text-sm font-extrabold" style="color: var(--color-primary);">{{
                                 ratingStats?.average || 0
-                                }}/5.0</span>
+                            }}/5.0</span>
                         </div>
                         <div class="flex gap-1 text-yellow-400 mt-1 text-sm">
                             <span v-for="i in 5" :key="i"
