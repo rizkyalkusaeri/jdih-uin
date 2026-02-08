@@ -181,6 +181,148 @@ class CreateLegalProduct extends CreateRecord
                 ->closeModalByEscaping(false)
                 ->modalWidth('7xl')
                 ->modalCancelAction(fn($action) => $action->label('Tutup')),
+            \Filament\Actions\Action::make('import_json')
+                ->label('Import JSON')
+                ->icon('heroicon-o-clipboard-document-list')
+                ->color('warning')
+                ->modalHeading('Import Data dari JSON')
+                ->modalDescription('Paste hasil ekstraksi AI dalam format JSON.')
+                ->schema([
+                    \Filament\Forms\Components\Textarea::make('json_data')
+                        ->label('Data JSON')
+                        ->placeholder('{"type": "...", "metadata": {...}}')
+                        ->rows(12)
+                        ->required(),
+                ])
+                ->action(function (array $data, CreateLegalProduct $livewire) {
+                    try {
+                        $jsonString = $data['json_data'];
+                        $parsed = json_decode($jsonString, true);
+
+                        if (json_last_error() !== JSON_ERROR_NONE) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Format JSON tidak valid')
+                                ->body(json_last_error_msg())
+                                ->danger()
+                                ->send();
+                            return;
+                        }
+
+                        $typeName = $parsed['type'] ?? null;
+                        $metadata = $parsed['metadata'] ?? [];
+
+                        // 1. Lookup Type
+                        if (empty($typeName)) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Field "type" tidak ditemukan dalam JSON')
+                                ->danger()
+                                ->send();
+                            return;
+                        }
+
+                        $type = \App\Models\Type::where('name', $typeName)->first();
+                        if (!$type) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Jenis Produk Hukum tidak ditemukan')
+                                ->body("Jenis '{$typeName}' tidak ada di database. Silakan buat terlebih dahulu di menu Master Data > Jenis.")
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                            return;
+                        }
+
+                        $fieldConfig = $type->category->field_config ?? [];
+
+                        // 2. Prepare fill data with scalar fields
+                        $fillData = [
+                            'type_id' => $type->id,
+                            'category_id' => $type->category_id,
+                            'field_config' => $fieldConfig,
+                            'title' => $metadata['title'] ?? null,
+                            'slug' => isset($metadata['title']) ? Str::slug($metadata['title']) : null,
+                            'number' => $metadata['number'] ?? null,
+                            'source' => $metadata['source'] ?? null,
+                            'abstract' => $metadata['abstract'] ?? null,
+                            'government_affair' => $metadata['government_affair'] ?? null,
+                            'published_date' => $metadata['published_date'] ?? null,
+                            'determination_date' => $metadata['determination_date'] ?? null,
+                        ];
+
+                        // 3. Map status
+                        $statusRaw = strtolower($metadata['status'] ?? 'berlaku');
+                        $fillData['status'] = ($statusRaw === 'berlaku' || $statusRaw === 'active') ? 'active' : 'inactive';
+
+                        // 4. Map language
+                        $langMap = [
+                            'id' => 'Bahasa Indonesia',
+                            'en' => 'English',
+                            'ar' => 'Arabic',
+                            'zh' => 'Mandarin',
+                        ];
+                        $langRaw = strtolower($metadata['language'] ?? 'id');
+                        $fillData['language'] = $langMap[$langRaw] ?? 'Bahasa Indonesia';
+
+                        // 5. Auto-create relationships
+                        $relations = [
+                            'publisher_id' => [\App\Models\Publisher::class, 'publisher_id'],
+                            'place_id' => [\App\Models\Place::class, 'place_id'],
+                            'signer_id' => [\App\Models\Signer::class, 'signer_id'],
+                            'location_id' => [\App\Models\Location::class, 'location_id'],
+                            'legal_field_id' => [\App\Models\LegalField::class, 'legal_field_id'],
+                            'initiator_id' => [\App\Models\Initiator::class, 'initiator_id'],
+                        ];
+
+                        foreach ($relations as $jsonKey => $config) {
+                            [$modelClass, $formKey] = $config;
+                            $name = $metadata[$jsonKey] ?? null;
+
+                            if (!empty($name)) {
+                                $slug = Str::slug($name);
+
+                                // Check by slug first to prevent duplicate slug error
+                                $record = $modelClass::where('slug', $slug)->first();
+
+                                if (!$record) {
+                                    $record = $modelClass::firstOrCreate(
+                                        ['name' => $name],
+                                        ['slug' => $slug]
+                                    );
+                                }
+                                $fillData[$formKey] = $record->id;
+                            }
+                        }
+
+                        // 6. Handle replacedDocuments
+                        $replacedDocsRaw = $metadata['replacedDocuments'] ?? null;
+                        if (!empty($replacedDocsRaw)) {
+                            $replacedDoc = \App\Models\LegalProduct::where('number', $replacedDocsRaw)
+                                ->orWhere('title', 'LIKE', "%{$replacedDocsRaw}%")
+                                ->first();
+
+                            if ($replacedDoc) {
+                                $fillData['replacedDocuments'] = [$replacedDoc->id];
+                            }
+                        }
+
+                        // 7. Fill form
+                        $livewire->form->fill($fillData);
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Form berhasil diisi dari JSON!')
+                            ->success()
+                            ->send();
+                    } catch (\Exception $e) {
+                        \Filament\Notifications\Notification::make()
+                            ->title('Terjadi Kesalahan')
+                            ->body($e->getMessage())
+                            ->danger()
+                            ->send();
+                    }
+                })
+                ->modalSubmitActionLabel('Import')
+                ->extraModalFooterActions([])
+                ->closeModalByClickingAway(false)
+                ->closeModalByEscaping(false),
         ];
     }
 
