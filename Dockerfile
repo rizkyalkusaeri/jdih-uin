@@ -60,6 +60,7 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # Setup entrypoint
 COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+RUN sed -i 's/\r$//g' /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 
 EXPOSE 80

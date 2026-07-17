@@ -10,6 +10,5 @@ bootstrap/cache/*.php
 .env
 .env.backup
 .phpunit.result.cache
-docker/
 Dockerfile
 DEPLOY.md
