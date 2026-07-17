@@ -1,12 +1,20 @@
-# Stage 1: Build assets using Node
+# Stage 1: Composer dependencies for PHP and Filament assets
+FROM composer:latest AS vendor-resolver
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --ignore-platform-reqs --no-scripts --no-autoloader
+
+# Stage 2: Build assets using Node
 FROM node:20-alpine AS assets-builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
+# Copy vendor from composer stage so Vite/Tailwind can find Filament CSS
+COPY --from=vendor-resolver /app/vendor ./vendor
 COPY . .
 RUN npm run build
 
-# Stage 2: Production PHP environment
+# Stage 3: Production PHP environment
 FROM php:8.3-fpm-alpine
 
 # Install system dependencies and build packages
@@ -43,6 +51,9 @@ COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 WORKDIR /var/www/html
 
+# Copy vendor dependencies from vendor-resolver
+COPY --from=vendor-resolver /app/vendor ./vendor
+
 # Copy application files (excluding files in .dockerignore)
 COPY . .
 
@@ -50,10 +61,10 @@ COPY . .
 COPY --from=assets-builder /app/public/build ./public/build
 COPY --from=assets-builder /app/bootstrap/ssr ./bootstrap/ssr
 
-# Install composer dependencies
+# Optimize composer autoloader and run scripts (e.g. package discovery)
 ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+RUN composer dump-autoload --no-dev --classmap-authoritative
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
